@@ -61,6 +61,31 @@ Typical settings:
 - bit order: `lsb-first`
 - line inversion: depends on the probe point/transceiver output
 
+## Pylon RS485 Capture Examples
+
+The screenshots below show real LA2016 captures decoded in PulseView with the
+`Pylon RS485` decoder stacked above the built-in `UART` decoder.
+
+### Analog / Telemetry Response `0x61`
+
+![Pylon RS485 0x61 analog telemetry frame](pictures/pylon-rs485-0x61-analog-telemetry.png)
+
+`0x61` exposes pack voltage, current, SOC, SOH, cycle count, and cell min/max
+summary data.
+
+### Full Analog / Telemetry Frame `0x61`
+
+![Pylon RS485 0x61 full frame](pictures/pylon-rs485-0x61-full-frame.png)
+
+The decoder annotates frame fields, payload, checksum status, and decoded
+telemetry on the same capture.
+
+### Status Flags Response `0x63`
+
+![Pylon RS485 0x63 status flags frame](pictures/pylon-rs485-0x63-status-flags.png)
+
+`0x63` exposes Pylon-compatible charge, discharge, and balance status flags.
+
 ## Pylon CAN Decoder
 
 `decoders/pylon_can` is a standalone decoder. Add `Pylon CAN` directly from the PulseView decoder selector.
@@ -78,6 +103,44 @@ Input modes:
 - `canh-canl-diff`: use CH0 as `CANH` and optional CH1 as `CANL`; this derives the CAN RX logic level from the digitized wire states.
 
 The decoder currently annotates known Pylon/JK CAN IDs including `0x351`, `0x355`, `0x356`, `0x359`, `0x35C`, `0x35E`, `0x370`, `0x371`, and `0x373`.
+
+## Pylon CAN Capture Examples
+
+The screenshots below show real LA2016 captures decoded in PulseView with the
+`Pylon CAN` decoder.
+
+### Limits Frame `0x351`
+
+![Pylon CAN 0x351 limits frame](pictures/pylon-can-0x351-limits.png)
+
+`0x351` exposes charge voltage, charge current, discharge current, and low
+voltage limits.
+
+### SOC / SOH Frame `0x355`
+
+![Pylon CAN 0x355 SOC SOH frame](pictures/pylon-can-0x355-soc-soh.png)
+
+`0x355` carries state of charge and state of health.
+
+### Pack Telemetry Frame `0x356`
+
+![Pylon CAN 0x356 pack telemetry frame](pictures/pylon-can-0x356-pack-telemetry.png)
+
+`0x356` carries pack voltage, current, and temperature.
+
+### Module Info Frame `0x359`
+
+![Pylon CAN 0x359 module info frame](pictures/pylon-can-0x359-module-info.png)
+
+`0x359` carries module-count/module-info style data used by Pylon-compatible
+inverters.
+
+### JK Cell Index Extension `0x371`
+
+![Pylon CAN 0x371 JK cell indexes frame](pictures/pylon-can-0x371-jk-cell-indexes.png)
+
+`0x371` is a JK/Pylon extension that exposes temperature and cell min/max
+indexes.
 
 ## Tests
 
