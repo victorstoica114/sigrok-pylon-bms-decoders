@@ -15,6 +15,8 @@ The decoders were built around real captures from LA2016/PulseView sessions and 
 decoders/
   pylon_rs485/
   pylon_can/
+examples/
+pictures/
 tests/
 install-pulseview-decoders.ps1
 start-pulseview.ps1
@@ -43,6 +45,21 @@ For development, run PulseView with a temporary generated decoder bundle instead
 ```
 
 That keeps built-in decoders such as `CAN` visible while adding `Pylon CAN` and `Pylon RS485`.
+
+## Example Raw Captures
+
+The `examples/` directory contains field captures that can be opened in
+PulseView for decoder testing and protocol inspection:
+
+| File | Description |
+| --- | --- |
+| `examples/pylon-can-raw-capture.sr` | Raw Pylon-compatible CAN capture. |
+| `examples/pylon-can-pulseview-session.pvs` | PulseView session settings for the CAN capture. |
+| `examples/pylon-rs485-raw-capture.sr` | Raw Pylon-compatible RS485 capture. |
+| `examples/pylon-rs485-pulseview-session.pvs` | PulseView session settings for the RS485 capture. |
+
+Open the `.sr` capture in PulseView, then load or recreate the matching `.pvs`
+session if you want the same decoder/channel layout used in the screenshots.
 
 ## Pylon RS485 Decoder
 

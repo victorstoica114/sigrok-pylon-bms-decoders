@@ -10,3 +10,4 @@
 - Windows installer and launcher scripts that keep built-in PulseView decoders visible alongside the Pylon decoders.
 - Host-side parser/decoder regression tests.
 - README capture examples for decoded Pylon CAN and Pylon RS485 frames.
+- Example raw `.sr` captures and matching PulseView `.pvs` sessions for Pylon CAN and Pylon RS485.
