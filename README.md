@@ -71,16 +71,16 @@ The `examples/` directory separates field captures by communication topology:
 
 Current raw captures are bridge-mediated captures:
 
-| Topology | File | Description |
-| --- | --- | --- |
-| Bridge | `examples/bridge/pylon-can-raw-capture.sr` | Raw Pylon-compatible CAN capture. |
-| Bridge | `examples/bridge/pylon-can-pulseview-session.pvs` | PulseView session settings for the Pylon CAN capture. |
-| Bridge | `examples/bridge/pylon-rs485-raw-capture.sr` | Raw Pylon-compatible RS485 capture. |
-| Bridge | `examples/bridge/pylon-rs485-pulseview-session.pvs` | PulseView session settings for the Pylon RS485 capture. |
-| Bridge | `examples/bridge/growatt-can-raw-capture.sr` | Raw Growatt CAN capture. |
-| Bridge | `examples/bridge/growatt-can-pulseview-session.pvs` | PulseView session settings for the Growatt CAN capture. |
-| Bridge | `examples/bridge/growatt-rs485-raw-capture.sr` | Raw Growatt RS485 capture. |
-| Bridge | `examples/bridge/growatt-rs485-pulseview-session.pvs` | PulseView session settings for the Growatt RS485 capture. |
+| Topology | Bridge mode | File | Description |
+| --- | --- | --- | --- |
+| Bridge | Normal bridge | `examples/bridge/growatt-can-pulseview-session.pvs` | PulseView session settings for the Growatt CAN capture. |
+| Bridge | Normal bridge | `examples/bridge/growatt-rs485-pulseview-session.pvs` | PulseView session settings for the Growatt RS485 capture. |
+| Bridge | Normal bridge | `examples/bridge/pylon-can-pulseview-session.pvs` | PulseView session settings for the Pylon CAN capture. |
+| Bridge | Normal bridge | `examples/bridge/pylon-rs485-pulseview-session.pvs` | PulseView session settings for the Pylon RS485 capture. |
+| Bridge | Normal bridge | `examples/bridge/growatt-can-raw-capture.sr` | Raw Growatt CAN capture. |
+| Bridge | Normal bridge | `examples/bridge/growatt-rs485-raw-capture.sr` | Raw Growatt RS485 capture. |
+| Bridge | Normal bridge | `examples/bridge/pylon-can-raw-capture.sr` | Raw Pylon-compatible CAN capture. |
+| Bridge | Normal bridge | `examples/bridge/pylon-rs485-raw-capture.sr` | Raw Pylon-compatible RS485 capture. |
 
 Open the `.sr` capture in PulseView, then load or recreate the matching `.pvs`
 session if you want the same decoder/channel layout used in the screenshots.
