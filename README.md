@@ -18,6 +18,7 @@ decoders/
   growatt_rs485/
   jkbms_modbus/
 docs/
+  decoder-implementation-checklist.md
   jkbms-modbus-register-map.md
 examples/
   README.md
@@ -66,6 +67,10 @@ and translator mode. See `examples/README.md` for the current raw data and
 PulseView session tables.
 
 ## Protocol Maps
+
+Every active protocol decoder must have a matching map document under `docs/`.
+Use [Decoder Implementation Checklist](docs/decoder-implementation-checklist.md)
+before adding or merging a new decoder.
 
 - [JKBMS Modbus Register Map](docs/jkbms-modbus-register-map.md)
 
