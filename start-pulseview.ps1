@@ -10,6 +10,13 @@ $repoRoot = Resolve-Path $scriptDir
 $buildDir = Join-Path $repoRoot "build"
 $bundleDir = Join-Path $buildDir "pulseview-decoders"
 $customDecoderDir = Join-Path $scriptDir "decoders"
+$customDecoders = Get-ChildItem -LiteralPath $customDecoderDir -Directory | Where-Object {
+    Test-Path (Join-Path $_.FullName "pd.py")
+} | Sort-Object Name
+
+if (-not $customDecoders) {
+    throw "No custom decoders found in: $customDecoderDir"
+}
 
 if (-not (Test-Path $PulseViewExe)) {
     throw "PulseView executable not found: $PulseViewExe"
@@ -34,10 +41,15 @@ if (Test-Path $bundleDir) {
 
 New-Item -ItemType Directory -Path $bundleDir | Out-Null
 Copy-Item -Path (Join-Path $BuiltinDecoderDir "*") -Destination $bundleDir -Recurse -Force
-Copy-Item -Path (Join-Path $customDecoderDir "pylon_rs485") -Destination (Join-Path $bundleDir "pylon_rs485") -Recurse -Force
-Copy-Item -Path (Join-Path $customDecoderDir "pylon_can") -Destination (Join-Path $bundleDir "pylon_can") -Recurse -Force
+
+foreach ($decoder in $customDecoders) {
+    Copy-Item -Path $decoder.FullName -Destination (Join-Path $bundleDir $decoder.Name) -Recurse -Force
+}
+
+$decoderNames = ($customDecoders | ForEach-Object { $_.Name }) -join ", "
 
 $env:SIGROKDECODE_DIR = $bundleDir
 Start-Process -FilePath $PulseViewExe -WorkingDirectory (Split-Path -Parent $PulseViewExe)
 
 Write-Host "PulseView started with SIGROKDECODE_DIR=$bundleDir"
+Write-Host "Custom decoders: $decoderNames"

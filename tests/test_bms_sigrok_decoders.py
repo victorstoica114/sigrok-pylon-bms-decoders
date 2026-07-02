@@ -6,13 +6,21 @@ from pathlib import Path
 
 DECODER_DIR = Path(__file__).resolve().parents[1] / "decoders" / "pylon_rs485"
 CAN_DECODER_DIR = DECODER_DIR.parent / "pylon_can"
+GROWATT_CAN_DECODER_DIR = DECODER_DIR.parent / "growatt_can"
+GROWATT_RS485_DECODER_DIR = DECODER_DIR.parent / "growatt_rs485"
 PULSEVIEW_DECODER_DIR = Path(r"C:\Program Files\sigrok\PulseView\share\libsigrokdecode\decoders")
 PULSEVIEW_SRD_DIR = Path(r"C:\Program Files\sigrok\PulseView\share\libsigrokdecode")
 sys.path.insert(0, str(DECODER_DIR))
 sys.path.insert(0, str(CAN_DECODER_DIR))
+sys.path.insert(0, str(GROWATT_CAN_DECODER_DIR))
+sys.path.insert(0, str(GROWATT_RS485_DECODER_DIR))
 
 from pylon import ascii_checksum, describe_info, frame_summary, parse_frame, status63_flags  # noqa: E402
 from pylon_can import describe_packet, frame_summary as can_frame_summary  # noqa: E402
+from growatt import describe_frame as describe_growatt_frame  # noqa: E402
+from growatt import modbus_crc16, parse_frame as parse_growatt_frame  # noqa: E402
+from growatt_can import describe_packet as describe_growatt_can_packet  # noqa: E402
+from growatt_can import frame_summary as growatt_can_frame_summary  # noqa: E402
 
 
 def build_pylon_response(info_ascii, addr=0x02):
@@ -23,6 +31,12 @@ def build_pylon_response(info_ascii, addr=0x02):
     lchksum = (~(n0 + n1 + n2) + 1) & 0x0F
     body = "20{:02X}4600{:04X}{}".format(addr, (lchksum << 12) | info_len, info_ascii)
     return parse_frame("~{}{:04X}\r".format(body, ascii_checksum(body)))
+
+
+def with_modbus_crc(body):
+    body = list(body)
+    crc = modbus_crc16(body)
+    return bytes(body + [crc & 0xFF, (crc >> 8) & 0xFF])
 
 
 def test_parse_la2016_pylon_status_frame():
@@ -127,6 +141,42 @@ def test_pylon_can_describes_live_jk_frames():
     assert "Pylon CAN 0x370" in can_frame_summary(packet_370)
 
 
+def test_growatt_can_describes_live_frames():
+    packet_313 = ("standard", 0x313, "data", 8, [0x16, 0x53, 0x00, 0x00, 0x00, 0xE8, 0x63, 0x64])
+    packet_319 = ("standard", 0x319, "data", 8, [0xC0, 0x0D, 0xF4, 0x0D, 0xF3, 0x05, 0x09, 0x00])
+    packet_322 = ("standard", 0x322, "data", 8, [0x00, 0xE6, 0x00, 0xE6, 0x01, 0x01, 0x63, 0x63])
+
+    assert "0x313 pack V=57.15V" in describe_growatt_can_packet(packet_313)
+    assert "SOC=99%" in describe_growatt_can_packet(packet_313)
+    assert "cell_max=3.572V#5" in describe_growatt_can_packet(packet_319)
+    assert "cell_min=3.571V#9" in describe_growatt_can_packet(packet_319)
+    assert "0x322 Tmax=23.0C#1" in describe_growatt_can_packet(packet_322)
+    assert "Growatt CAN 0x319" in growatt_can_frame_summary(packet_319)
+
+
+def test_growatt_rs485_parses_modbus_request_and_response():
+    request = parse_growatt_frame(with_modbus_crc([0x01, 0x03, 0x00, 0x13, 0x00, 0x08]))
+    response = parse_growatt_frame(with_modbus_crc([
+        0x01, 0x03, 0x10,
+        0x00, 0x02,
+        0x00, 0x00,
+        0x00, 0x63,
+        0x16, 0x53,
+        0x00, 0x00,
+        0x00, 0xE8,
+        0x00, 0x00,
+        0x00, 0x00,
+    ]), request)
+
+    assert request["crc_ok"]
+    assert response["crc_ok"]
+    assert response["registers"][0]["addr"] == 0x0013
+    assert response["registers"][-1]["addr"] == 0x001A
+    assert "response regs 0x0013..0x001A" in describe_growatt_frame(response)
+    assert "SOC=99%" in describe_growatt_frame(response)
+    assert "pack_v=57.15V" in describe_growatt_frame(response)
+
+
 def test_sigrok_can_package_exports_decoder(monkeypatch):
     stub_sigrokdecode = types.SimpleNamespace(Decoder=object, OUTPUT_ANN=1, OUTPUT_PYTHON=2)
     monkeypatch.setitem(sys.modules, "sigrokdecode", stub_sigrokdecode)
@@ -203,3 +253,35 @@ def test_sigrok_can_decoder_emits_annotations_from_internal_can_packet(monkeypat
     assert any("Pylon CAN 0x370" in text for text in texts)
     assert any("17 00 17 00 F5 0D F4 0D" in text for text in texts)
     assert any("cell_max=3.573V" in text for text in texts)
+
+
+def test_sigrok_growatt_can_package_exports_decoder(monkeypatch):
+    stub_sigrokdecode = types.SimpleNamespace(Decoder=object, OUTPUT_ANN=1, OUTPUT_PYTHON=2)
+    monkeypatch.setitem(sys.modules, "sigrokdecode", stub_sigrokdecode)
+    sys.path.insert(0, str(PULSEVIEW_SRD_DIR))
+    sys.path.insert(0, str(PULSEVIEW_DECODER_DIR))
+    sys.path.insert(0, str(GROWATT_CAN_DECODER_DIR.parent))
+
+    for name in ("can", "can.pd", "growatt_can", "growatt_can.pd", "growatt_can.growatt_can"):
+        sys.modules.pop(name, None)
+
+    module = importlib.import_module("growatt_can")
+
+    assert module.Decoder.id == "growatt_can"
+    assert module.Decoder.inputs == ["logic"]
+    assert any(option["id"] == "input_mode" for option in module.Decoder.options)
+
+
+def test_sigrok_growatt_rs485_package_exports_decoder(monkeypatch):
+    stub_sigrokdecode = types.SimpleNamespace(Decoder=object, OUTPUT_ANN=1)
+    monkeypatch.setitem(sys.modules, "sigrokdecode", stub_sigrokdecode)
+    sys.path.insert(0, str(GROWATT_RS485_DECODER_DIR.parent))
+
+    for name in ("growatt_rs485", "growatt_rs485.pd", "growatt_rs485.growatt"):
+        sys.modules.pop(name, None)
+
+    module = importlib.import_module("growatt_rs485")
+
+    assert module.Decoder.id == "growatt_rs485"
+    assert module.Decoder.inputs == ["uart"]
+    assert any(option["id"] == "inter_frame_gap_us" for option in module.Decoder.options)
