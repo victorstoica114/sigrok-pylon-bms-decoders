@@ -10,10 +10,45 @@ $repoRoot = Resolve-Path $scriptDir
 $buildDir = Join-Path $repoRoot "build"
 $bundleDir = Join-Path $buildDir "pulseview-decoders"
 $customDecoderDir = Join-Path $scriptDir "decoders"
-$customDecoders = Get-ChildItem -LiteralPath $customDecoderDir -Directory | Where-Object {
-    Test-Path (Join-Path $_.FullName "pd.py")
-} | Sort-Object Name
 
+function Get-CustomDecoderDirs {
+    param([string]$Root)
+
+    Get-ChildItem -LiteralPath $Root -Directory | Where-Object {
+        (Test-Path (Join-Path $_.FullName "pd.py")) -and
+        (Test-Path (Join-Path $_.FullName "__init__.py"))
+    } | Sort-Object Name
+}
+
+function Copy-DecoderDir {
+    param(
+        [string]$Source,
+        [string]$Destination
+    )
+
+    if (Test-Path $Destination) {
+        Remove-Item -LiteralPath $Destination -Recurse -Force
+    }
+    Copy-Item -LiteralPath $Source -Destination $Destination -Recurse -Force
+    Get-ChildItem -LiteralPath $Destination -Recurse -Directory -Filter "__pycache__" | ForEach-Object {
+        Remove-Item -LiteralPath $_.FullName -Recurse -Force
+    }
+}
+
+function Copy-BuiltinDecoders {
+    param(
+        [string]$SourceRoot,
+        [string]$DestinationRoot
+    )
+
+    Get-ChildItem -LiteralPath $SourceRoot | Where-Object {
+        $_.Name -notmatch "^(pylon_|growatt_|jkbms_)"
+    } | ForEach-Object {
+        Copy-Item -LiteralPath $_.FullName -Destination $DestinationRoot -Recurse -Force
+    }
+}
+
+$customDecoders = @(Get-CustomDecoderDirs -Root $customDecoderDir)
 if (-not $customDecoders) {
     throw "No custom decoders found in: $customDecoderDir"
 }
@@ -40,10 +75,10 @@ if (Test-Path $bundleDir) {
 }
 
 New-Item -ItemType Directory -Path $bundleDir | Out-Null
-Copy-Item -Path (Join-Path $BuiltinDecoderDir "*") -Destination $bundleDir -Recurse -Force
+Copy-BuiltinDecoders -SourceRoot $BuiltinDecoderDir -DestinationRoot $bundleDir
 
 foreach ($decoder in $customDecoders) {
-    Copy-Item -Path $decoder.FullName -Destination (Join-Path $bundleDir $decoder.Name) -Recurse -Force
+    Copy-DecoderDir -Source $decoder.FullName -Destination (Join-Path $bundleDir $decoder.Name)
 }
 
 $decoderNames = ($customDecoders | ForEach-Object { $_.Name }) -join ", "

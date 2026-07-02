@@ -9,10 +9,49 @@ $ErrorActionPreference = "Stop"
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $customDecoderDir = Join-Path $scriptDir "decoders"
-$customDecoders = Get-ChildItem -LiteralPath $customDecoderDir -Directory | Where-Object {
-    Test-Path (Join-Path $_.FullName "pd.py")
-} | Sort-Object Name
 
+function Get-CustomDecoderDirs {
+    param([string]$Root)
+
+    Get-ChildItem -LiteralPath $Root -Directory | Where-Object {
+        (Test-Path (Join-Path $_.FullName "pd.py")) -and
+        (Test-Path (Join-Path $_.FullName "__init__.py"))
+    } | Sort-Object Name
+}
+
+function Copy-DecoderDir {
+    param(
+        [string]$Source,
+        [string]$Destination
+    )
+
+    if (Test-Path $Destination) {
+        Remove-Item -LiteralPath $Destination -Recurse -Force
+    }
+    Copy-Item -LiteralPath $Source -Destination $Destination -Recurse -Force
+    Get-ChildItem -LiteralPath $Destination -Recurse -Directory -Filter "__pycache__" | ForEach-Object {
+        Remove-Item -LiteralPath $_.FullName -Recurse -Force
+    }
+}
+
+function Copy-BuiltinDecoders {
+    param(
+        [string]$SourceRoot,
+        [string]$DestinationRoot
+    )
+
+    Get-ChildItem -LiteralPath $SourceRoot | Where-Object {
+        $_.Name -notmatch "^(pylon_|growatt_|jkbms_)"
+    } | ForEach-Object {
+        Copy-Item -LiteralPath $_.FullName -Destination $DestinationRoot -Recurse -Force
+    }
+}
+
+if (-not (Test-Path $customDecoderDir)) {
+    throw "Custom decoder directory not found: $customDecoderDir"
+}
+
+$customDecoders = @(Get-CustomDecoderDirs -Root $customDecoderDir)
 if (-not $customDecoders) {
     throw "No custom decoders found in: $customDecoderDir"
 }
@@ -21,14 +60,24 @@ if (-not (Test-Path $BuiltinDecoderDir)) {
     throw "PulseView built-in decoder directory not found: $BuiltinDecoderDir"
 }
 
-New-Item -ItemType Directory -Force -Path $InstallDecoderDir | Out-Null
+$installParent = Split-Path -Parent $InstallDecoderDir
+if (-not (Test-Path $installParent)) {
+    New-Item -ItemType Directory -Force -Path $installParent | Out-Null
+}
 
-Copy-Item -Path (Join-Path $BuiltinDecoderDir "*") -Destination $InstallDecoderDir -Recurse -Force
+if (Test-Path $InstallDecoderDir) {
+    $resolvedInstall = (Resolve-Path $InstallDecoderDir).Path
+    if ($resolvedInstall -notlike "*\libsigrokdecode\decoders") {
+        throw "Refusing to remove unexpected decoder directory: $resolvedInstall"
+    }
+    Remove-Item -LiteralPath $resolvedInstall -Recurse -Force
+}
+
+New-Item -ItemType Directory -Force -Path $InstallDecoderDir | Out-Null
+Copy-BuiltinDecoders -SourceRoot $BuiltinDecoderDir -DestinationRoot $InstallDecoderDir
 
 foreach ($decoder in $customDecoders) {
-    $dst = Join-Path $InstallDecoderDir $decoder.Name
-    New-Item -ItemType Directory -Force -Path $dst | Out-Null
-    Copy-Item -Path (Join-Path $decoder.FullName "*") -Destination $dst -Recurse -Force
+    Copy-DecoderDir -Source $decoder.FullName -Destination (Join-Path $InstallDecoderDir $decoder.Name)
 }
 
 $decoderNames = ($customDecoders | ForEach-Object { $_.Name }) -join ", "
@@ -41,7 +90,11 @@ if (-not $SkipShortcuts) {
     $powershell = Join-Path $env:WINDIR "System32\WindowsPowerShell\v1.0\powershell.exe"
     $shortcutTargets = @(
         (Join-Path ([Environment]::GetFolderPath("Desktop")) "PulseView BMS.lnk"),
-        (Join-Path $env:APPDATA "Microsoft\Windows\Start Menu\Programs\PulseView BMS.lnk")
+        (Join-Path ([Environment]::GetFolderPath("Desktop")) "PulseView BMS Decoders.lnk"),
+        (Join-Path ([Environment]::GetFolderPath("Desktop")) "PulseView Pylon.lnk"),
+        (Join-Path $env:APPDATA "Microsoft\Windows\Start Menu\Programs\PulseView BMS.lnk"),
+        (Join-Path $env:APPDATA "Microsoft\Windows\Start Menu\Programs\PulseView BMS Decoders.lnk"),
+        (Join-Path $env:APPDATA "Microsoft\Windows\Start Menu\Programs\PulseView Pylon.lnk")
     )
 
     $ws = New-Object -ComObject WScript.Shell
@@ -50,7 +103,7 @@ if (-not $SkipShortcuts) {
         $shortcut.TargetPath = $powershell
         $shortcut.Arguments = "-NoProfile -ExecutionPolicy Bypass -File `"$launcher`""
         $shortcut.WorkingDirectory = (Resolve-Path $scriptDir).Path
-        $shortcut.Description = "PulseView with built-in and custom BMS decoders"
+        $shortcut.Description = "PulseView with built-in and custom BMS decoders from sigrok-pylon-bms-decoders"
         if (Test-Path $PulseViewExe) {
             $shortcut.IconLocation = "$PulseViewExe,0"
         }
