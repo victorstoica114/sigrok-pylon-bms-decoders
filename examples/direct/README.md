@@ -7,6 +7,7 @@ BMS, without the bridge in the communication path.
 
 - Inverter side: Growatt
 - BMS side: JKBMS
+- Translator mode: Direct cable
 - Topology: Growatt inverter <-> JKBMS
 - Purpose: baseline traffic for comparing direct inverter/BMS behavior against
   bridge and bridge-forward captures.

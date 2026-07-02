@@ -7,6 +7,7 @@ mode.
 
 - Inverter side: Growatt
 - BMS side: JKBMS
+- Translator mode: Forward
 - Topology: Growatt inverter <-> bridge in forward mode <-> JKBMS
 - Purpose: forward-mode traffic for comparing bridge forwarding behavior against
   direct and normal bridge captures.

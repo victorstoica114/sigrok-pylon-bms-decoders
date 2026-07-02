@@ -7,19 +7,20 @@ The inverter was not connected directly to the BMS during these captures.
 
 - Inverter side: Growatt
 - BMS side: JKBMS
+- Translator mode: Bridge
 - Topology: Growatt inverter <-> bridge <-> JKBMS
 - Purpose: normal bridge-mediated traffic where the bridge participates in the
   communication path.
 
 ## Captures
 
-| File | Protocol | Bridge mode | Description |
+| File | Protocol | Translator mode | Description |
 | --- | --- | --- | --- |
-| `growatt-can-pulseview-session.pvs` | Growatt CAN | Normal bridge | PulseView session for the Growatt CAN bridge capture. |
-| `growatt-rs485-pulseview-session.pvs` | Growatt RS485 | Normal bridge | PulseView session for the Growatt RS485 bridge capture. |
-| `pylon-can-pulseview-session.pvs` | JKBMS/Pylon CAN | Normal bridge | PulseView session for the JKBMS/Pylon-compatible CAN bridge capture. |
-| `pylon-rs485-pulseview-session.pvs` | JKBMS/Pylon RS485 | Normal bridge | PulseView session for the JKBMS/Pylon-compatible RS485 bridge capture. |
-| `growatt-can-raw-capture.sr` | Growatt CAN | Normal bridge | Raw Growatt CAN bridge capture. |
-| `growatt-rs485-raw-capture.sr` | Growatt RS485 | Normal bridge | Raw Growatt RS485 bridge capture. |
-| `pylon-can-raw-capture.sr` | JKBMS/Pylon CAN | Normal bridge | Raw JKBMS/Pylon-compatible CAN bridge capture. |
-| `pylon-rs485-raw-capture.sr` | JKBMS/Pylon RS485 | Normal bridge | Raw JKBMS/Pylon-compatible RS485 bridge capture. |
+| `growatt-can-pulseview-session.pvs` | Growatt CAN | Bridge | PulseView session settings. |
+| `growatt-rs485-pulseview-session.pvs` | Growatt RS485 | Bridge | PulseView session settings. |
+| `pylon-can-pulseview-session.pvs` | JKBMS/Pylon CAN | Bridge | PulseView session settings. |
+| `pylon-rs485-pulseview-session.pvs` | JKBMS/Pylon RS485 | Bridge | PulseView session settings. |
+| `growatt-can-raw-capture.sr` | Growatt CAN | Bridge | Raw capture. |
+| `growatt-rs485-raw-capture.sr` | Growatt RS485 | Bridge | Raw capture. |
+| `pylon-can-raw-capture.sr` | JKBMS/Pylon CAN | Bridge | Raw capture. |
+| `pylon-rs485-raw-capture.sr` | JKBMS/Pylon RS485 | Bridge | Raw capture. |
