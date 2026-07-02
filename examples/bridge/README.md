@@ -13,13 +13,13 @@ The inverter was not connected directly to the BMS during these captures.
 
 ## Captures
 
-| File | Bridge mode | Description |
-| --- | --- | --- |
-| `growatt-can-pulseview-session.pvs` | Normal bridge | PulseView session for the Growatt CAN bridge capture. |
-| `growatt-rs485-pulseview-session.pvs` | Normal bridge | PulseView session for the Growatt RS485 bridge capture. |
-| `pylon-can-pulseview-session.pvs` | Normal bridge | PulseView session for the JKBMS/Pylon-compatible CAN bridge capture. |
-| `pylon-rs485-pulseview-session.pvs` | Normal bridge | PulseView session for the JKBMS/Pylon-compatible RS485 bridge capture. |
-| `growatt-can-raw-capture.sr` | Normal bridge | Raw Growatt CAN bridge capture. |
-| `growatt-rs485-raw-capture.sr` | Normal bridge | Raw Growatt RS485 bridge capture. |
-| `pylon-can-raw-capture.sr` | Normal bridge | Raw JKBMS/Pylon-compatible CAN bridge capture. |
-| `pylon-rs485-raw-capture.sr` | Normal bridge | Raw JKBMS/Pylon-compatible RS485 bridge capture. |
+| File | Protocol | Bridge mode | Description |
+| --- | --- | --- | --- |
+| `growatt-can-pulseview-session.pvs` | Growatt CAN | Normal bridge | PulseView session for the Growatt CAN bridge capture. |
+| `growatt-rs485-pulseview-session.pvs` | Growatt RS485 | Normal bridge | PulseView session for the Growatt RS485 bridge capture. |
+| `pylon-can-pulseview-session.pvs` | JKBMS/Pylon CAN | Normal bridge | PulseView session for the JKBMS/Pylon-compatible CAN bridge capture. |
+| `pylon-rs485-pulseview-session.pvs` | JKBMS/Pylon RS485 | Normal bridge | PulseView session for the JKBMS/Pylon-compatible RS485 bridge capture. |
+| `growatt-can-raw-capture.sr` | Growatt CAN | Normal bridge | Raw Growatt CAN bridge capture. |
+| `growatt-rs485-raw-capture.sr` | Growatt RS485 | Normal bridge | Raw Growatt RS485 bridge capture. |
+| `pylon-can-raw-capture.sr` | JKBMS/Pylon CAN | Normal bridge | Raw JKBMS/Pylon-compatible CAN bridge capture. |
+| `pylon-rs485-raw-capture.sr` | JKBMS/Pylon RS485 | Normal bridge | Raw JKBMS/Pylon-compatible RS485 bridge capture. |
