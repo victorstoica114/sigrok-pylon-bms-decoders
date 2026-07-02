@@ -19,7 +19,11 @@ decoders/
   jkbms_modbus/
 docs/
   decoder-implementation-checklist.md
+  growatt-can-frame-map.md
+  growatt-rs485-register-map.md
   jkbms-modbus-register-map.md
+  pylon-can-frame-map.md
+  pylon-rs485-frame-map.md
 examples/
   README.md
   bridge/
@@ -73,6 +77,10 @@ Use [Decoder Implementation Checklist](docs/decoder-implementation-checklist.md)
 before adding or merging a new decoder.
 
 - [JKBMS Modbus Register Map](docs/jkbms-modbus-register-map.md)
+- [Growatt CAN Frame Map](docs/growatt-can-frame-map.md)
+- [Growatt RS485 Register Map](docs/growatt-rs485-register-map.md)
+- [Pylon CAN Frame Map](docs/pylon-can-frame-map.md)
+- [Pylon RS485 Frame Map](docs/pylon-rs485-frame-map.md)
 
 ## Growatt RS485 Decoder
 

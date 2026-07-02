@@ -6,6 +6,7 @@
 
 - PulseView/libsigrokdecode `JKBMS Modbus` decoder for JK BMS RS485 Modbus RTU frames.
 - JKBMS Modbus runtime register map documentation.
+- Growatt CAN, Growatt RS485, Pylon CAN, and Pylon RS485 protocol map documentation.
 - Windows installer and launcher scripts that keep built-in PulseView decoders visible alongside custom BMS decoders.
 - Host-side parser/decoder regression tests.
 - PulseView/libsigrokdecode `Growatt RS485` decoder for Growatt Modbus RTU frames.
