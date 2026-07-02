@@ -24,8 +24,6 @@ Current committed raw captures:
 | --- | --- | --- | --- | --- |
 | Bridge | Bridge | Growatt CAN | `bridge/growatt-can-raw-capture.sr` | Raw capture. |
 | Bridge | Bridge | Growatt RS485 | `bridge/growatt-rs485-raw-capture.sr` | Raw capture. |
-| Bridge | Bridge | JKBMS/Pylon CAN | `bridge/pylon-can-raw-capture.sr` | Raw capture. |
-| Bridge | Bridge | JKBMS/Pylon RS485 | `bridge/pylon-rs485-raw-capture.sr` | Raw capture. |
 
 ## PulseView Sessions
 
@@ -35,8 +33,6 @@ Current committed PulseView session files:
 | --- | --- | --- | --- | --- |
 | Bridge | Bridge | Growatt CAN | `bridge/growatt-can-pulseview-session.pvs` | PulseView session settings. |
 | Bridge | Bridge | Growatt RS485 | `bridge/growatt-rs485-pulseview-session.pvs` | PulseView session settings. |
-| Bridge | Bridge | JKBMS/Pylon CAN | `bridge/pylon-can-pulseview-session.pvs` | PulseView session settings. |
-| Bridge | Bridge | JKBMS/Pylon RS485 | `bridge/pylon-rs485-pulseview-session.pvs` | PulseView session settings. |
 
 No `Forward` or `Direct cable` captures are committed yet.
 
