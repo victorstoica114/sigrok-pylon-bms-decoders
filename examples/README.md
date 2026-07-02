@@ -8,6 +8,12 @@ mode.
 - Inverter side: Growatt
 - BMS side: JKBMS
 
+## Translator Power Use
+
+| Translator mode | Runtime | Energy |
+| --- | --- | --- |
+| Bridge | 2 h 38 min | 3640 mWh |
+
 ## Raw Data
 
 Current committed raw captures:
