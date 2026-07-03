@@ -12,6 +12,7 @@
 - Windows installer and launcher scripts that keep built-in PulseView decoders visible alongside custom BMS decoders.
 - Host-side parser/decoder regression tests for the active decoder set.
 - Example capture folders split by topology: bridge, direct inverter/BMS, and bridge forward mode.
+- Bridge-mode example capture and PulseView session for JKBMS CAN traffic.
 - Bridge-mode example capture and PulseView session for JKBMS Modbus RS485 runtime polling.
 - README screenshots for Growatt RS485 Modbus RTU request, response, status, and cell register blocks.
 - README screenshots for JKBMS CAN pack status, cell extremes, temperature, capacity, and raw info/status frames.

@@ -165,6 +165,9 @@ frames, extended temperatures, capacity/cycles, raw BMS info/status frames, and
 charge-info frames. Per-cell voltage decoding is capped to cells `1..25`,
 matching the validated bridge implementation.
 
+The current bridge-mode raw capture and PulseView session are listed in
+`examples/README.md` as `JKBMS CAN`.
+
 ## JKBMS Modbus Decoder
 
 `decoders/jkbms_modbus` stacks above the built-in `UART` decoder:
