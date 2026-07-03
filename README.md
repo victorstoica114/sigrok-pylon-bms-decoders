@@ -14,6 +14,7 @@ Active decoders:
 - `Victron CAN`: Victron-compatible low-voltage BMS frames over Classic CAN.
 - `JKBMS Modbus`: JK BMS RS485 Modbus RTU runtime frames.
 - `JKBMS CAN`: JK BMS native CAN V2.0 frames over Classic CAN.
+- `PACE Modbus`: PACE BMS RS485 Modbus V1.3 frames.
 
 Rule for this repository: `decoders/` contains only decoders that were validated
 on captures and explicitly accepted for publication. Decoders that are still in
@@ -35,6 +36,7 @@ decoders/
   growatt_rs485/
   jkbms_modbus/
   jkbms_can/
+  pace_modbus/
   pylon_can/
   pylon_rs485/
   victron_can/
@@ -47,6 +49,7 @@ docs/
   growatt-rs485-register-map.md
   jkbms-modbus-register-map.md
   jkbms-can-frame-map.md
+  pace-modbus-register-map.md
   pylon-can-frame-map.md
   pylon-rs485-frame-map.md
   victron-can-frame-map.md
@@ -63,6 +66,7 @@ pictures/
   growatt_rs485/
   jkbms_modbus/
   jkbms_can/
+  pace_modbus/
   pylon_can/
   pylon_rs485/
   victron_can/
@@ -121,6 +125,7 @@ Active maps:
 - [Growatt RS485 Register Map](docs/growatt-rs485-register-map.md)
 - [JKBMS Modbus Register Map](docs/jkbms-modbus-register-map.md)
 - [JKBMS CAN Frame Map](docs/jkbms-can-frame-map.md)
+- [PACE Modbus Register Map](docs/pace-modbus-register-map.md)
 - [Pylon CAN Frame Map](docs/pylon-can-frame-map.md)
 - [Pylon RS485 Frame Map](docs/pylon-rs485-frame-map.md)
 - [Victron CAN Frame Map](docs/victron-can-frame-map.md)
@@ -379,6 +384,34 @@ voltage registers, and warning/protection/status flag blocks.
 The current bridge-mode raw capture and PulseView session are listed in
 `examples/README.md` as `China Tower Modbus RS485`.
 
+## PACE Modbus Decoder
+
+`decoders/pace_modbus` stacks above the built-in `UART` decoder:
+
+```text
+logic -> uart -> pace_modbus
+```
+
+Typical logic-level UART settings:
+
+- baud: `9600`
+- data bits: `8`
+- parity: `none`
+- stop bits: `1`
+- bit order: `lsb-first`
+- line inversion: depends on the probe point/transceiver output
+
+The current bridge capture uses `CH0`, UART `invert_rx=yes`, and the PACE BMS
+Modbus V1.3 RS485 poller.
+
+The current published decoder is visible in PulseView as
+`PACE Modbus v2026.07.04a`. It handles PACE Modbus RTU requests, responses,
+exceptions, CRC checks, runtime summary registers, per-cell voltage registers,
+temperature registers, and warning/protection/status flag blocks.
+
+The current bridge-mode raw capture and PulseView session are listed in
+`examples/README.md` as `PACE Modbus RS485`.
+
 ## JKBMS Modbus Capture Screenshots
 
 The current screenshots use a Growatt inverter, a JK BMS, RS485 through the
@@ -412,6 +445,20 @@ translator bridge, a Kingst LA2016 logic analyzer, and
 ![China Tower Modbus runtime and first cell block 0x0000..0x000C](pictures/china_tower_modbus/china-tower-modbus-0x0000-runtime-cells.png)
 
 ![China Tower Modbus cell voltages 0x0009..0x0018](pictures/china_tower_modbus/china-tower-modbus-0x0009-cell-voltages.png)
+
+## PACE Modbus Capture Screenshots
+
+The current screenshots use a Growatt inverter, a JK BMS, RS485 through the
+translator bridge, a Kingst LA2016 logic analyzer, and
+`PACE Modbus v2026.07.04a`.
+
+![PACE Modbus runtime response 0x0000..0x000C](pictures/pace_modbus/pace-modbus-0x0000-runtime-response.png)
+
+![PACE Modbus runtime zoom 0x0000..0x000C](pictures/pace_modbus/pace-modbus-0x0000-runtime-zoom.png)
+
+![PACE Modbus cell and temperature response 0x000F..0x0024](pictures/pace_modbus/pace-modbus-0x000f-cell-temperatures-response.png)
+
+![PACE Modbus repeated cell and temperature response 0x000F..0x0024](pictures/pace_modbus/pace-modbus-0x000f-cell-temperatures-repeat.png)
 
 ## JKBMS CAN Capture Screenshots
 

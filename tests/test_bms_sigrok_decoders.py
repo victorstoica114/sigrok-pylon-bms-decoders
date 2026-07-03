@@ -13,6 +13,7 @@ GROWATT_CAN_DECODER_DIR = DECODERS_DIR / "growatt_can"
 GROWATT_RS485_DECODER_DIR = DECODERS_DIR / "growatt_rs485"
 JKBMS_MODBUS_DECODER_DIR = DECODERS_DIR / "jkbms_modbus"
 JKBMS_CAN_DECODER_DIR = DECODERS_DIR / "jkbms_can"
+PACE_MODBUS_DECODER_DIR = DECODERS_DIR / "pace_modbus"
 PYLON_CAN_DECODER_DIR = DECODERS_DIR / "pylon_can"
 PYLON_RS485_DECODER_DIR = DECODERS_DIR / "pylon_rs485"
 VICTRON_CAN_DECODER_DIR = DECODERS_DIR / "victron_can"
@@ -34,6 +35,7 @@ growatt_rs485 = load_module("growatt_rs485_helper", GROWATT_RS485_DECODER_DIR / 
 growatt_can = load_module("growatt_can_helper", GROWATT_CAN_DECODER_DIR / "growatt_can.py")
 jkbms = load_module("jkbms_modbus_helper", JKBMS_MODBUS_DECODER_DIR / "jkbms_modbus.py")
 jkbms_can = load_module("jkbms_can_helper", JKBMS_CAN_DECODER_DIR / "jkbms_can.py")
+pace_modbus = load_module("pace_modbus_helper", PACE_MODBUS_DECODER_DIR / "pace_modbus.py")
 pylon_can = load_module("pylon_can_helper", PYLON_CAN_DECODER_DIR / "pylon_can.py")
 pylon_rs485 = load_module("pylon_rs485_helper", PYLON_RS485_DECODER_DIR / "pylon.py")
 victron_can = load_module("victron_can_helper", VICTRON_CAN_DECODER_DIR / "victron_can.py")
@@ -71,6 +73,7 @@ def test_active_decoder_folders_are_validated_only():
         "growatt_rs485",
         "jkbms_can",
         "jkbms_modbus",
+        "pace_modbus",
         "pylon_can",
         "pylon_rs485",
         "victron_can",
@@ -151,6 +154,62 @@ def test_china_tower_modbus_parses_runtime_and_cell_values():
     assert "mos_temp=26C" in decoded
     assert "C01=3.575V" in decoded
     assert "min=3.572V#2" in decoded
+
+
+def test_pace_modbus_parses_runtime_summary():
+    request = pace_modbus.parse_frame(
+        with_modbus_crc([0x01, 0x03, 0x00, 0x00, 0x00, 0x0D], pace_modbus.modbus_crc16)
+    )
+    response_words = [
+        0xFFB4, 0x1602, 0x005B, 0x0064, 0x01C4, 0x01F4, 0x01F4,
+        0x0000, 0x0000, 0x0000, 0x000E, 0x0000, 0x0000,
+    ]
+    response = pace_modbus.parse_frame(
+        with_modbus_crc([0x01, 0x03, 0x1A] + words_to_bytes(response_words), pace_modbus.modbus_crc16),
+        request,
+    )
+    decoded = pace_modbus.describe_frame(response)
+
+    assert request["crc_ok"]
+    assert request["start"] == 0x0000
+    assert request["count"] == 0x000D
+    assert response["crc_ok"]
+    assert response["registers"][0]["addr"] == 0x0000
+    assert response["registers"][-1]["addr"] == 0x000C
+    assert "pack_i=-0.76A" in decoded
+    assert "pack_v=56.34V" in decoded
+    assert "SOC=91%" in decoded
+    assert "SOH=100%" in decoded
+    assert "remain=4.52Ah" in decoded
+    assert "full=5.00Ah" in decoded
+    assert "design=5.00Ah" in decoded
+    assert "protection=0x000E" in decoded
+
+
+def test_pace_modbus_parses_cells_and_temperatures():
+    request = pace_modbus.parse_frame(
+        with_modbus_crc([0x01, 0x03, 0x00, 0x0F, 0x00, 0x16], pace_modbus.modbus_crc16)
+    )
+    response_words = [
+        0x0DC4, 0x0DBE, 0x0DC3, 0x0DC1, 0x0DC3, 0x0DC1, 0x0DC3, 0x0DC1,
+        0x0DC3, 0x0DC1, 0x0DC3, 0x0DC1, 0x0DC3, 0x0DC1, 0x0DC3, 0x0DC1,
+        0x0032, 0x0130, 0x012F, 0x0135, 0x011E, 0x0132,
+    ]
+    response = pace_modbus.parse_frame(
+        with_modbus_crc([0x01, 0x03, 0x2C] + words_to_bytes(response_words), pace_modbus.modbus_crc16),
+        request,
+    )
+    decoded = pace_modbus.describe_frame(response)
+
+    assert response["crc_ok"]
+    assert response["registers"][0]["addr"] == 0x000F
+    assert response["registers"][-1]["addr"] == 0x0024
+    assert "cells count=16" in decoded
+    assert "C01=3.524V" in decoded
+    assert "min=3.518V#2" in decoded
+    assert "max=3.524V#1" in decoded
+    assert "temp2=30.4C" in decoded
+    assert "mos_temp=28.6C" in decoded
 
 
 def test_growatt_can_describes_live_frames():
@@ -722,6 +781,21 @@ def test_sigrok_china_tower_modbus_package_exports_decoder(monkeypatch):
     assert any(option["id"] == "inter_frame_gap_us" for option in module.Decoder.options)
 
 
+def test_sigrok_pace_modbus_package_exports_decoder(monkeypatch):
+    stub_sigrokdecode = types.SimpleNamespace(Decoder=object, OUTPUT_ANN=1)
+    monkeypatch.setitem(sys.modules, "sigrokdecode", stub_sigrokdecode)
+    sys.path.insert(0, str(DECODERS_DIR))
+
+    for name in ("pace_modbus", "pace_modbus.pd", "pace_modbus.pace_modbus"):
+        sys.modules.pop(name, None)
+
+    module = importlib.import_module("pace_modbus")
+
+    assert module.Decoder.id == "pace_modbus"
+    assert module.Decoder.inputs == ["uart"]
+    assert any(option["id"] == "inter_frame_gap_us" for option in module.Decoder.options)
+
+
 def test_sigrok_pylon_rs485_package_exports_decoder(monkeypatch):
     stub_sigrokdecode = types.SimpleNamespace(Decoder=object, OUTPUT_ANN=1)
     monkeypatch.setitem(sys.modules, "sigrokdecode", stub_sigrokdecode)
@@ -859,4 +933,62 @@ def test_sigrok_china_tower_modbus_decoder_emits_annotations_for_uart_frames(mon
     assert any("China Tower Modbus req" in text for text in texts)
     assert any("China Tower Modbus rsp" in text for text in texts)
     assert any("0x0019 warning=0x0000" in text for text in texts)
+
+
+def test_sigrok_pace_modbus_decoder_emits_annotations_for_uart_frames(monkeypatch):
+    class FakeSrdDecoder:
+        def register(self, output):
+            return output
+
+        def put(self, ss, es, output, data):
+            self.captured.append((ss, es, output, data))
+
+    stub_sigrokdecode = types.SimpleNamespace(Decoder=FakeSrdDecoder, OUTPUT_ANN=1)
+    monkeypatch.setitem(sys.modules, "sigrokdecode", stub_sigrokdecode)
+    sys.path.insert(0, str(DECODERS_DIR))
+
+    for name in ("pace_modbus", "pace_modbus.pd", "pace_modbus.pace_modbus"):
+        sys.modules.pop(name, None)
+
+    module = importlib.import_module("pace_modbus")
+    decoder = module.Decoder()
+    decoder.captured = []
+    decoder.start()
+
+    request = with_modbus_crc([0x01, 0x03, 0x00, 0x00, 0x00, 0x0D], pace_modbus.modbus_crc16)
+    response = with_modbus_crc(
+        [
+            0x01, 0x03, 0x1A,
+            0xFF, 0xB4,
+            0x16, 0x02,
+            0x00, 0x5B,
+            0x00, 0x64,
+            0x01, 0xC4,
+            0x01, 0xF4,
+            0x01, 0xF4,
+            0x00, 0x00,
+            0x00, 0x00,
+            0x00, 0x00,
+            0x00, 0x0E,
+            0x00, 0x00,
+            0x00, 0x00,
+        ],
+        pace_modbus.modbus_crc16,
+    )
+
+    for idx, byte in enumerate(request):
+        decoder.decode(idx, idx + 1, ("DATA", 1, (byte, [])))
+    for idx, byte in enumerate(response, start=100):
+        decoder.decode(idx, idx + 1, ("DATA", 0, (byte, [])))
+
+    texts = [
+        text
+        for _ss, _es, output, data in decoder.captured
+        if output == stub_sigrokdecode.OUTPUT_ANN
+        for text in data[1]
+    ]
+
+    assert any("PACE Modbus req" in text for text in texts)
+    assert any("PACE Modbus rsp" in text for text in texts)
+    assert any("0x0000 pack_i=-0.76A" in text for text in texts)
 
