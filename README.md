@@ -9,6 +9,7 @@ Active decoders:
 - `Deye CAN`: Deye-compatible low-voltage BMS frames over Classic CAN.
 - `GoodWe CAN`: GoodWe-compatible low-voltage BMS frames over Classic CAN.
 - `Pylon CAN`: Pylon-compatible low-voltage BMS frames over Classic CAN.
+- `Pylon RS485`: Pylon-compatible ASCII frames over UART/RS485.
 - `Victron CAN`: Victron-compatible low-voltage BMS frames over Classic CAN.
 - `JKBMS Modbus`: JK BMS RS485 Modbus RTU runtime frames.
 - `JKBMS CAN`: JK BMS native CAN V2.0 frames over Classic CAN.
@@ -33,6 +34,7 @@ decoders/
   jkbms_modbus/
   jkbms_can/
   pylon_can/
+  pylon_rs485/
   victron_can/
 docs/
   decoder-implementation-checklist.md
@@ -43,8 +45,8 @@ docs/
   jkbms-modbus-register-map.md
   jkbms-can-frame-map.md
   pylon-can-frame-map.md
-  victron-can-frame-map.md
   pylon-rs485-frame-map.md
+  victron-can-frame-map.md
 examples/
   README.md
   bridge/
@@ -58,6 +60,7 @@ pictures/
   jkbms_modbus/
   jkbms_can/
   pylon_can/
+  pylon_rs485/
   victron_can/
 tests/
 install-pulseview-decoders.ps1
@@ -114,11 +117,8 @@ Active maps:
 - [JKBMS Modbus Register Map](docs/jkbms-modbus-register-map.md)
 - [JKBMS CAN Frame Map](docs/jkbms-can-frame-map.md)
 - [Pylon CAN Frame Map](docs/pylon-can-frame-map.md)
-- [Victron CAN Frame Map](docs/victron-can-frame-map.md)
-
-Staging/reference maps currently present for future promotion:
-
 - [Pylon RS485 Frame Map](docs/pylon-rs485-frame-map.md)
+- [Victron CAN Frame Map](docs/victron-can-frame-map.md)
 
 ## Growatt RS485 Decoder
 
@@ -231,6 +231,33 @@ extremes.
 
 The current bridge-mode raw capture and PulseView session are listed in
 `examples/README.md` as `Pylon CAN`.
+
+## Pylon RS485 Decoder
+
+`decoders/pylon_rs485` stacks above the built-in `UART` decoder:
+
+```text
+logic -> uart -> pylon_rs485
+```
+
+Typical settings:
+
+- baud: `9600`
+- data bits: `8`
+- parity: `none`
+- stop bits: `1`
+- bit order: `lsb-first`
+- RX inversion: depends on the probe point; the current bridge capture uses
+  UART `invert_rx=yes`
+
+The current published decoder is visible in PulseView as
+`Pylon RS485 v2026.07.03a`. It handles Pylon-compatible ASCII request/response
+frames over UART/RS485, including frame fields, length/checksum validation,
+`0x42` cell information, `0x61` analog telemetry, `0x62` alarm/status flags,
+and `0x63` charge/discharge status.
+
+The current bridge-mode raw capture and PulseView session are listed in
+`examples/README.md` as `Pylon RS485`.
 
 ## Victron CAN Decoder
 
@@ -394,6 +421,23 @@ The current screenshots use a Pylon-compatible CAN capture decoded with
 ![Pylon CAN temperature and cell extremes 0x370](pictures/pylon_can/pylon-can-0x370-temperature-cell-extremes.png)
 
 ![Pylon CAN JK extension indexes 0x371](pictures/pylon_can/pylon-can-0x371-jk-cell-indexes.png)
+
+## Pylon RS485 Capture Screenshots
+
+The current screenshots use a Pylon-compatible RS485 ASCII capture decoded with
+`Pylon RS485 v2026.07.03a`.
+
+![Pylon RS485 analog request 0x61](pictures/pylon_rs485/pylon-rs485-0x61-request.png)
+
+![Pylon RS485 analog telemetry 0x61](pictures/pylon_rs485/pylon-rs485-0x61-analog-telemetry.png)
+
+![Pylon RS485 analog request and response 0x61](pictures/pylon_rs485/pylon-rs485-0x61-full-frame.png)
+
+![Pylon RS485 cell request 0x42](pictures/pylon_rs485/pylon-rs485-0x42-cell-request.png)
+
+![Pylon RS485 alarm/status flags 0x62](pictures/pylon_rs485/pylon-rs485-0x62-status-flags.png)
+
+![Pylon RS485 charge/discharge status 0x63](pictures/pylon_rs485/pylon-rs485-0x63-charge-discharge-status.png)
 
 ## Victron CAN Capture Screenshots
 

@@ -26,7 +26,7 @@ command and an INFO payload.
 | `CID2 0x42 INFO[0]` | `pack_count_or_cell_count` | `u8` | `1` | `count` |
 | `CID2 0x42 INFO[...]` | `cell_voltage_list` | `u16 be[]` | `1` | `mV` |
 | `CID2 0x42 INFO[...]` | `temperature_list` | `u16 be[]` | `1` | `raw` |
-| `CID2 0x61 INFO[0..1]` | `pack_voltage` | `u16 be` | `/100` | `V` |
+| `CID2 0x61 INFO[0..1]` | `pack_voltage` | `u16 be` | `/1000` | `V` |
 | `CID2 0x61 INFO[2..3]` | `pack_current` | `i16 be` | `/10` | `A` |
 | `CID2 0x61 INFO[4]` | `soc` | `u8` | `1` | `%` |
 | `CID2 0x61 INFO[5..6]` | `cycles` | `u16 be` | `1` | `cycles` |

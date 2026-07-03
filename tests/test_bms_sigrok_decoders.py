@@ -13,6 +13,7 @@ GROWATT_RS485_DECODER_DIR = DECODERS_DIR / "growatt_rs485"
 JKBMS_MODBUS_DECODER_DIR = DECODERS_DIR / "jkbms_modbus"
 JKBMS_CAN_DECODER_DIR = DECODERS_DIR / "jkbms_can"
 PYLON_CAN_DECODER_DIR = DECODERS_DIR / "pylon_can"
+PYLON_RS485_DECODER_DIR = DECODERS_DIR / "pylon_rs485"
 VICTRON_CAN_DECODER_DIR = DECODERS_DIR / "victron_can"
 PULSEVIEW_DECODER_DIR = Path(r"C:\Program Files\sigrok\PulseView\share\libsigrokdecode\decoders")
 PULSEVIEW_SRD_DIR = Path(r"C:\Program Files\sigrok\PulseView\share\libsigrokdecode")
@@ -32,6 +33,7 @@ growatt_can = load_module("growatt_can_helper", GROWATT_CAN_DECODER_DIR / "growa
 jkbms = load_module("jkbms_modbus_helper", JKBMS_MODBUS_DECODER_DIR / "jkbms_modbus.py")
 jkbms_can = load_module("jkbms_can_helper", JKBMS_CAN_DECODER_DIR / "jkbms_can.py")
 pylon_can = load_module("pylon_can_helper", PYLON_CAN_DECODER_DIR / "pylon_can.py")
+pylon_rs485 = load_module("pylon_rs485_helper", PYLON_RS485_DECODER_DIR / "pylon.py")
 victron_can = load_module("victron_can_helper", VICTRON_CAN_DECODER_DIR / "victron_can.py")
 
 
@@ -48,6 +50,14 @@ def words_to_bytes(words):
     return data
 
 
+def pylon_rs485_frame(addr, code, info_ascii=""):
+    length_id = len(info_ascii)
+    length_field = (pylon_rs485.length_check_nibble(length_id) << 12) | length_id
+    body = "20{:02X}46{:02X}{:04X}{}".format(addr, code, length_field, info_ascii)
+    checksum = pylon_rs485.ascii_checksum(body)
+    return ("~{}{:04X}\r".format(body, checksum)).encode("ascii")
+
+
 def test_active_decoder_folders_are_validated_only():
     decoder_names = sorted(path.name for path in DECODERS_DIR.iterdir() if path.is_dir())
 
@@ -59,6 +69,7 @@ def test_active_decoder_folders_are_validated_only():
         "jkbms_can",
         "jkbms_modbus",
         "pylon_can",
+        "pylon_rs485",
         "victron_can",
     ]
 
@@ -243,6 +254,46 @@ def test_pylon_can_describes_indexes_and_cell_temp_frame():
     assert "cell_max=3.573V" in pylon_can.describe_packet(cell_temps)
     assert "t1=30.0C" in pylon_can.describe_packet(cell_temps)
     assert "t2=29.0C" in pylon_can.describe_packet(cell_temps)
+
+
+def test_pylon_rs485_parses_live_requests_and_responses():
+    request61 = pylon_rs485.parse_frame(pylon_rs485_frame(0x02, 0x61))
+    request42 = pylon_rs485.parse_frame(pylon_rs485_frame(0x01, 0x42, "FF"))
+    response61 = pylon_rs485.parse_frame(pylon_rs485_frame(
+        0x02,
+        0x00,
+        "DF0A0000630000000064640DF200050DEE000B0BE0BE600040BDB00030BCEBCE00000BCE00000BCE0BCE00000BCE0000",
+    ))
+    response63 = pylon_rs485.parse_frame(pylon_rs485_frame(0x02, 0x00, "05E0B180017C076CC0"))
+    response62 = pylon_rs485.parse_frame(pylon_rs485_frame(0x02, 0x00, "00000000"))
+
+    assert request61["length_ok"]
+    assert request61["checksum_ok"]
+    assert pylon_rs485.is_request(request61)
+    assert "request analog/telemetry empty payload" == pylon_rs485.describe_info(request61)
+    assert "selector=0xFF aggregate/all packs" in pylon_rs485.describe_info(request42)
+
+    decoded61 = pylon_rs485.describe_info(response61, 0x61)
+    assert response61["length_ok"]
+    assert response61["checksum_ok"]
+    assert "V=57.098V" in decoded61
+    assert "I=0.0A" in decoded61
+    assert "SOC=99%" in decoded61
+    assert "SOH=100%" in decoded61
+    assert "cell_max=3.570V#5" in decoded61
+    assert "cell_min=3.566V#11" in decoded61
+
+    assert "status=0xC0 (charge=ON, discharge=ON, balance=OFF)" in pylon_rs485.describe_info(response63, 0x63)
+    assert "0x62 flags=0x00000000 (no flags set)" == pylon_rs485.describe_info(response62, 0x62)
+
+
+def test_pylon_rs485_describes_cell_lists():
+    info = [2, 0x0D, 0xF3, 0x0D, 0xF5]
+    decoded = pylon_rs485.describe_info({"code": 0x00, "info_bytes": info, "info_ascii": "020DF30DF5"}, 0x42)
+
+    assert "0x42 cells simple layout count=2" in decoded
+    assert "min=3.571V#1" in decoded
+    assert "max=3.573V#2" in decoded
 
 
 def test_jkbms_can_describes_live_frames_and_extended_cells():
@@ -603,6 +654,65 @@ def test_sigrok_jkbms_modbus_package_exports_decoder(monkeypatch):
     assert module.Decoder.id == "jkbms_modbus"
     assert module.Decoder.inputs == ["uart"]
     assert any(option["id"] == "inter_frame_gap_us" for option in module.Decoder.options)
+
+
+def test_sigrok_pylon_rs485_package_exports_decoder(monkeypatch):
+    stub_sigrokdecode = types.SimpleNamespace(Decoder=object, OUTPUT_ANN=1)
+    monkeypatch.setitem(sys.modules, "sigrokdecode", stub_sigrokdecode)
+    sys.path.insert(0, str(DECODERS_DIR))
+
+    for name in ("pylon_rs485", "pylon_rs485.pd", "pylon_rs485.pylon"):
+        sys.modules.pop(name, None)
+
+    module = importlib.import_module("pylon_rs485")
+
+    assert module.Decoder.id == "pylon_rs485"
+    assert module.Decoder.inputs == ["uart"]
+    assert pylon_rs485.VERSION in module.Decoder.name
+
+
+def test_sigrok_pylon_rs485_decoder_emits_annotations_for_uart_frames(monkeypatch):
+    class FakeSrdDecoder:
+        def register(self, output):
+            return output
+
+        def put(self, ss, es, output, data):
+            self.captured.append((ss, es, output, data))
+
+    stub_sigrokdecode = types.SimpleNamespace(Decoder=FakeSrdDecoder, OUTPUT_ANN=1)
+    monkeypatch.setitem(sys.modules, "sigrokdecode", stub_sigrokdecode)
+    sys.path.insert(0, str(DECODERS_DIR))
+
+    for name in ("pylon_rs485", "pylon_rs485.pd", "pylon_rs485.pylon"):
+        sys.modules.pop(name, None)
+
+    module = importlib.import_module("pylon_rs485")
+    decoder = module.Decoder()
+    decoder.captured = []
+    decoder.start()
+
+    request = pylon_rs485_frame(0x02, 0x61)
+    response = pylon_rs485_frame(
+        0x02,
+        0x00,
+        "DF0A0000630000000064640DF200050DEE000B0BE0BE600040BDB00030BCEBCE00000BCE00000BCE0BCE00000BCE0000",
+    )
+
+    for idx, byte in enumerate(request):
+        decoder.decode(idx, idx + 1, ("DATA", 0, (byte, [])))
+    for idx, byte in enumerate(response, start=200):
+        decoder.decode(idx, idx + 1, ("DATA", 0, (byte, [])))
+
+    texts = [
+        text
+        for _ss, _es, output, data in decoder.captured
+        if output == stub_sigrokdecode.OUTPUT_ANN
+        for text in data[1]
+    ]
+
+    assert any("Pylon req" in text for text in texts)
+    assert any("Pylon rsp" in text for text in texts)
+    assert any("0x61 V=57.098V" in text for text in texts)
 
 
 def test_sigrok_jkbms_modbus_decoder_emits_annotations_for_uart_frames(monkeypatch):
