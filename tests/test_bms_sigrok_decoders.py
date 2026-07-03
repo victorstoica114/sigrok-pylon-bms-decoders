@@ -7,6 +7,7 @@ from pathlib import Path
 
 DECODERS_DIR = Path(__file__).resolve().parents[1] / "decoders"
 DEYE_CAN_DECODER_DIR = DECODERS_DIR / "deye_can"
+GOODWE_CAN_DECODER_DIR = DECODERS_DIR / "goodwe_can"
 GROWATT_CAN_DECODER_DIR = DECODERS_DIR / "growatt_can"
 GROWATT_RS485_DECODER_DIR = DECODERS_DIR / "growatt_rs485"
 JKBMS_MODBUS_DECODER_DIR = DECODERS_DIR / "jkbms_modbus"
@@ -23,6 +24,7 @@ def load_module(name, path):
 
 
 deye_can = load_module("deye_can_helper", DEYE_CAN_DECODER_DIR / "deye_can.py")
+goodwe_can = load_module("goodwe_can_helper", GOODWE_CAN_DECODER_DIR / "goodwe_can.py")
 growatt_rs485 = load_module("growatt_rs485_helper", GROWATT_RS485_DECODER_DIR / "growatt.py")
 growatt_can = load_module("growatt_can_helper", GROWATT_CAN_DECODER_DIR / "growatt_can.py")
 jkbms = load_module("jkbms_modbus_helper", JKBMS_MODBUS_DECODER_DIR / "jkbms_modbus.py")
@@ -45,7 +47,14 @@ def words_to_bytes(words):
 def test_active_decoder_folders_are_validated_only():
     decoder_names = sorted(path.name for path in DECODERS_DIR.iterdir() if path.is_dir())
 
-    assert decoder_names == ["deye_can", "growatt_can", "growatt_rs485", "jkbms_can", "jkbms_modbus"]
+    assert decoder_names == [
+        "deye_can",
+        "goodwe_can",
+        "growatt_can",
+        "growatt_rs485",
+        "jkbms_can",
+        "jkbms_modbus",
+    ]
 
 
 def test_growatt_rs485_parses_modbus_request_and_response():
@@ -121,6 +130,40 @@ def test_deye_can_describes_limits_and_indexes():
     assert "temp_min_sensor=2" in deye_can.describe_packet(indexes)
     assert "cell_max_idx=5" in deye_can.describe_packet(indexes)
     assert "cell_min_idx=9" in deye_can.describe_packet(indexes)
+
+
+def test_goodwe_can_describes_jk_pylon_dialect_frames():
+    limits = ("standard", 0x351, "data", 8, [0x9E, 0x02, 0x7C, 0x01, 0x6C, 0x07, 0xC6, 0x01])
+    soc = ("standard", 0x355, "data", 8, [0x63, 0x00, 0x64, 0x00, 0x00, 0x00, 0x00, 0x00])
+    pack = ("standard", 0x356, "data", 8, [0x53, 0x16, 0x00, 0x00, 0x33, 0x01, 0x00, 0x00])
+    module = ("standard", 0x359, "data", 8, [0x00, 0x00, 0x00, 0x00, 0x01, 0x50, 0x4E, 0x00])
+
+    assert "chgV=67.0V" in goodwe_can.describe_packet(limits)
+    assert "chgI=38.0A" in goodwe_can.describe_packet(limits)
+    assert "disI=190.0A" in goodwe_can.describe_packet(limits)
+    assert "lowV=45.4V" in goodwe_can.describe_packet(limits)
+    assert "SOC=99%" in goodwe_can.describe_packet(soc)
+    assert "SOH=100%" in goodwe_can.describe_packet(soc)
+    assert "V=57.15V" in goodwe_can.describe_packet(pack)
+    assert "temp=30.7C" in goodwe_can.describe_packet(pack)
+    assert "modules=1" in goodwe_can.describe_packet(module)
+    assert "tag='PN'" in goodwe_can.describe_packet(module)
+
+
+def test_goodwe_can_describes_native_frames():
+    limits = ("standard", 0x456, "data", 8, [0x02, 0x02, 0xF4, 0x01, 0xC8, 0x00, 0x64, 0x01])
+    soc = ("standard", 0x457, "data", 8, [0xE6, 0x03, 0xE8, 0x03, 0x00, 0x00, 0x00, 0x00])
+    pack = ("standard", 0x458, "data", 8, [0x39, 0x02, 0xEC, 0xFF, 0x2A, 0x01, 0x00, 0x00])
+
+    assert "chgV=51.4V" in goodwe_can.describe_packet(limits)
+    assert "chgI=+50.0A" in goodwe_can.describe_packet(limits)
+    assert "disI=+20.0A" in goodwe_can.describe_packet(limits)
+    assert "lowV=35.6V" in goodwe_can.describe_packet(limits)
+    assert "SOC=99.8% (100%)" in goodwe_can.describe_packet(soc)
+    assert "SOH=100.0% (100%)" in goodwe_can.describe_packet(soc)
+    assert "V=56.9V" in goodwe_can.describe_packet(pack)
+    assert "I=-2.0A" in goodwe_can.describe_packet(pack)
+    assert "temp=29.8C" in goodwe_can.describe_packet(pack)
 
 
 def test_jkbms_can_describes_live_frames_and_extended_cells():
@@ -272,6 +315,51 @@ def test_sigrok_deye_can_decoder_derives_bus_level_from_raw_can_lines(monkeypatc
         sys.modules.pop(name, None)
 
     module = importlib.import_module("deye_can")
+    decoder = module.Decoder()
+
+    decoder.options = {"input_mode": "rx/canl-direct"}
+    assert decoder.derive_can_rx(1) == 1
+    assert decoder.derive_can_rx(0) == 0
+
+    decoder.options = {"input_mode": "canh-inverted"}
+    assert decoder.derive_can_rx(0) == 1
+    assert decoder.derive_can_rx(1) == 0
+
+    decoder.options = {"input_mode": "canh-canl-diff"}
+    assert decoder.derive_can_rx(1, 0) == 0
+    assert decoder.derive_can_rx(0, 1) == 1
+    assert decoder.derive_can_rx(1, 1) == 1
+
+
+def test_sigrok_goodwe_can_package_exports_decoder(monkeypatch):
+    stub_sigrokdecode = types.SimpleNamespace(Decoder=object, OUTPUT_ANN=1, OUTPUT_PYTHON=2)
+    monkeypatch.setitem(sys.modules, "sigrokdecode", stub_sigrokdecode)
+    sys.path.insert(0, str(PULSEVIEW_SRD_DIR))
+    sys.path.insert(0, str(PULSEVIEW_DECODER_DIR))
+    sys.path.insert(0, str(DECODERS_DIR))
+
+    for name in ("can", "can.pd", "goodwe_can", "goodwe_can.pd", "goodwe_can.goodwe_can"):
+        sys.modules.pop(name, None)
+
+    module = importlib.import_module("goodwe_can")
+
+    assert module.Decoder.id == "goodwe_can"
+    assert module.Decoder.inputs == ["logic"]
+    assert goodwe_can.VERSION in module.Decoder.name
+    assert any(option["id"] == "input_mode" for option in module.Decoder.options)
+
+
+def test_sigrok_goodwe_can_decoder_derives_bus_level_from_raw_can_lines(monkeypatch):
+    stub_sigrokdecode = types.SimpleNamespace(Decoder=object, OUTPUT_ANN=1, OUTPUT_PYTHON=2)
+    monkeypatch.setitem(sys.modules, "sigrokdecode", stub_sigrokdecode)
+    sys.path.insert(0, str(PULSEVIEW_SRD_DIR))
+    sys.path.insert(0, str(PULSEVIEW_DECODER_DIR))
+    sys.path.insert(0, str(DECODERS_DIR))
+
+    for name in ("can", "can.pd", "goodwe_can", "goodwe_can.pd", "goodwe_can.goodwe_can"):
+        sys.modules.pop(name, None)
+
+    module = importlib.import_module("goodwe_can")
     decoder = module.Decoder()
 
     decoder.options = {"input_mode": "rx/canl-direct"}

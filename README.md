@@ -7,6 +7,7 @@ Active decoders:
 - `Growatt RS485`: Growatt Modbus RTU frames over UART/RS485.
 - `Growatt CAN`: Growatt low-voltage BMS/inverter frames over Classic CAN.
 - `Deye CAN`: Deye-compatible low-voltage BMS frames over Classic CAN.
+- `GoodWe CAN`: GoodWe-compatible low-voltage BMS frames over Classic CAN.
 - `JKBMS Modbus`: JK BMS RS485 Modbus RTU runtime frames.
 - `JKBMS CAN`: JK BMS native CAN V2.0 frames over Classic CAN.
 
@@ -24,6 +25,7 @@ folder exists under `decoders/`.
 ```text
 decoders/
   deye_can/
+  goodwe_can/
   growatt_can/
   growatt_rs485/
   jkbms_modbus/
@@ -31,6 +33,7 @@ decoders/
 docs/
   decoder-implementation-checklist.md
   deye-can-frame-map.md
+  goodwe-can-frame-map.md
   growatt-can-frame-map.md
   growatt-rs485-register-map.md
   jkbms-modbus-register-map.md
@@ -44,6 +47,7 @@ examples/
   bridge_forward/
 pictures/
   deye_can/
+  goodwe_can/
   growatt_can/
   growatt_rs485/
   jkbms_modbus/
@@ -97,6 +101,7 @@ before adding or merging a new decoder.
 Active maps:
 
 - [Deye CAN Frame Map](docs/deye-can-frame-map.md)
+- [GoodWe CAN Frame Map](docs/goodwe-can-frame-map.md)
 - [Growatt CAN Frame Map](docs/growatt-can-frame-map.md)
 - [Growatt RS485 Register Map](docs/growatt-rs485-register-map.md)
 - [JKBMS Modbus Register Map](docs/jkbms-modbus-register-map.md)
@@ -170,6 +175,29 @@ extremes, cell-voltage extremes, and the matching index frame.
 
 The current bridge-mode raw capture and PulseView session are listed in
 `examples/README.md` as `Deye CAN`.
+
+## GoodWe CAN Decoder
+
+`decoders/goodwe_can` is a standalone decoder. Add `GoodWe CAN` directly from
+the PulseView decoder selector.
+
+Typical settings:
+
+- nominal bitrate: `500000`
+- fast bitrate: unused for Classic CAN; leave at `500000`
+- sample point: start with `70%`; try `75%` or `80%` if annotations are unstable
+- input mode:
+  - `rx/canl-direct` for transceiver `RXD` or digitized `CANL`
+  - `canh-inverted` for digitized `CANH` when recessive/dominant are inverted
+  - `canh-canl-diff` with CH0 as `CANH` and CH1 as `CANL`
+
+The current published decoder is visible in PulseView as
+`GoodWe CAN v2026.07.03a`. It handles GoodWe native low-voltage frames for
+modules, alarms, limits, SOC/SOH, and pack telemetry, plus the JK/Pylon
+compatibility dialect observed in the bridge capture.
+
+The current bridge-mode raw capture and PulseView session are listed in
+`examples/README.md` as `GoodWe CAN`.
 
 ## JKBMS CAN Decoder
 
@@ -275,6 +303,19 @@ The current screenshots use a Deye-compatible CAN capture decoded with
 ![Deye CAN identity 0x35E](pictures/deye_can/deye-can-0x35e-identity.png)
 
 ![Deye CAN temperature and cell extremes 0x370](pictures/deye_can/deye-can-0x370-temperature-cell-extremes.png)
+
+## GoodWe CAN Capture Screenshots
+
+The current screenshots use a GoodWe-compatible CAN capture decoded with
+`GoodWe CAN v2026.07.03a`.
+
+![GoodWe CAN limits 0x351](pictures/goodwe_can/goodwe-can-0x351-limits.png)
+
+![GoodWe CAN SOC/SOH 0x355](pictures/goodwe_can/goodwe-can-0x355-soc-soh.png)
+
+![GoodWe CAN pack telemetry 0x356](pictures/goodwe_can/goodwe-can-0x356-pack-telemetry.png)
+
+![GoodWe CAN module info 0x359](pictures/goodwe_can/goodwe-can-0x359-module-info.png)
 
 ## Tests
 
