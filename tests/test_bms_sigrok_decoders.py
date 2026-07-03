@@ -12,6 +12,7 @@ GROWATT_CAN_DECODER_DIR = DECODERS_DIR / "growatt_can"
 GROWATT_RS485_DECODER_DIR = DECODERS_DIR / "growatt_rs485"
 JKBMS_MODBUS_DECODER_DIR = DECODERS_DIR / "jkbms_modbus"
 JKBMS_CAN_DECODER_DIR = DECODERS_DIR / "jkbms_can"
+PYLON_CAN_DECODER_DIR = DECODERS_DIR / "pylon_can"
 VICTRON_CAN_DECODER_DIR = DECODERS_DIR / "victron_can"
 PULSEVIEW_DECODER_DIR = Path(r"C:\Program Files\sigrok\PulseView\share\libsigrokdecode\decoders")
 PULSEVIEW_SRD_DIR = Path(r"C:\Program Files\sigrok\PulseView\share\libsigrokdecode")
@@ -30,6 +31,7 @@ growatt_rs485 = load_module("growatt_rs485_helper", GROWATT_RS485_DECODER_DIR / 
 growatt_can = load_module("growatt_can_helper", GROWATT_CAN_DECODER_DIR / "growatt_can.py")
 jkbms = load_module("jkbms_modbus_helper", JKBMS_MODBUS_DECODER_DIR / "jkbms_modbus.py")
 jkbms_can = load_module("jkbms_can_helper", JKBMS_CAN_DECODER_DIR / "jkbms_can.py")
+pylon_can = load_module("pylon_can_helper", PYLON_CAN_DECODER_DIR / "pylon_can.py")
 victron_can = load_module("victron_can_helper", VICTRON_CAN_DECODER_DIR / "victron_can.py")
 
 
@@ -56,6 +58,7 @@ def test_active_decoder_folders_are_validated_only():
         "growatt_rs485",
         "jkbms_can",
         "jkbms_modbus",
+        "pylon_can",
         "victron_can",
     ]
 
@@ -199,6 +202,47 @@ def test_victron_can_describes_ascii_and_tentative_cell_frame():
     assert "cell_max=3.573V" in victron_can.describe_packet(cell_temps)
     assert "t1=30.0C" in victron_can.describe_packet(cell_temps)
     assert "t2=29.0C" in victron_can.describe_packet(cell_temps)
+
+
+def test_pylon_can_describes_live_frames():
+    limits = ("standard", 0x351, "data", 8, [0x9E, 0x02, 0x7C, 0x01, 0x6C, 0x07, 0xC6, 0x01])
+    soc = ("standard", 0x355, "data", 8, [0x63, 0x00, 0x64, 0x00, 0x00, 0x00, 0x00, 0x00])
+    pack = ("standard", 0x356, "data", 8, [0x4B, 0x16, 0x00, 0x00, 0x34, 0x01, 0x00, 0x00])
+    module = ("standard", 0x359, "data", 8, [0x00, 0x00, 0x00, 0x00, 0x01, 0x50, 0x4E, 0x00])
+    status = ("standard", 0x35C, "data", 8, [0xC0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00])
+    identity = ("standard", 0x35E, "data", 8, [0x4A, 0x4B, 0x2D, 0x42, 0x4D, 0x53, 0x00, 0x00])
+    extremes = ("standard", 0x370, "data", 8, [0x1F, 0x00, 0x1E, 0x00, 0xF1, 0x0D, 0xED, 0x0D])
+
+    assert "chgV=67.0V" in pylon_can.describe_packet(limits)
+    assert "chgI=38.0A" in pylon_can.describe_packet(limits)
+    assert "disI=190.0A" in pylon_can.describe_packet(limits)
+    assert "lowV=45.4V" in pylon_can.describe_packet(limits)
+    assert "SOC=99%" in pylon_can.describe_packet(soc)
+    assert "SOH=100%" in pylon_can.describe_packet(soc)
+    assert "V=57.07V" in pylon_can.describe_packet(pack)
+    assert "I=0.0A" in pylon_can.describe_packet(pack)
+    assert "temp=30.8C" in pylon_can.describe_packet(pack)
+    assert "modules=1" in pylon_can.describe_packet(module)
+    assert "status=0xC0 (charge=ON, discharge=ON, balance=OFF)" in pylon_can.describe_packet(status)
+    assert "name='JK-BMS'" in pylon_can.describe_packet(identity)
+    assert "tMax=31.0C" in pylon_can.describe_packet(extremes)
+    assert "tMin=30.0C" in pylon_can.describe_packet(extremes)
+    assert "cell_max=3.569V" in pylon_can.describe_packet(extremes)
+    assert "cell_min=3.565V" in pylon_can.describe_packet(extremes)
+
+
+def test_pylon_can_describes_indexes_and_cell_temp_frame():
+    indexes = ("standard", 0x371, "data", 8, [0x01, 0x00, 0x02, 0x00, 0x05, 0x00, 0x09, 0x00])
+    cell_temps = ("standard", 0x373, "data", 8, [0xF3, 0x0D, 0xF5, 0x0D, 0x2C, 0x01, 0x22, 0x01])
+
+    assert "tMax#1" in pylon_can.describe_packet(indexes)
+    assert "tMin#2" in pylon_can.describe_packet(indexes)
+    assert "cellMax#5" in pylon_can.describe_packet(indexes)
+    assert "cellMin#9" in pylon_can.describe_packet(indexes)
+    assert "cell_min=3.571V" in pylon_can.describe_packet(cell_temps)
+    assert "cell_max=3.573V" in pylon_can.describe_packet(cell_temps)
+    assert "t1=30.0C" in pylon_can.describe_packet(cell_temps)
+    assert "t2=29.0C" in pylon_can.describe_packet(cell_temps)
 
 
 def test_jkbms_can_describes_live_frames_and_extended_cells():
@@ -440,6 +484,51 @@ def test_sigrok_victron_can_decoder_derives_bus_level_from_raw_can_lines(monkeyp
         sys.modules.pop(name, None)
 
     module = importlib.import_module("victron_can")
+    decoder = module.Decoder()
+
+    decoder.options = {"input_mode": "rx/canl-direct"}
+    assert decoder.derive_can_rx(1) == 1
+    assert decoder.derive_can_rx(0) == 0
+
+    decoder.options = {"input_mode": "canh-inverted"}
+    assert decoder.derive_can_rx(0) == 1
+    assert decoder.derive_can_rx(1) == 0
+
+    decoder.options = {"input_mode": "canh-canl-diff"}
+    assert decoder.derive_can_rx(1, 0) == 0
+    assert decoder.derive_can_rx(0, 1) == 1
+    assert decoder.derive_can_rx(1, 1) == 1
+
+
+def test_sigrok_pylon_can_package_exports_decoder(monkeypatch):
+    stub_sigrokdecode = types.SimpleNamespace(Decoder=object, OUTPUT_ANN=1, OUTPUT_PYTHON=2)
+    monkeypatch.setitem(sys.modules, "sigrokdecode", stub_sigrokdecode)
+    sys.path.insert(0, str(PULSEVIEW_SRD_DIR))
+    sys.path.insert(0, str(PULSEVIEW_DECODER_DIR))
+    sys.path.insert(0, str(DECODERS_DIR))
+
+    for name in ("can", "can.pd", "pylon_can", "pylon_can.pd", "pylon_can.pylon_can"):
+        sys.modules.pop(name, None)
+
+    module = importlib.import_module("pylon_can")
+
+    assert module.Decoder.id == "pylon_can"
+    assert module.Decoder.inputs == ["logic"]
+    assert pylon_can.VERSION in module.Decoder.name
+    assert any(option["id"] == "input_mode" for option in module.Decoder.options)
+
+
+def test_sigrok_pylon_can_decoder_derives_bus_level_from_raw_can_lines(monkeypatch):
+    stub_sigrokdecode = types.SimpleNamespace(Decoder=object, OUTPUT_ANN=1, OUTPUT_PYTHON=2)
+    monkeypatch.setitem(sys.modules, "sigrokdecode", stub_sigrokdecode)
+    sys.path.insert(0, str(PULSEVIEW_SRD_DIR))
+    sys.path.insert(0, str(PULSEVIEW_DECODER_DIR))
+    sys.path.insert(0, str(DECODERS_DIR))
+
+    for name in ("can", "can.pd", "pylon_can", "pylon_can.pd", "pylon_can.pylon_can"):
+        sys.modules.pop(name, None)
+
+    module = importlib.import_module("pylon_can")
     decoder = module.Decoder()
 
     decoder.options = {"input_mode": "rx/canl-direct"}

@@ -8,6 +8,7 @@ Active decoders:
 - `Growatt CAN`: Growatt low-voltage BMS/inverter frames over Classic CAN.
 - `Deye CAN`: Deye-compatible low-voltage BMS frames over Classic CAN.
 - `GoodWe CAN`: GoodWe-compatible low-voltage BMS frames over Classic CAN.
+- `Pylon CAN`: Pylon-compatible low-voltage BMS frames over Classic CAN.
 - `Victron CAN`: Victron-compatible low-voltage BMS frames over Classic CAN.
 - `JKBMS Modbus`: JK BMS RS485 Modbus RTU runtime frames.
 - `JKBMS CAN`: JK BMS native CAN V2.0 frames over Classic CAN.
@@ -31,6 +32,7 @@ decoders/
   growatt_rs485/
   jkbms_modbus/
   jkbms_can/
+  pylon_can/
   victron_can/
 docs/
   decoder-implementation-checklist.md
@@ -40,8 +42,8 @@ docs/
   growatt-rs485-register-map.md
   jkbms-modbus-register-map.md
   jkbms-can-frame-map.md
-  victron-can-frame-map.md
   pylon-can-frame-map.md
+  victron-can-frame-map.md
   pylon-rs485-frame-map.md
 examples/
   README.md
@@ -55,6 +57,7 @@ pictures/
   growatt_rs485/
   jkbms_modbus/
   jkbms_can/
+  pylon_can/
   victron_can/
 tests/
 install-pulseview-decoders.ps1
@@ -110,11 +113,11 @@ Active maps:
 - [Growatt RS485 Register Map](docs/growatt-rs485-register-map.md)
 - [JKBMS Modbus Register Map](docs/jkbms-modbus-register-map.md)
 - [JKBMS CAN Frame Map](docs/jkbms-can-frame-map.md)
+- [Pylon CAN Frame Map](docs/pylon-can-frame-map.md)
 - [Victron CAN Frame Map](docs/victron-can-frame-map.md)
 
 Staging/reference maps currently present for future promotion:
 
-- [Pylon CAN Frame Map](docs/pylon-can-frame-map.md)
 - [Pylon RS485 Frame Map](docs/pylon-rs485-frame-map.md)
 
 ## Growatt RS485 Decoder
@@ -203,6 +206,31 @@ compatibility dialect observed in the bridge capture.
 
 The current bridge-mode raw capture and PulseView session are listed in
 `examples/README.md` as `GoodWe CAN`.
+
+## Pylon CAN Decoder
+
+`decoders/pylon_can` is a standalone decoder. Add `Pylon CAN` directly from
+the PulseView decoder selector.
+
+Typical settings:
+
+- nominal bitrate: `500000`
+- fast bitrate: unused for Classic CAN; leave at `500000`
+- sample point: start with `70%`; try `75%` or `80%` if annotations are unstable
+- input mode:
+  - `rx/canl-direct` for transceiver `RXD` or digitized `CANL`
+  - `canh-inverted` for digitized `CANH` when recessive/dominant are inverted
+  - `canh-canl-diff` with CH0 as `CANH` and CH1 as `CANL`
+
+The current published decoder is visible in PulseView as
+`Pylon CAN v2026.07.03a`. It handles the validated Pylon-compatible
+low-voltage profile used by the bridge: charge/discharge limits, SOC/SOH, pack
+voltage/current/temperature, module info, status flags, identity text, cell
+temperature frames, and JK/Pylon extension frames for temperature and cell
+extremes.
+
+The current bridge-mode raw capture and PulseView session are listed in
+`examples/README.md` as `Pylon CAN`.
 
 ## Victron CAN Decoder
 
@@ -345,6 +373,27 @@ The current screenshots use a GoodWe-compatible CAN capture decoded with
 ![GoodWe CAN pack telemetry 0x356](pictures/goodwe_can/goodwe-can-0x356-pack-telemetry.png)
 
 ![GoodWe CAN module info 0x359](pictures/goodwe_can/goodwe-can-0x359-module-info.png)
+
+## Pylon CAN Capture Screenshots
+
+The current screenshots use a Pylon-compatible CAN capture decoded with
+`Pylon CAN v2026.07.03a`.
+
+![Pylon CAN limits 0x351](pictures/pylon_can/pylon-can-0x351-limits.png)
+
+![Pylon CAN SOC/SOH 0x355](pictures/pylon_can/pylon-can-0x355-soc-soh.png)
+
+![Pylon CAN pack telemetry 0x356](pictures/pylon_can/pylon-can-0x356-pack-telemetry.png)
+
+![Pylon CAN module info 0x359](pictures/pylon_can/pylon-can-0x359-module-info.png)
+
+![Pylon CAN status 0x35C](pictures/pylon_can/pylon-can-0x35c-status.png)
+
+![Pylon CAN identity 0x35E](pictures/pylon_can/pylon-can-0x35e-identity.png)
+
+![Pylon CAN temperature and cell extremes 0x370](pictures/pylon_can/pylon-can-0x370-temperature-cell-extremes.png)
+
+![Pylon CAN JK extension indexes 0x371](pictures/pylon_can/pylon-can-0x371-jk-cell-indexes.png)
 
 ## Victron CAN Capture Screenshots
 
