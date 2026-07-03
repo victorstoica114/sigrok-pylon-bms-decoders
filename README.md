@@ -329,7 +329,7 @@ Typical logic-level UART settings:
 
 For direct digital probing of RS485 A/B with the LA2016, validate both
 polarities. The current field capture was checked with `115200 8N1`; the best
-offline pass used `CH1`, RX invert `no`, and a UART sample point around `30%`.
+offline pass used `CH0`, RX invert `yes`, and a UART sample point around `30%`.
 
 The current published decoder is visible in PulseView as
 `JKBMS Modbus v2026.07.02b`. It handles Modbus RTU requests, responses,
@@ -348,7 +348,13 @@ translator bridge, a Kingst LA2016 logic analyzer, and
 
 ![JKBMS Modbus response for 0x1230](pictures/jkbms_modbus/jkbms-modbus-0x1230-response.png)
 
+![JKBMS Modbus response for 0x1240](pictures/jkbms_modbus/jkbms-modbus-0x1240-response.png)
+
 ![JKBMS Modbus response for 0x1244](pictures/jkbms_modbus/jkbms-modbus-0x1244-response.png)
+
+![JKBMS Modbus response for 0x128A](pictures/jkbms_modbus/jkbms-modbus-0x128a-response.png)
+
+![JKBMS Modbus response for 0x1288](pictures/jkbms_modbus/jkbms-modbus-0x1288-response.png)
 
 ![JKBMS Modbus response for 0x1200](pictures/jkbms_modbus/jkbms-modbus-0x1200-response.png)
 

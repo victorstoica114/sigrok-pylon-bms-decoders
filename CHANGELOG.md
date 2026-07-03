@@ -20,7 +20,6 @@
 - Bridge-mode example capture and PulseView session for Deye CAN traffic.
 - Bridge-mode example capture and PulseView session for GoodWe CAN traffic.
 - Bridge-mode example capture and PulseView session for JKBMS CAN traffic.
-- Bridge-mode example capture and PulseView session for JKBMS Modbus RS485 runtime polling.
 - Bridge-mode example capture and PulseView session for Pylon CAN traffic.
 - Bridge-mode example capture and PulseView session for Pylon RS485 ASCII traffic.
 - Bridge-mode example capture and PulseView session for Victron CAN traffic.
@@ -28,7 +27,6 @@
 - README screenshots for GoodWe CAN limits, SOC/SOH, pack telemetry, and module info frames.
 - README screenshots for Growatt RS485 Modbus RTU request, response, status, and cell register blocks.
 - README screenshots for JKBMS CAN pack status, cell extremes, temperature, capacity, and raw info/status frames.
-- README screenshots for JKBMS Modbus RTU request and runtime register response blocks.
 - README screenshots for Pylon CAN limits, SOC/SOH, pack telemetry, module info, status, identity, and cell extreme frames.
 - README screenshots for Pylon RS485 analog telemetry, cell request, alarm/status flags, and charge/discharge status frames.
 - README screenshots for Victron CAN limits, SOC/SOH, pack telemetry, and vendor raw frames.
@@ -36,6 +34,8 @@
 ### Changed
 
 - Active decoder set is currently limited to validated decoders: `Deye CAN`, `GoodWe CAN`, `Growatt CAN`, `Growatt RS485`, `JKBMS CAN`, `JKBMS Modbus`, `Pylon CAN`, `Pylon RS485`, and `Victron CAN`.
+- Updated bridge-mode example capture and PulseView session for JKBMS Modbus RS485 runtime polling.
+- Updated README screenshots for JKBMS Modbus RTU request, cell, cell-summary, SOC/SOH, and runtime register response blocks.
 - Repository rule clarified: decoders still under field test stay out of `decoders/` until they are validated and explicitly promoted.
 - README and regression tests now track only the active decoder folders.
 - The installer rebuilds `C:\ProgramData\libsigrokdecode\decoders` from built-ins plus active repository decoders, excluding stale custom decoder copies from PulseView's built-in directory.

@@ -127,7 +127,7 @@ conv_options=0
 [decode_signal0]
 name=JKBMS Modbus v2026.07.02b
 enabled=true
-color=4281510450
+color=4286722730
 conversion_type=0
 conv_options=0
 decoders=2
@@ -135,7 +135,7 @@ decoder0\id=uart
 decoder0\visible=true
 decoder0\options=1
 decoder0\option0\name=invert_rx
-decoder0\option0\value=@ByteArray(no\0)
+decoder0\option0\value=@ByteArray(yes\0)
 decoder0\option0\type=s
 decoder0\row0\visible=true
 decoder0\row1\visible=true
@@ -182,7 +182,7 @@ decoder1\ann_class5\visible=true
 channels=2
 channel0\name=RX
 channel0\initial_pin_state=2
-channel0\assigned_signal_name=CH1
+channel0\assigned_signal_name=CH0
 channel1\name=TX
 channel1\initial_pin_state=2
 
@@ -193,11 +193,11 @@ views=1
 meta_objs=0
 
 [view0]
-scale=1.6791111621077432e-6
-v_offset=-79
+scale=0.0036812584887376733
+v_offset=-63
 splitter_state=@ByteArray(\0\0\0\xff\0\0\0\x1\0\0\0\x2\0\0\0\xac\0\0\x4\xbb\x1\0\0\0\x1\x1\0\0\0\x1\0)
 segment_display_mode=1
-offset=22 serialization::archive 14 0 0 0 0 3 34815980 74914800 96097656 82097898 27615765 0 0 0 6
+offset=22 serialization::archive 14 0 0 0 0 45625923 58510421 91885743 34553588 55905005 0 -8 1 0 6
 zero_offset=22 serialization::archive 14 0 0 0 0 0 0 0 0 0 0 0 0 0 6
 CH0\trace_height=26
 CH1\trace_height=26
