@@ -23,7 +23,7 @@ REG_PACK_WATT_MW_U32 = 0x1294
 REG_PACK_CURRENT_MA_I32 = 0x1298
 REG_TEMP_BAT1_DECIC = 0x129C
 REG_TEMP_BAT2_DECIC = 0x129E
-REG_ALARM_U32 = 0x12A0
+REG_ALARM_STATUS_CANDIDATE_U32 = 0x12A0
 REG_BALANCE_CURRENT_MA_I16 = 0x12A4
 REG_BALANCE_SOC_U8X2 = 0x12A6
 REG_REMAIN_MAH_I32 = 0x12A8
@@ -55,8 +55,8 @@ REGISTER_NAMES = {
     REG_PACK_CURRENT_MA_I32 + 1: 'pack_current_mA_lo',
     REG_TEMP_BAT1_DECIC: 'temp_bat1_deciC',
     REG_TEMP_BAT2_DECIC: 'temp_bat2_deciC',
-    REG_ALARM_U32: 'alarm_u32_hi',
-    REG_ALARM_U32 + 1: 'alarm_u32_lo',
+    REG_ALARM_STATUS_CANDIDATE_U32: 'alarm_status_candidate_hi',
+    REG_ALARM_STATUS_CANDIDATE_U32 + 1: 'alarm_status_candidate_lo',
     REG_BALANCE_CURRENT_MA_I16: 'balance_current_mA',
     REG_BALANCE_SOC_U8X2: 'balance_soc_u8x2',
     REG_REMAIN_MAH_I32: 'remaining_mAh_hi',
@@ -67,34 +67,6 @@ REGISTER_NAMES = {
     REG_CYCLES_U32 + 1: 'cycles_lo',
     REG_SOH_PRECHARGE_U8X2: 'soh_precharge_u8x2',
 }
-
-ALARM_FLAGS = (
-    (1 << 0, 'balance wire resistance fault'),
-    (1 << 1, 'MOS overtemperature protection'),
-    (1 << 2, 'cell count mismatch'),
-    (1 << 3, 'current sensor fault'),
-    (1 << 4, 'cell overvoltage protection'),
-    (1 << 5, 'pack overvoltage protection'),
-    (1 << 6, 'charge overcurrent protection'),
-    (1 << 7, 'charge short-circuit protection'),
-    (1 << 8, 'charge overtemperature protection'),
-    (1 << 9, 'charge undertemperature protection'),
-    (1 << 10, 'internal communication fault'),
-    (1 << 11, 'cell undervoltage protection'),
-    (1 << 12, 'pack undervoltage protection'),
-    (1 << 13, 'discharge overcurrent protection'),
-    (1 << 14, 'discharge short-circuit protection'),
-    (1 << 15, 'discharge overtemperature protection'),
-    (1 << 16, 'charge MOS fault'),
-    (1 << 17, 'discharge MOS fault'),
-    (1 << 18, 'GPS disconnected'),
-    (1 << 19, 'authorization password warning'),
-    (1 << 20, 'discharge enable failed'),
-    (1 << 21, 'battery overtemperature alarm'),
-    (1 << 22, 'temperature sensor anomaly'),
-    (1 << 23, 'parallel module anomaly'),
-)
-
 
 def modbus_crc16(data):
     crc = 0xffff
@@ -140,49 +112,6 @@ def i32_from_u32(value):
     if value & 0x80000000:
         value -= 0x100000000
     return value
-
-
-def known_alarm_mask():
-    mask = 0
-    for bit, _name in ALARM_FLAGS:
-        mask |= bit
-    return mask
-
-
-def count_bits(value):
-    count = 0
-    while value:
-        count += value & 1
-        value >>= 1
-    return count
-
-
-def reverse_bytes32(value):
-    return (((value & 0x000000FF) << 24) |
-            ((value & 0x0000FF00) << 8) |
-            ((value & 0x00FF0000) >> 8) |
-            ((value & 0xFF000000) >> 24))
-
-
-def normalize_alarm_bits(value):
-    known = known_alarm_mask()
-    reversed_value = reverse_bytes32(value)
-    raw_unknown = count_bits(value & ~known)
-    reversed_unknown = count_bits(reversed_value & ~known)
-    if value and reversed_unknown < raw_unknown:
-        return reversed_value
-    return value
-
-
-def alarm_list(value):
-    value = normalize_alarm_bits(value)
-    parts = [name for mask, name in ALARM_FLAGS if value & mask]
-    known = known_alarm_mask()
-    unknown = value & ~known
-    for bit in range(32):
-        if unknown & (1 << bit):
-            parts.append('unknown bit {}'.format(bit))
-    return ', '.join(parts) if parts else 'none'
 
 
 def normalize_cell_mv(raw):
@@ -241,6 +170,116 @@ def best_i32(values, reg, abs_limit=0x7FFFFFFF):
     return min(valid, key=lambda value: abs(value))
 
 
+def signed16_from_word(value):
+    value &= 0xFFFF
+    if value & 0x8000:
+        value -= 0x10000
+    return value
+
+
+def signed_deci_c(value):
+    signed = signed16_from_word(value)
+    if -1000 <= signed <= 1500:
+        return signed / 10.0
+    return None
+
+
+def decode_soc_from_values(values):
+    chosen = None
+    for addr, prefer_high, allow_zero in (
+        (REG_BALANCE_SOC_U8X2, False, False),
+        (REG_BALANCE_SOC_U8X2 + 1, False, False),
+        (REG_SOH_PRECHARGE_U8X2, True, True),
+    ):
+        if addr not in values:
+            continue
+        candidate = decode_pct_byte_pair(values[addr], prefer_high)
+        if candidate is None:
+            continue
+        if candidate == 0 and not allow_zero:
+            continue
+        chosen = candidate
+        if candidate > 0:
+            return candidate
+    return chosen
+
+
+def decode_soh_precharge(values):
+    if REG_SOH_PRECHARGE_U8X2 not in values:
+        return None
+    raw = values[REG_SOH_PRECHARGE_U8X2]
+    hi = (raw >> 8) & 0xFF
+    lo = raw & 0xFF
+    if hi <= 100 and lo <= 1:
+        return hi, lo
+    if lo <= 100 and hi <= 1:
+        return lo, hi
+    soh = decode_pct_byte_pair(raw, True)
+    if soh is not None:
+        return soh, None
+    return None
+
+
+def describe_pack_power(values):
+    return None
+
+
+def summarize_known_runtime_values(values):
+    parts = []
+
+    voltage_mv = best_u32(values, REG_PACK_VOLT_MV_U32, 1000, 200000)
+    if voltage_mv is not None:
+        parts.append('pack_v={:.3f}V'.format(voltage_mv / 1000.0))
+
+    current_ma = best_i32(values, REG_PACK_CURRENT_MA_I32, 1000000)
+    if current_ma is not None:
+        parts.append('pack_i={:+.3f}A'.format(current_ma / 1000.0))
+
+    power_text = describe_pack_power(values)
+    if power_text:
+        parts.append(power_text)
+
+    soc = decode_soc_from_values(values)
+    if soc is not None:
+        parts.append('SOC={}%'.format(soc))
+
+    soh = decode_soh_precharge(values)
+    if soh is not None:
+        soh_pct, precharge = soh
+        if precharge is None:
+            parts.append('SOH={}%'.format(soh_pct))
+        else:
+            parts.append('SOH={}% precharge=0x{:02X}'.format(soh_pct, precharge))
+
+    for addr, label in (
+        (REG_TEMP_MOS_DECIC, 'MOS'),
+        (REG_TEMP_BAT1_DECIC, 'T1'),
+        (REG_TEMP_BAT2_DECIC, 'T2'),
+    ):
+        if addr in values:
+            temp = signed_deci_c(values[addr])
+            if temp is not None and temp != 0:
+                parts.append('{}={:.1f}C'.format(label, temp))
+
+    if (REG_ALARM_STATUS_CANDIDATE_U32 in values and
+            REG_ALARM_STATUS_CANDIDATE_U32 + 1 in values):
+        alarm = best_u32(values, REG_ALARM_STATUS_CANDIDATE_U32, 0, 0xFFFFFFFF)
+        if alarm is not None:
+            parts.append('alarm_candidate=0x{:08X}'.format(alarm))
+
+    if REG_FULL_MAH_U32 in values and REG_FULL_MAH_U32 + 1 in values:
+        full = best_u32(values, REG_FULL_MAH_U32, 0, 500000000)
+        if full is not None:
+            parts.append('full={:.2f}Ah'.format(full / 1000.0))
+
+    if REG_CYCLES_U32 in values and REG_CYCLES_U32 + 1 in values:
+        cycles = best_u32(values, REG_CYCLES_U32, 0, 1000000)
+        if cycles is not None:
+            parts.append('cycles={}'.format(cycles))
+
+    return parts
+
+
 def register_name(addr):
     if REG_CELL0_MV <= addr <= REG_CELL31_MV:
         off = addr - REG_CELL0_MV
@@ -255,6 +294,8 @@ def describe_cell_register(addr, value):
     off = addr - REG_CELL0_MV
     if off % 2 == 0:
         label = 'cell{:02d}'.format((off // 2) + 1)
+    elif off + 1 > MAX_CELLS:
+        label = 'cell_spare'
     else:
         label = 'cell_alt{:02d}'.format(off + 1)
     if mv is None:
@@ -272,11 +313,20 @@ def describe_register(addr, value, values_by_addr=None):
     if addr == REG_CELL_DIFF_MV:
         return 'cell_diff={}mV'.format(normalize_delta_mv(value))
     if addr == REG_MAX_MIN_CELL_IDX:
-        return 'cell_idx max#{} min#{}'.format((value >> 8) & 0xFF, value & 0xFF)
+        max_idx = (value >> 8) & 0xFF
+        min_idx = value & 0xFF
+        if 1 <= max_idx <= MAX_CELLS and 1 <= min_idx <= MAX_CELLS:
+            return 'cell_idx max#{} min#{}'.format(max_idx, min_idx)
+        return 'cell_idx raw=0x{:04X}'.format(value)
     if addr in (REG_TEMP_MOS_DECIC, REG_TEMP_BAT1_DECIC, REG_TEMP_BAT2_DECIC):
-        return '{}={:.1f}C'.format(register_name(addr), be16s([(value >> 8) & 0xFF, value & 0xFF], 0) / 10.0)
+        temp = signed_deci_c(value)
+        return '{}={}'.format(
+            register_name(addr),
+            '{:.1f}C'.format(temp) if temp is not None else 'raw=0x{:04X}'.format(value))
     if addr == REG_BALANCE_CURRENT_MA_I16:
         signed = value - 0x10000 if value & 0x8000 else value
+        if abs(signed) > 5000:
+            return 'balance_current_candidate={:.3f}A implausible'.format(signed / 1000.0)
         return 'balance_current={:.3f}A'.format(signed / 1000.0)
     if addr == REG_BALANCE_SOC_U8X2:
         soc = decode_pct_byte_pair(value, False)
@@ -288,16 +338,22 @@ def describe_register(addr, value, values_by_addr=None):
     values = values_by_addr or {}
     if addr == REG_PACK_VOLT_MV_U32:
         combined = best_u32(values, addr, 1000, 200000)
-        return 'pack_v={}'.format('{:.3f}V'.format(combined / 1000.0) if combined is not None else 'hi=0x{:04X}'.format(value))
+        if combined is not None:
+            return 'pack_v={:.3f}V'.format(combined / 1000.0)
+        lo = values.get(addr + 1)
+        return 'pack_v raw_hi=0x{:04X} raw_lo={}'.format(
+            value, '0x{:04X}'.format(lo) if lo is not None else '-')
     if addr == REG_PACK_CURRENT_MA_I32:
         combined = best_i32(values, addr, 1000000)
         return 'pack_i={}'.format('{:+.3f}A'.format(combined / 1000.0) if combined is not None else 'hi=0x{:04X}'.format(value))
     if addr == REG_PACK_WATT_MW_U32:
         combined = best_i32(values, addr, 200000000)
-        return 'pack_p={}'.format('{:+.1f}W'.format(combined / 1000.0) if combined is not None else 'hi=0x{:04X}'.format(value))
-    if addr == REG_ALARM_U32:
+        if combined is not None:
+            return 'pack_p_candidate={:+.1f}W'.format(combined / 1000.0)
+        return 'pack_p raw_hi=0x{:04X}'.format(value)
+    if addr == REG_ALARM_STATUS_CANDIDATE_U32:
         combined = best_u32(values, addr, 0, 0xFFFFFFFF)
-        return 'alarm=0x{:08X} ({})'.format(combined, alarm_list(combined)) if combined is not None else 'alarm_hi=0x{:04X}'.format(value)
+        return 'alarm_status_candidate=0x{:08X} tentative'.format(combined) if combined is not None else 'alarm_status_candidate_hi=0x{:04X}'.format(value)
     if addr == REG_REMAIN_MAH_I32:
         combined = best_i32(values, addr, 500000000)
         return 'remain={}'.format('{:.2f}Ah'.format(combined / 1000.0) if combined is not None else 'hi=0x{:04X}'.format(value))
@@ -309,6 +365,14 @@ def describe_register(addr, value, values_by_addr=None):
         return 'cycles={}'.format(combined if combined is not None else 'hi=0x{:04X}'.format(value))
 
     return '{}=0x{:04X}'.format(register_name(addr), value)
+
+
+def describe_register_variants(addr, value, values_by_addr=None):
+    full = '0x{:04X} {}'.format(addr, describe_register(addr, value, values_by_addr))
+    name = register_name(addr)
+    if name == 'reg_0x{:04X}'.format(addr):
+        return [full, '0x{:04X}=0x{:04X}'.format(addr, value), '0x{:04X}'.format(addr)]
+    return [full, '{}=0x{:04X}'.format(name, value), name, '0x{:04X}'.format(addr)]
 
 
 def parse_request(raw, crc, expected_crc, crc_ok):
@@ -420,7 +484,7 @@ def frame_complete(raw):
 
 
 def describe_cell_registers(registers):
-    cells = []
+    candidate_regs = []
     for reg in registers:
         addr = reg.get('addr')
         if addr is None or not (REG_CELL0_MV <= addr <= REG_CELL31_MV):
@@ -428,16 +492,40 @@ def describe_cell_registers(registers):
         mv = normalize_cell_mv(reg.get('value', 0))
         if mv is None:
             continue
+        candidate_regs.append((addr, mv))
+
+    if not candidate_regs:
+        return None
+
+    offsets = [addr - REG_CELL0_MV for addr, _mv in candidate_regs]
+    even_count = sum(1 for off in offsets if off % 2 == 0)
+    odd_count = len(offsets) - even_count
+    compact_mode = odd_count > 0 and even_count > 0 and (max(offsets) + 1) <= MAX_CELLS
+
+    cells = []
+    for addr, mv in candidate_regs:
         off = addr - REG_CELL0_MV
-        doc_idx = (off // 2) + 1 if off % 2 == 0 else None
-        compact_idx = off + 1
-        cells.append((addr, doc_idx or compact_idx, mv))
+        if compact_mode:
+            idx = off + 1
+        elif off % 2 == 0:
+            idx = (off // 2) + 1
+        else:
+            continue
+        if 1 <= idx <= MAX_CELLS:
+            cells.append((addr, idx, mv))
+
     if not cells:
         return None
+
     min_cell = min(cells, key=lambda item: item[2])
     max_cell = max(cells, key=lambda item: item[2])
-    return 'cells count={} min={:.3f}V#{} max={:.3f}V#{}'.format(
+    mode = 'compact' if compact_mode else 'stride2'
+    cell_list = ' '.join('C{:02d}={:.3f}V'.format(idx, mv / 1000.0)
+                         for _addr, idx, mv in cells)
+    return 'cells {} count={} {} min={:.3f}V#{} max={:.3f}V#{}'.format(
+        mode,
         len(cells),
+        cell_list,
         min_cell[2] / 1000.0,
         min_cell[1],
         max_cell[2] / 1000.0,
@@ -454,23 +542,8 @@ def describe_registers(registers):
     if cell_text:
         return cell_text
 
-    priority = (
-        REG_PACK_VOLT_MV_U32,
-        REG_PACK_CURRENT_MA_I32,
-        REG_BALANCE_SOC_U8X2,
-        REG_SOH_PRECHARGE_U8X2,
-        REG_TEMP_MOS_DECIC,
-        REG_TEMP_BAT1_DECIC,
-        REG_TEMP_BAT2_DECIC,
-        REG_ALARM_U32,
-        REG_CELL_AVG_MV,
-        REG_CELL_DIFF_MV,
-        REG_MAX_MIN_CELL_IDX,
-        REG_FULL_MAH_U32,
-        REG_CYCLES_U32,
-    )
-    known = []
-    for addr in priority:
+    known = summarize_known_runtime_values(values)
+    for addr in (REG_CELL_AVG_MV, REG_CELL_DIFF_MV, REG_MAX_MIN_CELL_IDX):
         if addr in values:
             known.append(describe_register(addr, values[addr], values))
     if known:
@@ -481,6 +554,38 @@ def describe_registers(registers):
         end = registers[-1]['addr']
         return 'regs 0x{:04X}..0x{:04X}'.format(start, end)
     return '{} register words'.format(len(registers))
+
+
+def describe_registers_compact(registers):
+    if not registers:
+        return '0 regs'
+
+    values = {reg['addr']: reg['value'] for reg in registers if reg.get('addr') is not None}
+    cell_text = describe_cell_registers(registers)
+    if cell_text:
+        parts = cell_text.split()
+        min_text = next((part for part in parts if part.startswith('min=')), '')
+        max_text = next((part for part in parts if part.startswith('max=')), '')
+        mode = 'compact' if 'compact' in parts else 'stride2'
+        count = next((part for part in parts if part.startswith('count=')), 'count=?')
+        return 'cells {} {} {} {}'.format(mode, count, min_text, max_text).strip()
+
+    known = summarize_known_runtime_values(values)
+    compact = []
+    for part in known:
+        if part.startswith('full='):
+            continue
+        else:
+            compact.append(part)
+    for addr in (REG_CELL_AVG_MV, REG_CELL_DIFF_MV, REG_MAX_MIN_CELL_IDX):
+        if addr in values:
+            compact.append(describe_register(addr, values[addr], values))
+    if compact:
+        return ' '.join(compact[:6])
+
+    if registers[0].get('addr') is not None:
+        return 'regs 0x{:04X}..0x{:04X}'.format(registers[0]['addr'], registers[-1]['addr'])
+    return '{} regs'.format(len(registers))
 
 
 def describe_frame(frame):
@@ -499,6 +604,34 @@ def describe_frame(frame):
         return 'exception func=0x{:02X} code=0x{:02X}'.format(
             frame.get('func', 0), frame.get('exception_code', 0))
     return 'frame'
+
+
+def describe_frame_variants(frame):
+    full = describe_frame(frame)
+    variants = [full]
+    typ = frame.get('type')
+
+    if typ == 'response':
+        regs = frame.get('registers', [])
+        if frame.get('start') is not None and regs:
+            start = regs[0]['addr']
+            end = regs[-1]['addr']
+            compact = describe_registers_compact(regs)
+            tentative = ' tentative' if not frame.get('crc_ok') else ''
+            variants.append('0x{:04X}..0x{:04X}{} {}'.format(start, end, tentative, compact))
+            variants.append('0x{:04X}..0x{:04X} {}'.format(start, end, 'CRC BAD' if not frame.get('crc_ok') else 'OK'))
+    elif typ == 'request':
+        variants.append('read 0x{:04X} count {}'.format(frame['start'], frame['count']))
+    elif typ == 'exception':
+        variants.append('exception 0x{:02X}'.format(frame.get('exception_code', 0)))
+
+    variants.append('decoded')
+
+    unique = []
+    for text in variants:
+        if text and text not in unique:
+            unique.append(text)
+    return unique
 
 
 def frame_summary(frame, direction=''):

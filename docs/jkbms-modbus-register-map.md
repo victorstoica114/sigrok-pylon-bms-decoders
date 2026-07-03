@@ -23,7 +23,7 @@ This map is limited to the runtime register area used by
 | `0x1298..0x1299` | `pack_current_mA` | `i32` | `/1000` | `A` |
 | `0x129C` | `temp_bat1_deciC` | `i16` | `/10` | `C` |
 | `0x129E` | `temp_bat2_deciC` | `i16` | `/10` | `C` |
-| `0x12A0..0x12A1` | `alarm` | `u32 bitfield` | `1` | `flags` |
+| `0x12A0..0x12A1` | `alarm_status_candidate` | `u32 bitfield` | `1` | `flags` |
 | `0x12A4` | `balance_current_mA` | `i16` | `/1000` | `A` |
 | `0x12A6` | `balance_soc` | `u8x2` | `1` | `state / %` |
 | `0x12A8..0x12A9` | `remaining_capacity_mAh` | `i32` | `/1000` | `Ah` |

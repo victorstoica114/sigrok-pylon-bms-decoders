@@ -1,26 +1,26 @@
-﻿# Changelog
+# Changelog
 
 ## Current
 
 ### Added
 
-- PulseView/libsigrokdecode `JKBMS Modbus` decoder for JK BMS RS485 Modbus RTU frames.
-- JKBMS Modbus runtime register map documentation.
-- Growatt CAN, Growatt RS485, Pylon CAN, and Pylon RS485 protocol map documentation.
-- Windows installer and launcher scripts that keep built-in PulseView decoders visible alongside custom BMS decoders.
-- Host-side parser/decoder regression tests.
+- PulseView/libsigrokdecode `Growatt CAN` decoder for Growatt low-voltage Classic CAN frames.
 - PulseView/libsigrokdecode `Growatt RS485` decoder for Growatt Modbus RTU frames.
-- Example raw `.sr` captures and matching PulseView `.pvs` sessions for Growatt CAN and Growatt RS485.
-- Automatic custom decoder discovery in the Windows installer and PulseView launcher scripts.
+- PulseView/libsigrokdecode `JKBMS Modbus v2026.07.02b` decoder for validated JK BMS RS485 Modbus RTU runtime frames.
+- Growatt CAN, Growatt RS485, and JKBMS Modbus protocol map documentation.
+- Windows installer and launcher scripts that keep built-in PulseView decoders visible alongside custom BMS decoders.
+- Host-side parser/decoder regression tests for the active decoder set.
 - Example capture folders split by topology: bridge, direct inverter/BMS, and bridge forward mode.
 - README screenshots for Growatt RS485 Modbus RTU request, response, status, and cell register blocks.
+- README screenshots for JKBMS Modbus RTU request and runtime register response blocks.
 
 ### Changed
 
-- Active decoder set is currently focused on `Growatt RS485` and `JKBMS Modbus` while the other protocols are recaptured/reworked.
-- README and regression tests now track the active decoder set.
-- Removed stale Pylon raw/session files from `examples/` pending extended recapture.
+- Active decoder set is currently limited to validated decoders: `Growatt CAN`, `Growatt RS485`, and `JKBMS Modbus`.
+- Repository rule clarified: decoders still under field test stay out of `decoders/` until they are validated and explicitly promoted.
+- README and regression tests now track only the active decoder folders.
+- The installer rebuilds `C:\ProgramData\libsigrokdecode\decoders` from built-ins plus active repository decoders, excluding stale custom decoder copies from PulseView's built-in directory.
 
 ### Removed
 
-- Removed the previous `Pylon RS485`, `Pylon CAN`, and `Growatt CAN` decoder packages from the active tree pending the next implementation pass.
+- Removed stale Pylon decoder packages from the active tree pending the next validated implementation pass.

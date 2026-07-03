@@ -8,15 +8,16 @@
 import sigrokdecode as srd
 
 try:
-    from .jkbms_modbus import (describe_frame, describe_register, frame_complete, frame_summary,
-                               hex_bytes, parse_frame)
+    from .jkbms_modbus import (describe_frame_variants, describe_register_variants,
+                               frame_complete, frame_summary, hex_bytes, parse_frame)
 except Exception:
-    from jkbms_modbus import (describe_frame, describe_register, frame_complete, frame_summary,
-                              hex_bytes, parse_frame)
+    from jkbms_modbus import (describe_frame_variants, describe_register_variants,
+                              frame_complete, frame_summary, hex_bytes, parse_frame)
 
 
 RX = 0
 TX = 1
+DECODER_VERSION = 'v2026.07.02b'
 
 
 class Ann:
@@ -26,9 +27,9 @@ class Ann:
 class Decoder(srd.Decoder):
     api_version = 3
     id = 'jkbms_modbus'
-    name = 'JKBMS Modbus'
-    longname = 'JKBMS RS485 Modbus poller'
-    desc = 'JK BMS RS485 Modbus RTU frames and runtime register map.'
+    name = 'JKBMS Modbus {}'.format(DECODER_VERSION)
+    longname = 'JKBMS RS485 Modbus poller {}'.format(DECODER_VERSION)
+    desc = 'JK BMS RS485 Modbus RTU frames and runtime register map; 0x12A0 is tentative.'
     license = 'gplv2+'
     inputs = ['uart']
     outputs = ['jkbms_modbus']
@@ -138,6 +139,9 @@ class Decoder(srd.Decoder):
         last_es = self.pos[rxtx][-1][1]
         gap_samples = int((gap_us * self.samplerate) / 1000000)
         if gap_samples > 0 and (ss - last_es) > gap_samples:
+            if len(self.buf[rxtx]) < 5:
+                self.reset_direction(rxtx)
+                return
             start = self.pos[rxtx][0][0]
             self.put_ann(start, last_es, Ann.WARNING,
                          ['Incomplete JKBMS/Modbus frame before idle gap: {}'.format(hex_bytes(self.buf[rxtx])),
@@ -187,10 +191,10 @@ class Decoder(srd.Decoder):
             addr = reg.get('addr')
             value = reg.get('value')
             if addr is None:
-                text = 'word=0x{:04X}'.format(value)
+                texts = ['word=0x{:04X}'.format(value), 'word']
             else:
-                text = '0x{:04X} {}'.format(addr, describe_register(addr, value, values_by_addr))
-            self.put_idx(rxtx, idx, idx + 1, Ann.REGISTER, [text])
+                texts = describe_register_variants(addr, value, values_by_addr)
+            self.put_idx(rxtx, idx, idx + 1, Ann.REGISTER, texts)
 
     def finish_frame(self, rxtx, es):
         if not self.buf[rxtx]:
@@ -213,7 +217,12 @@ class Decoder(srd.Decoder):
                      [frame_summary(frame, self.direction_name(rxtx))])
         self.annotate_fields(rxtx, frame)
         self.annotate_registers(rxtx, frame)
-        self.put_ann(ss, es, Ann.DECODED, [describe_frame(frame), 'decoded'])
+        self.put_ann(ss, es, Ann.DECODED, describe_frame_variants(frame))
+        if frame.get('type') == 'response' and not frame.get('crc_ok'):
+            self.put_ann(ss, es, Ann.WARNING,
+                         ['CRC BAD; decoded payload is tentative',
+                          'tentative decode',
+                          'CRC BAD'])
 
         if frame.get('type') == 'request':
             self.remember_request(frame, rxtx)
