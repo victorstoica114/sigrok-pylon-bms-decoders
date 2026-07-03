@@ -4,6 +4,7 @@
 
 ### Added
 
+- PulseView/libsigrokdecode `China Tower Modbus v2026.07.03a` decoder for validated China Tower / JK 008 RS485 Modbus RTU frames.
 - PulseView/libsigrokdecode `Deye CAN v2026.07.03a` decoder for validated Deye-compatible low-voltage CAN frames.
 - PulseView/libsigrokdecode `GoodWe CAN v2026.07.03a` decoder for validated GoodWe-compatible low-voltage CAN frames.
 - PulseView/libsigrokdecode `Growatt CAN` decoder for Growatt low-voltage Classic CAN frames.
@@ -13,10 +14,11 @@
 - PulseView/libsigrokdecode `Pylon CAN v2026.07.03a` decoder for validated Pylon-compatible low-voltage CAN frames.
 - PulseView/libsigrokdecode `Pylon RS485 v2026.07.03a` decoder for validated Pylon-compatible RS485 ASCII frames.
 - PulseView/libsigrokdecode `Victron CAN v2026.07.03a` decoder for validated Victron-compatible low-voltage CAN frames.
-- Deye CAN, GoodWe CAN, Growatt CAN, Growatt RS485, JKBMS CAN, JKBMS Modbus, Pylon CAN, Pylon RS485, and Victron CAN protocol map documentation.
+- China Tower Modbus, Deye CAN, GoodWe CAN, Growatt CAN, Growatt RS485, JKBMS CAN, JKBMS Modbus, Pylon CAN, Pylon RS485, and Victron CAN protocol map documentation.
 - Windows installer and launcher scripts that keep built-in PulseView decoders visible alongside custom BMS decoders.
 - Host-side parser/decoder regression tests for the active decoder set.
 - Example capture folders split by topology: bridge, direct inverter/BMS, and bridge forward mode.
+- Bridge-mode example capture and PulseView session for China Tower / JK 008 RS485 traffic.
 - Bridge-mode example capture and PulseView session for Deye CAN traffic.
 - Bridge-mode example capture and PulseView session for GoodWe CAN traffic.
 - Bridge-mode example capture and PulseView session for JKBMS CAN traffic.
@@ -24,6 +26,7 @@
 - Bridge-mode example capture and PulseView session for Pylon RS485 ASCII traffic.
 - Bridge-mode example capture and PulseView session for Victron CAN traffic.
 - README screenshots for Deye CAN SOC/SOH, pack telemetry, status, identity, and cell extreme frames.
+- README screenshots for China Tower Modbus request, status, runtime, and cell register blocks.
 - README screenshots for GoodWe CAN limits, SOC/SOH, pack telemetry, and module info frames.
 - README screenshots for Growatt RS485 Modbus RTU request, response, status, and cell register blocks.
 - README screenshots for JKBMS CAN pack status, cell extremes, temperature, capacity, and raw info/status frames.
@@ -33,7 +36,7 @@
 
 ### Changed
 
-- Active decoder set is currently limited to validated decoders: `Deye CAN`, `GoodWe CAN`, `Growatt CAN`, `Growatt RS485`, `JKBMS CAN`, `JKBMS Modbus`, `Pylon CAN`, `Pylon RS485`, and `Victron CAN`.
+- Active decoder set is currently limited to validated decoders: `China Tower Modbus`, `Deye CAN`, `GoodWe CAN`, `Growatt CAN`, `Growatt RS485`, `JKBMS CAN`, `JKBMS Modbus`, `Pylon CAN`, `Pylon RS485`, and `Victron CAN`.
 - Updated bridge-mode example capture and PulseView session for Growatt RS485 inverter traffic.
 - Updated README screenshots for Growatt RS485 cell-voltage, status/pack telemetry, and limits/cell-extreme response blocks.
 - Updated bridge-mode example capture and PulseView session for JKBMS Modbus RS485 runtime polling.

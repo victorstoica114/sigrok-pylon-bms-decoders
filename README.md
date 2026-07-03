@@ -4,6 +4,7 @@ PulseView/libsigrokdecode protocol decoders for validated BMS/inverter captures.
 
 Active decoders:
 
+- `China Tower Modbus`: China Tower / JK 008 RS485 Modbus RTU frames.
 - `Growatt RS485`: Growatt Modbus RTU frames over UART/RS485.
 - `Growatt CAN`: Growatt low-voltage BMS/inverter frames over Classic CAN.
 - `Deye CAN`: Deye-compatible low-voltage BMS frames over Classic CAN.
@@ -27,6 +28,7 @@ folder exists under `decoders/`.
 
 ```text
 decoders/
+  china_tower_modbus/
   deye_can/
   goodwe_can/
   growatt_can/
@@ -37,6 +39,7 @@ decoders/
   pylon_rs485/
   victron_can/
 docs/
+  china-tower-modbus-register-map.md
   decoder-implementation-checklist.md
   deye-can-frame-map.md
   goodwe-can-frame-map.md
@@ -53,6 +56,7 @@ examples/
   direct/
   bridge_forward/
 pictures/
+  china_tower_modbus/
   deye_can/
   goodwe_can/
   growatt_can/
@@ -110,6 +114,7 @@ before adding or merging a new decoder.
 
 Active maps:
 
+- [China Tower Modbus Register Map](docs/china-tower-modbus-register-map.md)
 - [Deye CAN Frame Map](docs/deye-can-frame-map.md)
 - [GoodWe CAN Frame Map](docs/goodwe-can-frame-map.md)
 - [Growatt CAN Frame Map](docs/growatt-can-frame-map.md)
@@ -345,6 +350,35 @@ cell-voltage blocks, cell average/delta/index registers, MOS/battery
 temperatures, pack voltage/current, SOC/SOH, capacities, cycles, and candidate
 alarm/status fields.
 
+## China Tower Modbus Decoder
+
+`decoders/china_tower_modbus` stacks above the built-in `UART` decoder:
+
+```text
+logic -> uart -> china_tower_modbus
+```
+
+Typical logic-level UART settings:
+
+- baud: `9600`
+- data bits: `8`
+- parity: `none`
+- stop bits: `1`
+- bit order: `lsb-first`
+- line inversion: depends on the probe point/transceiver output
+
+The current bridge capture uses `CH0`, UART `invert_rx=yes`, and the JK app
+profile `008` route shown in the translator UI as
+`CHINA_TOWER_MODBUS / JK 008 (RS485 Poller)`.
+
+The current published decoder is visible in PulseView as
+`China Tower Modbus v2026.07.03a`. It handles China Tower / JK 008 Modbus RTU
+requests, responses, exceptions, CRC checks, summary registers, per-cell
+voltage registers, and warning/protection/status flag blocks.
+
+The current bridge-mode raw capture and PulseView session are listed in
+`examples/README.md` as `China Tower Modbus RS485`.
+
 ## JKBMS Modbus Capture Screenshots
 
 The current screenshots use a Growatt inverter, a JK BMS, RS485 through the
@@ -364,6 +398,20 @@ translator bridge, a Kingst LA2016 logic analyzer, and
 ![JKBMS Modbus response for 0x1288](pictures/jkbms_modbus/jkbms-modbus-0x1288-response.png)
 
 ![JKBMS Modbus response for 0x1200](pictures/jkbms_modbus/jkbms-modbus-0x1200-response.png)
+
+## China Tower Modbus Capture Screenshots
+
+The current screenshots use a Growatt inverter, a JK BMS, RS485 through the
+translator bridge, a Kingst LA2016 logic analyzer, and
+`China Tower Modbus v2026.07.03a`.
+
+![China Tower Modbus request for 0x0019](pictures/china_tower_modbus/china-tower-modbus-0x0019-request.png)
+
+![China Tower Modbus status response 0x0019..0x001B](pictures/china_tower_modbus/china-tower-modbus-0x0019-status-response.png)
+
+![China Tower Modbus runtime and first cell block 0x0000..0x000C](pictures/china_tower_modbus/china-tower-modbus-0x0000-runtime-cells.png)
+
+![China Tower Modbus cell voltages 0x0009..0x0018](pictures/china_tower_modbus/china-tower-modbus-0x0009-cell-voltages.png)
 
 ## JKBMS CAN Capture Screenshots
 

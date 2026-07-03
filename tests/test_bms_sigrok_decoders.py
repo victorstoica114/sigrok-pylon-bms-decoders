@@ -6,6 +6,7 @@ from pathlib import Path
 
 
 DECODERS_DIR = Path(__file__).resolve().parents[1] / "decoders"
+CHINA_TOWER_MODBUS_DECODER_DIR = DECODERS_DIR / "china_tower_modbus"
 DEYE_CAN_DECODER_DIR = DECODERS_DIR / "deye_can"
 GOODWE_CAN_DECODER_DIR = DECODERS_DIR / "goodwe_can"
 GROWATT_CAN_DECODER_DIR = DECODERS_DIR / "growatt_can"
@@ -26,6 +27,7 @@ def load_module(name, path):
     return module
 
 
+china_tower = load_module("china_tower_modbus_helper", CHINA_TOWER_MODBUS_DECODER_DIR / "china_tower_modbus.py")
 deye_can = load_module("deye_can_helper", DEYE_CAN_DECODER_DIR / "deye_can.py")
 goodwe_can = load_module("goodwe_can_helper", GOODWE_CAN_DECODER_DIR / "goodwe_can.py")
 growatt_rs485 = load_module("growatt_rs485_helper", GROWATT_RS485_DECODER_DIR / "growatt.py")
@@ -62,6 +64,7 @@ def test_active_decoder_folders_are_validated_only():
     decoder_names = sorted(path.name for path in DECODERS_DIR.iterdir() if path.is_dir())
 
     assert decoder_names == [
+        "china_tower_modbus",
         "deye_can",
         "goodwe_can",
         "growatt_can",
@@ -100,6 +103,54 @@ def test_growatt_rs485_parses_modbus_request_and_response():
     assert "response regs 0x0013..0x001A" in growatt_rs485.describe_frame(response)
     assert "SOC=99%" in growatt_rs485.describe_frame(response)
     assert "pack_v=57.15V" in growatt_rs485.describe_frame(response)
+
+
+def test_china_tower_modbus_parses_status_poll_block():
+    request = china_tower.parse_frame(
+        with_modbus_crc([0x01, 0x03, 0x00, 0x19, 0x00, 0x03], china_tower.modbus_crc16)
+    )
+    response = china_tower.parse_frame(
+        with_modbus_crc([0x01, 0x03, 0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00], china_tower.modbus_crc16),
+        request,
+    )
+    decoded = china_tower.describe_frame(response)
+
+    assert request["crc_ok"]
+    assert request["start"] == 0x0019
+    assert request["count"] == 3
+    assert response["crc_ok"]
+    assert response["registers"][0]["addr"] == 0x0019
+    assert response["registers"][-1]["addr"] == 0x001B
+    assert "warning=0x0000 (none)" in decoded
+    assert "protection=0x0000 (none)" in decoded
+    assert "status=0x0000 (none)" in decoded
+
+
+def test_china_tower_modbus_parses_runtime_and_cell_values():
+    request = china_tower.parse_frame(
+        with_modbus_crc([0x01, 0x03, 0x00, 0x00, 0x00, 0x0D], china_tower.modbus_crc16)
+    )
+    response_words = [
+        0x1655, 0x0010, 0x005D, 0x01F4, 0x0064, 0x0000, 0x001A,
+        0x0019, 0x001A, 0x0DF7, 0x0DF4, 0x0DF5, 0x0DF5,
+    ]
+    response = china_tower.parse_frame(
+        with_modbus_crc([0x01, 0x03, 0x1A] + words_to_bytes(response_words), china_tower.modbus_crc16),
+        request,
+    )
+    decoded = china_tower.describe_frame(response)
+
+    assert response["crc_ok"]
+    assert response["registers"][0]["addr"] == 0x0000
+    assert response["registers"][-1]["addr"] == 0x000C
+    assert "pack_v=57.17V" in decoded
+    assert "cell_count=16" in decoded
+    assert "SOC=93%" in decoded
+    assert "temp1=26C" in decoded
+    assert "temp2=25C" in decoded
+    assert "mos_temp=26C" in decoded
+    assert "C01=3.575V" in decoded
+    assert "min=3.572V#2" in decoded
 
 
 def test_growatt_can_describes_live_frames():
@@ -656,6 +707,21 @@ def test_sigrok_jkbms_modbus_package_exports_decoder(monkeypatch):
     assert any(option["id"] == "inter_frame_gap_us" for option in module.Decoder.options)
 
 
+def test_sigrok_china_tower_modbus_package_exports_decoder(monkeypatch):
+    stub_sigrokdecode = types.SimpleNamespace(Decoder=object, OUTPUT_ANN=1)
+    monkeypatch.setitem(sys.modules, "sigrokdecode", stub_sigrokdecode)
+    sys.path.insert(0, str(DECODERS_DIR))
+
+    for name in ("china_tower_modbus", "china_tower_modbus.pd", "china_tower_modbus.china_tower_modbus"):
+        sys.modules.pop(name, None)
+
+    module = importlib.import_module("china_tower_modbus")
+
+    assert module.Decoder.id == "china_tower_modbus"
+    assert module.Decoder.inputs == ["uart"]
+    assert any(option["id"] == "inter_frame_gap_us" for option in module.Decoder.options)
+
+
 def test_sigrok_pylon_rs485_package_exports_decoder(monkeypatch):
     stub_sigrokdecode = types.SimpleNamespace(Decoder=object, OUTPUT_ANN=1)
     monkeypatch.setitem(sys.modules, "sigrokdecode", stub_sigrokdecode)
@@ -753,4 +819,44 @@ def test_sigrok_jkbms_modbus_decoder_emits_annotations_for_uart_frames(monkeypat
     assert any("JKBMS Modbus req" in text for text in texts)
     assert any("JKBMS Modbus rsp" in text for text in texts)
     assert any("0x1290 pack_v=57.142V" in text for text in texts)
+
+
+def test_sigrok_china_tower_modbus_decoder_emits_annotations_for_uart_frames(monkeypatch):
+    class FakeSrdDecoder:
+        def register(self, output):
+            return output
+
+        def put(self, ss, es, output, data):
+            self.captured.append((ss, es, output, data))
+
+    stub_sigrokdecode = types.SimpleNamespace(Decoder=FakeSrdDecoder, OUTPUT_ANN=1)
+    monkeypatch.setitem(sys.modules, "sigrokdecode", stub_sigrokdecode)
+    sys.path.insert(0, str(DECODERS_DIR))
+
+    for name in ("china_tower_modbus", "china_tower_modbus.pd", "china_tower_modbus.china_tower_modbus"):
+        sys.modules.pop(name, None)
+
+    module = importlib.import_module("china_tower_modbus")
+    decoder = module.Decoder()
+    decoder.captured = []
+    decoder.start()
+
+    request = with_modbus_crc([0x01, 0x03, 0x00, 0x19, 0x00, 0x03], china_tower.modbus_crc16)
+    response = with_modbus_crc([0x01, 0x03, 0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00], china_tower.modbus_crc16)
+
+    for idx, byte in enumerate(request):
+        decoder.decode(idx, idx + 1, ("DATA", 1, (byte, [])))
+    for idx, byte in enumerate(response, start=100):
+        decoder.decode(idx, idx + 1, ("DATA", 0, (byte, [])))
+
+    texts = [
+        text
+        for _ss, _es, output, data in decoder.captured
+        if output == stub_sigrokdecode.OUTPUT_ANN
+        for text in data[1]
+    ]
+
+    assert any("China Tower Modbus req" in text for text in texts)
+    assert any("China Tower Modbus rsp" in text for text in texts)
+    assert any("0x0019 warning=0x0000" in text for text in texts)
 

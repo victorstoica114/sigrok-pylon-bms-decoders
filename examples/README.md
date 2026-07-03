@@ -20,6 +20,7 @@ Current raw captures:
 
 | Translator mode | Test topology | Protocol | File | Description |
 | --- | --- | --- | --- | --- |
+| Bridge | Growatt inverter <-> bridge <-> JKBMS | China Tower Modbus RS485 | `bridge/china-tower-modbus-rs485-raw-capture.sr` | China Tower / JK 008 RS485 polling. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | Deye CAN | `bridge/deye-can-raw-capture.sr` | Deye-compatible CAN traffic. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | GoodWe CAN | `bridge/goodwe-can-raw-capture.sr` | GoodWe-compatible CAN traffic. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | Growatt CAN | `bridge/growatt-can-raw-capture.sr` | Inverter CAN traffic. |
@@ -36,6 +37,7 @@ Current PulseView session files:
 
 | Translator mode | Test topology | Protocol | File | Description |
 | --- | --- | --- | --- | --- |
+| Bridge | Growatt inverter <-> bridge <-> JKBMS | China Tower Modbus RS485 | `bridge/china-tower-modbus-rs485-pulseview-session.pvs` | UART and China Tower decoder layout. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | Deye CAN | `bridge/deye-can-pulseview-session.pvs` | CAN and Deye decoder layout. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | GoodWe CAN | `bridge/goodwe-can-pulseview-session.pvs` | CAN and GoodWe decoder layout. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | Growatt CAN | `bridge/growatt-can-pulseview-session.pvs` | CAN decoder layout. |
