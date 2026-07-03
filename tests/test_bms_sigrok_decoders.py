@@ -12,6 +12,7 @@ GROWATT_CAN_DECODER_DIR = DECODERS_DIR / "growatt_can"
 GROWATT_RS485_DECODER_DIR = DECODERS_DIR / "growatt_rs485"
 JKBMS_MODBUS_DECODER_DIR = DECODERS_DIR / "jkbms_modbus"
 JKBMS_CAN_DECODER_DIR = DECODERS_DIR / "jkbms_can"
+VICTRON_CAN_DECODER_DIR = DECODERS_DIR / "victron_can"
 PULSEVIEW_DECODER_DIR = Path(r"C:\Program Files\sigrok\PulseView\share\libsigrokdecode\decoders")
 PULSEVIEW_SRD_DIR = Path(r"C:\Program Files\sigrok\PulseView\share\libsigrokdecode")
 
@@ -29,6 +30,7 @@ growatt_rs485 = load_module("growatt_rs485_helper", GROWATT_RS485_DECODER_DIR / 
 growatt_can = load_module("growatt_can_helper", GROWATT_CAN_DECODER_DIR / "growatt_can.py")
 jkbms = load_module("jkbms_modbus_helper", JKBMS_MODBUS_DECODER_DIR / "jkbms_modbus.py")
 jkbms_can = load_module("jkbms_can_helper", JKBMS_CAN_DECODER_DIR / "jkbms_can.py")
+victron_can = load_module("victron_can_helper", VICTRON_CAN_DECODER_DIR / "victron_can.py")
 
 
 def with_modbus_crc(body, crc_func=growatt_rs485.modbus_crc16):
@@ -54,6 +56,7 @@ def test_active_decoder_folders_are_validated_only():
         "growatt_rs485",
         "jkbms_can",
         "jkbms_modbus",
+        "victron_can",
     ]
 
 
@@ -164,6 +167,38 @@ def test_goodwe_can_describes_native_frames():
     assert "V=56.9V" in goodwe_can.describe_packet(pack)
     assert "I=-2.0A" in goodwe_can.describe_packet(pack)
     assert "temp=29.8C" in goodwe_can.describe_packet(pack)
+
+
+def test_victron_can_describes_live_frames():
+    limits = ("standard", 0x351, "data", 8, [0x9E, 0x02, 0x7C, 0x01, 0x6C, 0x07, 0xC6, 0x01])
+    soc = ("standard", 0x355, "data", 8, [0x63, 0x00, 0x64, 0x00, 0x8E, 0x26, 0x00, 0x00])
+    pack = ("standard", 0x356, "data", 8, [0x52, 0x16, 0x00, 0x00, 0x34, 0x01, 0x00, 0x00])
+    vendor = ("standard", 0x35A, "data", 8, [0xA8, 0xA8, 0x02, 0x00, 0xA8, 0xA8, 0x02, 0x02])
+
+    assert "chgV=67.0V" in victron_can.describe_packet(limits)
+    assert "chgI=38.0A" in victron_can.describe_packet(limits)
+    assert "disI=190.0A" in victron_can.describe_packet(limits)
+    assert "lowV=45.4V" in victron_can.describe_packet(limits)
+    assert "charge=ON" in victron_can.describe_packet(limits)
+    assert "discharge=ON" in victron_can.describe_packet(limits)
+    assert "SOC=99%" in victron_can.describe_packet(soc)
+    assert "SOH=100%" in victron_can.describe_packet(soc)
+    assert "raw_tail=8E 26 00 00" in victron_can.describe_packet(soc)
+    assert "V=57.14V" in victron_can.describe_packet(pack)
+    assert "I=+0.0A" in victron_can.describe_packet(pack)
+    assert "temp=30.8C" in victron_can.describe_packet(pack)
+    assert "0x35A vendor/raw raw=A8 A8 02 00 A8 A8 02 02" == victron_can.describe_packet(vendor)
+
+
+def test_victron_can_describes_ascii_and_tentative_cell_frame():
+    manufacturer = ("standard", 0x35E, "data", 8, [0x56, 0x69, 0x63, 0x74, 0x72, 0x6F, 0x6E, 0x00])
+    cell_temps = ("standard", 0x373, "data", 8, [0xF3, 0x0D, 0xF5, 0x0D, 0x1E, 0x00, 0x1D, 0x00])
+
+    assert "ASCII 'Victron'" in victron_can.describe_packet(manufacturer)
+    assert "cell_min=3.571V" in victron_can.describe_packet(cell_temps)
+    assert "cell_max=3.573V" in victron_can.describe_packet(cell_temps)
+    assert "t1=30.0C" in victron_can.describe_packet(cell_temps)
+    assert "t2=29.0C" in victron_can.describe_packet(cell_temps)
 
 
 def test_jkbms_can_describes_live_frames_and_extended_cells():
@@ -360,6 +395,51 @@ def test_sigrok_goodwe_can_decoder_derives_bus_level_from_raw_can_lines(monkeypa
         sys.modules.pop(name, None)
 
     module = importlib.import_module("goodwe_can")
+    decoder = module.Decoder()
+
+    decoder.options = {"input_mode": "rx/canl-direct"}
+    assert decoder.derive_can_rx(1) == 1
+    assert decoder.derive_can_rx(0) == 0
+
+    decoder.options = {"input_mode": "canh-inverted"}
+    assert decoder.derive_can_rx(0) == 1
+    assert decoder.derive_can_rx(1) == 0
+
+    decoder.options = {"input_mode": "canh-canl-diff"}
+    assert decoder.derive_can_rx(1, 0) == 0
+    assert decoder.derive_can_rx(0, 1) == 1
+    assert decoder.derive_can_rx(1, 1) == 1
+
+
+def test_sigrok_victron_can_package_exports_decoder(monkeypatch):
+    stub_sigrokdecode = types.SimpleNamespace(Decoder=object, OUTPUT_ANN=1, OUTPUT_PYTHON=2)
+    monkeypatch.setitem(sys.modules, "sigrokdecode", stub_sigrokdecode)
+    sys.path.insert(0, str(PULSEVIEW_SRD_DIR))
+    sys.path.insert(0, str(PULSEVIEW_DECODER_DIR))
+    sys.path.insert(0, str(DECODERS_DIR))
+
+    for name in ("can", "can.pd", "victron_can", "victron_can.pd", "victron_can.victron_can"):
+        sys.modules.pop(name, None)
+
+    module = importlib.import_module("victron_can")
+
+    assert module.Decoder.id == "victron_can"
+    assert module.Decoder.inputs == ["logic"]
+    assert victron_can.VERSION in module.Decoder.name
+    assert any(option["id"] == "input_mode" for option in module.Decoder.options)
+
+
+def test_sigrok_victron_can_decoder_derives_bus_level_from_raw_can_lines(monkeypatch):
+    stub_sigrokdecode = types.SimpleNamespace(Decoder=object, OUTPUT_ANN=1, OUTPUT_PYTHON=2)
+    monkeypatch.setitem(sys.modules, "sigrokdecode", stub_sigrokdecode)
+    sys.path.insert(0, str(PULSEVIEW_SRD_DIR))
+    sys.path.insert(0, str(PULSEVIEW_DECODER_DIR))
+    sys.path.insert(0, str(DECODERS_DIR))
+
+    for name in ("can", "can.pd", "victron_can", "victron_can.pd", "victron_can.victron_can"):
+        sys.modules.pop(name, None)
+
+    module = importlib.import_module("victron_can")
     decoder = module.Decoder()
 
     decoder.options = {"input_mode": "rx/canl-direct"}

@@ -8,6 +8,7 @@ Active decoders:
 - `Growatt CAN`: Growatt low-voltage BMS/inverter frames over Classic CAN.
 - `Deye CAN`: Deye-compatible low-voltage BMS frames over Classic CAN.
 - `GoodWe CAN`: GoodWe-compatible low-voltage BMS frames over Classic CAN.
+- `Victron CAN`: Victron-compatible low-voltage BMS frames over Classic CAN.
 - `JKBMS Modbus`: JK BMS RS485 Modbus RTU runtime frames.
 - `JKBMS CAN`: JK BMS native CAN V2.0 frames over Classic CAN.
 
@@ -30,6 +31,7 @@ decoders/
   growatt_rs485/
   jkbms_modbus/
   jkbms_can/
+  victron_can/
 docs/
   decoder-implementation-checklist.md
   deye-can-frame-map.md
@@ -38,6 +40,7 @@ docs/
   growatt-rs485-register-map.md
   jkbms-modbus-register-map.md
   jkbms-can-frame-map.md
+  victron-can-frame-map.md
   pylon-can-frame-map.md
   pylon-rs485-frame-map.md
 examples/
@@ -52,6 +55,7 @@ pictures/
   growatt_rs485/
   jkbms_modbus/
   jkbms_can/
+  victron_can/
 tests/
 install-pulseview-decoders.ps1
 start-pulseview.ps1
@@ -106,6 +110,7 @@ Active maps:
 - [Growatt RS485 Register Map](docs/growatt-rs485-register-map.md)
 - [JKBMS Modbus Register Map](docs/jkbms-modbus-register-map.md)
 - [JKBMS CAN Frame Map](docs/jkbms-can-frame-map.md)
+- [Victron CAN Frame Map](docs/victron-can-frame-map.md)
 
 Staging/reference maps currently present for future promotion:
 
@@ -198,6 +203,30 @@ compatibility dialect observed in the bridge capture.
 
 The current bridge-mode raw capture and PulseView session are listed in
 `examples/README.md` as `GoodWe CAN`.
+
+## Victron CAN Decoder
+
+`decoders/victron_can` is a standalone decoder. Add `Victron CAN` directly from
+the PulseView decoder selector.
+
+Typical settings:
+
+- nominal bitrate: `500000`
+- fast bitrate: unused for Classic CAN; leave at `500000`
+- sample point: start with `70%`; try `75%` or `80%` if annotations are unstable
+- input mode:
+  - `rx/canl-direct` for transceiver `RXD` or digitized `CANL`
+  - `canh-inverted` for digitized `CANH` when recessive/dominant are inverted
+  - `canh-canl-diff` with CH0 as `CANH` and CH1 as `CANL`
+
+The current published decoder is visible in PulseView as
+`Victron CAN v2026.07.03a`. It handles the validated Victron-compatible
+low-voltage profile used by the bridge: charge/discharge limits, SOC/SOH, pack
+voltage/current/temperature, alarms/status raw frames, vendor raw frames,
+manufacturer text, battery raw words, and ASCII/raw extension frames.
+
+The current bridge-mode raw capture and PulseView session are listed in
+`examples/README.md` as `Victron CAN`.
 
 ## JKBMS CAN Decoder
 
@@ -316,6 +345,19 @@ The current screenshots use a GoodWe-compatible CAN capture decoded with
 ![GoodWe CAN pack telemetry 0x356](pictures/goodwe_can/goodwe-can-0x356-pack-telemetry.png)
 
 ![GoodWe CAN module info 0x359](pictures/goodwe_can/goodwe-can-0x359-module-info.png)
+
+## Victron CAN Capture Screenshots
+
+The current screenshots use a Victron-compatible CAN capture decoded with
+`Victron CAN v2026.07.03a`.
+
+![Victron CAN limits 0x351](pictures/victron_can/victron-can-0x351-limits.png)
+
+![Victron CAN SOC/SOH 0x355](pictures/victron_can/victron-can-0x355-soc-soh.png)
+
+![Victron CAN pack telemetry 0x356](pictures/victron_can/victron-can-0x356-pack-telemetry.png)
+
+![Victron CAN vendor raw 0x35A](pictures/victron_can/victron-can-0x35a-vendor-raw.png)
 
 ## Tests
 
