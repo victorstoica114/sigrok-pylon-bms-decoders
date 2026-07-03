@@ -137,9 +137,16 @@ Typical settings:
 - bit order: `lsb-first`
 - line inversion: depends on the probe point/transceiver output
 
+For direct digital probing of RS485 A/B with the LA2016, validate both
+polarities. The current bridge capture uses `9600 8N1`, `CH0`, and UART
+`invert_rx=yes`.
+
 The decoder handles Growatt Modbus RTU requests, responses, exceptions, CRC
 checks, and known BMS register blocks including status, protection flags, SOC,
 pack voltage/current, cell extremes, and cell voltage registers.
+
+The current bridge-mode raw capture and PulseView session are listed in
+`examples/README.md` as `Growatt RS485`.
 
 ## Growatt CAN Decoder
 
@@ -378,6 +385,23 @@ The current screenshots use a JK BMS CAN capture decoded with
 ![JKBMS CAN BMS status raw 0x18F528F4](pictures/jkbms_can/jkbms-can-0x18f528f4-bms-status-raw.png)
 
 ![JKBMS CAN charge limits 0x1806E5F4](pictures/jkbms_can/jkbms-can-0x1806e5f4-charge-limits.png)
+
+## Growatt RS485 Capture Screenshots
+
+The current screenshots use a Growatt RS485 bridge capture decoded with
+`Growatt RS485`.
+
+![Growatt RS485 request for 0x0071](pictures/growatt_rs485/growatt-rs485-0x0071-request.png)
+
+![Growatt RS485 cell voltages 0x0071..0x0080](pictures/growatt_rs485/growatt-rs485-0x0071-0x0080-cell-voltages.png)
+
+![Growatt RS485 cell-voltage request and response 0x0071..0x0080](pictures/growatt_rs485/growatt-rs485-0x0071-0x0080-full-frame.png)
+
+![Growatt RS485 status and pack telemetry 0x0010..0x0017](pictures/growatt_rs485/growatt-rs485-0x0010-0x0017-status-pack.png)
+
+![Growatt RS485 limits and cell extremes 0x0020..0x002A](pictures/growatt_rs485/growatt-rs485-0x0020-0x002a-limits-cell-extremes.png)
+
+![Growatt RS485 full response 0x0020..0x002A](pictures/growatt_rs485/growatt-rs485-0x0020-0x002a-full-response.png)
 
 ## Deye CAN Capture Screenshots
 

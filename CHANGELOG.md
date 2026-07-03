@@ -34,6 +34,8 @@
 ### Changed
 
 - Active decoder set is currently limited to validated decoders: `Deye CAN`, `GoodWe CAN`, `Growatt CAN`, `Growatt RS485`, `JKBMS CAN`, `JKBMS Modbus`, `Pylon CAN`, `Pylon RS485`, and `Victron CAN`.
+- Updated bridge-mode example capture and PulseView session for Growatt RS485 inverter traffic.
+- Updated README screenshots for Growatt RS485 cell-voltage, status/pack telemetry, and limits/cell-extreme response blocks.
 - Updated bridge-mode example capture and PulseView session for JKBMS Modbus RS485 runtime polling.
 - Updated README screenshots for JKBMS Modbus RTU request, cell, cell-summary, SOC/SOH, and runtime register response blocks.
 - Repository rule clarified: decoders still under field test stay out of `decoders/` until they are validated and explicitly promoted.
