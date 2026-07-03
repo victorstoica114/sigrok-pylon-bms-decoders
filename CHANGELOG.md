@@ -14,8 +14,9 @@
 - PulseView/libsigrokdecode `PACE Modbus v2026.07.04a` decoder for validated PACE BMS RS485 Modbus V1.3 frames.
 - PulseView/libsigrokdecode `Pylon CAN v2026.07.03a` decoder for validated Pylon-compatible low-voltage CAN frames.
 - PulseView/libsigrokdecode `Pylon RS485 v2026.07.03a` decoder for validated Pylon-compatible RS485 ASCII frames.
+- PulseView/libsigrokdecode `SMA CAN v2026.07.04a` decoder for validated SMA Sunny Island compatible low-voltage CAN frames.
 - PulseView/libsigrokdecode `Victron CAN v2026.07.03a` decoder for validated Victron-compatible low-voltage CAN frames.
-- China Tower Modbus, Deye CAN, GoodWe CAN, Growatt CAN, Growatt RS485, JKBMS CAN, JKBMS Modbus, PACE Modbus, Pylon CAN, Pylon RS485, and Victron CAN protocol map documentation.
+- China Tower Modbus, Deye CAN, GoodWe CAN, Growatt CAN, Growatt RS485, JKBMS CAN, JKBMS Modbus, PACE Modbus, Pylon CAN, Pylon RS485, SMA CAN, and Victron CAN protocol map documentation.
 - Windows installer and launcher scripts that keep built-in PulseView decoders visible alongside custom BMS decoders.
 - Host-side parser/decoder regression tests for the active decoder set.
 - Example capture folders split by topology: bridge, direct inverter/BMS, and bridge forward mode.
@@ -26,6 +27,7 @@
 - Bridge-mode example capture and PulseView session for PACE Modbus RS485 traffic.
 - Bridge-mode example capture and PulseView session for Pylon CAN traffic.
 - Bridge-mode example capture and PulseView session for Pylon RS485 ASCII traffic.
+- Bridge-mode example capture and PulseView session for SMA CAN traffic.
 - Bridge-mode example capture and PulseView session for Victron CAN traffic.
 - README screenshots for Deye CAN SOC/SOH, pack telemetry, status, identity, and cell extreme frames.
 - README screenshots for China Tower Modbus request, status, runtime, and cell register blocks.
@@ -35,11 +37,12 @@
 - README screenshots for PACE Modbus runtime, cell-voltage, and temperature register blocks.
 - README screenshots for Pylon CAN limits, SOC/SOH, pack telemetry, module info, status, identity, and cell extreme frames.
 - README screenshots for Pylon RS485 analog telemetry, cell request, alarm/status flags, and charge/discharge status frames.
+- README screenshots for SMA CAN limits, pack telemetry, vendor, manufacturer, and battery info frames.
 - README screenshots for Victron CAN limits, SOC/SOH, pack telemetry, and vendor raw frames.
 
 ### Changed
 
-- Active decoder set is currently limited to validated decoders: `China Tower Modbus`, `Deye CAN`, `GoodWe CAN`, `Growatt CAN`, `Growatt RS485`, `JKBMS CAN`, `JKBMS Modbus`, `PACE Modbus`, `Pylon CAN`, `Pylon RS485`, and `Victron CAN`.
+- Active decoder set is currently limited to validated decoders: `China Tower Modbus`, `Deye CAN`, `GoodWe CAN`, `Growatt CAN`, `Growatt RS485`, `JKBMS CAN`, `JKBMS Modbus`, `PACE Modbus`, `Pylon CAN`, `Pylon RS485`, `SMA CAN`, and `Victron CAN`.
 - Updated bridge-mode example capture and PulseView session for Growatt RS485 inverter traffic.
 - Updated README screenshots for Growatt RS485 cell-voltage, status/pack telemetry, and limits/cell-extreme response blocks.
 - Updated bridge-mode example capture and PulseView session for JKBMS Modbus RS485 runtime polling.

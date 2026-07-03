@@ -11,6 +11,7 @@ Active decoders:
 - `GoodWe CAN`: GoodWe-compatible low-voltage BMS frames over Classic CAN.
 - `Pylon CAN`: Pylon-compatible low-voltage BMS frames over Classic CAN.
 - `Pylon RS485`: Pylon-compatible ASCII frames over UART/RS485.
+- `SMA CAN`: SMA Sunny Island compatible low-voltage BMS frames over Classic CAN.
 - `Victron CAN`: Victron-compatible low-voltage BMS frames over Classic CAN.
 - `JKBMS Modbus`: JK BMS RS485 Modbus RTU runtime frames.
 - `JKBMS CAN`: JK BMS native CAN V2.0 frames over Classic CAN.
@@ -39,6 +40,7 @@ decoders/
   pace_modbus/
   pylon_can/
   pylon_rs485/
+  sma_can/
   victron_can/
 docs/
   china-tower-modbus-register-map.md
@@ -52,6 +54,7 @@ docs/
   pace-modbus-register-map.md
   pylon-can-frame-map.md
   pylon-rs485-frame-map.md
+  sma-can-frame-map.md
   victron-can-frame-map.md
 examples/
   README.md
@@ -69,6 +72,7 @@ pictures/
   pace_modbus/
   pylon_can/
   pylon_rs485/
+  sma_can/
   victron_can/
 tests/
 install-pulseview-decoders.ps1
@@ -128,6 +132,7 @@ Active maps:
 - [PACE Modbus Register Map](docs/pace-modbus-register-map.md)
 - [Pylon CAN Frame Map](docs/pylon-can-frame-map.md)
 - [Pylon RS485 Frame Map](docs/pylon-rs485-frame-map.md)
+- [SMA CAN Frame Map](docs/sma-can-frame-map.md)
 - [Victron CAN Frame Map](docs/victron-can-frame-map.md)
 
 ## Growatt RS485 Decoder
@@ -299,6 +304,32 @@ manufacturer text, battery raw words, and ASCII/raw extension frames.
 
 The current bridge-mode raw capture and PulseView session are listed in
 `examples/README.md` as `Victron CAN`.
+
+## SMA CAN Decoder
+
+`decoders/sma_can` is a standalone decoder. Add `SMA CAN` directly from the
+PulseView decoder selector.
+
+Typical settings:
+
+- nominal bitrate: `500000`
+- fast bitrate: unused for Classic CAN; leave at `500000`
+- sample point: start with `70%`; try `75%` or `80%` if annotations are unstable
+- input mode:
+  - `rx/canl-direct` for transceiver `RXD` or digitized `CANL`
+  - `canh-inverted` for digitized `CANH` when recessive/dominant are inverted
+  - `canh-canl-diff` with CH0 as `CANH` and CH1 as `CANL`
+
+The current bridge capture uses `CH0` and `input_mode=canh-inverted`.
+
+The current published decoder is visible in PulseView as
+`SMA CAN v2026.07.04a`. It handles the validated SMA Sunny Island compatible
+low-voltage profile used by the bridge: limits, SOC/SOH, pack telemetry,
+alarms/status raw frames, vendor raw frames, manufacturer text, and battery
+info raw frames.
+
+The current bridge-mode raw capture and PulseView session are listed in
+`examples/README.md` as `SMA CAN`.
 
 ## JKBMS CAN Decoder
 
@@ -563,6 +594,21 @@ The current screenshots use a Pylon-compatible RS485 ASCII capture decoded with
 ![Pylon RS485 alarm/status flags 0x62](pictures/pylon_rs485/pylon-rs485-0x62-status-flags.png)
 
 ![Pylon RS485 charge/discharge status 0x63](pictures/pylon_rs485/pylon-rs485-0x63-charge-discharge-status.png)
+
+## SMA CAN Capture Screenshots
+
+The current screenshots use an SMA-compatible CAN capture decoded with
+`SMA CAN v2026.07.04a`.
+
+![SMA CAN limits 0x351](pictures/sma_can/sma-can-0x351-limits.png)
+
+![SMA CAN pack telemetry 0x356](pictures/sma_can/sma-can-0x356-pack-telemetry.png)
+
+![SMA CAN vendor raw 0x35A](pictures/sma_can/sma-can-0x35a-vendor-raw.png)
+
+![SMA CAN manufacturer 0x35E](pictures/sma_can/sma-can-0x35e-manufacturer.png)
+
+![SMA CAN battery info 0x35F](pictures/sma_can/sma-can-0x35f-battery-info.png)
 
 ## Victron CAN Capture Screenshots
 
