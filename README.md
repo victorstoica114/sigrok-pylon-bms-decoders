@@ -7,6 +7,7 @@ Active decoders:
 - `Growatt RS485`: Growatt Modbus RTU frames over UART/RS485.
 - `Growatt CAN`: Growatt low-voltage BMS/inverter frames over Classic CAN.
 - `JKBMS Modbus`: JK BMS RS485 Modbus RTU runtime frames.
+- `JKBMS CAN`: JK BMS native CAN V2.0 frames over Classic CAN.
 
 Rule for this repository: `decoders/` contains only decoders that were validated
 on captures and explicitly accepted for publication. Decoders that are still in
@@ -24,11 +25,13 @@ decoders/
   growatt_can/
   growatt_rs485/
   jkbms_modbus/
+  jkbms_can/
 docs/
   decoder-implementation-checklist.md
   growatt-can-frame-map.md
   growatt-rs485-register-map.md
   jkbms-modbus-register-map.md
+  jkbms-can-frame-map.md
   pylon-can-frame-map.md
   pylon-rs485-frame-map.md
 examples/
@@ -40,6 +43,7 @@ pictures/
   growatt_can/
   growatt_rs485/
   jkbms_modbus/
+  jkbms_can/
 tests/
 install-pulseview-decoders.ps1
 start-pulseview.ps1
@@ -91,6 +95,7 @@ Active maps:
 - [Growatt CAN Frame Map](docs/growatt-can-frame-map.md)
 - [Growatt RS485 Register Map](docs/growatt-rs485-register-map.md)
 - [JKBMS Modbus Register Map](docs/jkbms-modbus-register-map.md)
+- [JKBMS CAN Frame Map](docs/jkbms-can-frame-map.md)
 
 Staging/reference maps currently present for future promotion:
 
@@ -137,6 +142,29 @@ The decoder covers the Growatt low-voltage CAN frame IDs used by the bridge,
 including pack telemetry, limits, status/alarms, cell extremes, temperatures,
 and metadata frames.
 
+## JKBMS CAN Decoder
+
+`decoders/jkbms_can` is a standalone decoder. Add `JKBMS CAN` directly from the
+PulseView decoder selector.
+
+Typical settings:
+
+- nominal bitrate: `250000`
+- fast bitrate: unused for Classic CAN; leave at `250000`
+- sample point: start with `70%`; try `75%` or `80%` if annotations are unstable
+- input mode:
+  - `rx/canl-direct` for transceiver `RXD` or digitized `CANL`
+  - `canh-inverted` for digitized `CANH` when recessive/dominant are inverted
+  - `canh-canl-diff` with CH0 as `CANH` and CH1 as `CANL`
+
+The current published decoder is visible in PulseView as
+`JKBMS CAN v2026.07.03a`. It handles the validated JK app profile
+`000 - JK BMS CAN Protocol (250K) V2.0`: pack voltage/current/SOC, cell
+extremes, temperature summary, alarm severity map, extended cell-voltage
+frames, extended temperatures, capacity/cycles, raw BMS info/status frames, and
+charge-info frames. Per-cell voltage decoding is capped to cells `1..25`,
+matching the validated bridge implementation.
+
 ## JKBMS Modbus Decoder
 
 `decoders/jkbms_modbus` stacks above the built-in `UART` decoder:
@@ -180,6 +208,27 @@ translator bridge, a Kingst LA2016 logic analyzer, and
 
 ![JKBMS Modbus response for 0x1200](pictures/jkbms_modbus/jkbms-modbus-0x1200-response.png)
 
+## JKBMS CAN Capture Screenshots
+
+The current screenshots use a JK BMS CAN capture decoded with
+`JKBMS CAN v2026.07.03a`.
+
+![JKBMS CAN pack status 0x02F4](pictures/jkbms_can/jkbms-can-0x02f4-pack-status.png)
+
+![JKBMS CAN cell extremes 0x04F4](pictures/jkbms_can/jkbms-can-0x04f4-cell-extremes.png)
+
+![JKBMS CAN temperature summary 0x05F4](pictures/jkbms_can/jkbms-can-0x05f4-temperature-summary.png)
+
+![JKBMS CAN capacity and cycles 0x18F128F4](pictures/jkbms_can/jkbms-can-0x18f128f4-capacity-cycles.png)
+
+![JKBMS CAN extended temperatures 0x18F228F4](pictures/jkbms_can/jkbms-can-0x18f228f4-extended-temperatures.png)
+
+![JKBMS CAN BMS info raw 0x18F428F4](pictures/jkbms_can/jkbms-can-0x18f428f4-bms-info-raw.png)
+
+![JKBMS CAN BMS status raw 0x18F528F4](pictures/jkbms_can/jkbms-can-0x18f528f4-bms-status-raw.png)
+
+![JKBMS CAN charge limits 0x1806E5F4](pictures/jkbms_can/jkbms-can-0x1806e5f4-charge-limits.png)
+
 ## Tests
 
 Run parser/decoder helper tests with:
@@ -189,3 +238,4 @@ python -m pytest tests -q
 ```
 
 The tests do not require PulseView to be running.
+

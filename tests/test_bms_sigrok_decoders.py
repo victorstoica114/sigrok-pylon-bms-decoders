@@ -9,6 +9,7 @@ DECODERS_DIR = Path(__file__).resolve().parents[1] / "decoders"
 GROWATT_CAN_DECODER_DIR = DECODERS_DIR / "growatt_can"
 GROWATT_RS485_DECODER_DIR = DECODERS_DIR / "growatt_rs485"
 JKBMS_MODBUS_DECODER_DIR = DECODERS_DIR / "jkbms_modbus"
+JKBMS_CAN_DECODER_DIR = DECODERS_DIR / "jkbms_can"
 PULSEVIEW_DECODER_DIR = Path(r"C:\Program Files\sigrok\PulseView\share\libsigrokdecode\decoders")
 PULSEVIEW_SRD_DIR = Path(r"C:\Program Files\sigrok\PulseView\share\libsigrokdecode")
 
@@ -23,6 +24,7 @@ def load_module(name, path):
 growatt_rs485 = load_module("growatt_rs485_helper", GROWATT_RS485_DECODER_DIR / "growatt.py")
 growatt_can = load_module("growatt_can_helper", GROWATT_CAN_DECODER_DIR / "growatt_can.py")
 jkbms = load_module("jkbms_modbus_helper", JKBMS_MODBUS_DECODER_DIR / "jkbms_modbus.py")
+jkbms_can = load_module("jkbms_can_helper", JKBMS_CAN_DECODER_DIR / "jkbms_can.py")
 
 
 def with_modbus_crc(body, crc_func=growatt_rs485.modbus_crc16):
@@ -41,7 +43,7 @@ def words_to_bytes(words):
 def test_active_decoder_folders_are_validated_only():
     decoder_names = sorted(path.name for path in DECODERS_DIR.iterdir() if path.is_dir())
 
-    assert decoder_names == ["growatt_can", "growatt_rs485", "jkbms_modbus"]
+    assert decoder_names == ["growatt_can", "growatt_rs485", "jkbms_can", "jkbms_modbus"]
 
 
 def test_growatt_rs485_parses_modbus_request_and_response():
@@ -83,6 +85,33 @@ def test_growatt_can_describes_live_frames():
     assert "cell_min=3.571V#9" in growatt_can.describe_packet(packet_319)
     assert "0x322 Tmax=23.0C#1" in growatt_can.describe_packet(packet_322)
     assert "Growatt CAN 0x319" in growatt_can.frame_summary(packet_319)
+
+
+def test_jkbms_can_describes_live_frames_and_extended_cells():
+    status = ("extended", 0x02F4, "data", 8, [0xD7, 0x02, 0xA0, 0x0F, 80, 0, 100, 0])
+    extremes = ("extended", 0x04F4, "data", 8, [0x0A, 0x12, 3, 0x7C, 0x11, 12, 0, 0])
+    cell25 = ("extended", 0x18E628F4, "data", 8, [0xF2, 0x0D, 0xF3, 0x0D, 0xF4, 0x0D, 0xF5, 0x0D])
+
+    assert "V=72.7V" in jkbms_can.describe_packet(status)
+    assert "I=+0.0A" in jkbms_can.describe_packet(status)
+    assert "SOC=80%" in jkbms_can.describe_packet(status)
+    assert "cell_max=4.618V#3" in jkbms_can.describe_packet(extremes)
+    assert "cell_min=4.476V#12" in jkbms_can.describe_packet(extremes)
+    decoded_cells = jkbms_can.describe_packet(cell25)
+    assert "C25=3.570V" in decoded_cells
+    assert "C26" not in decoded_cells
+
+
+def test_jkbms_can_describes_capacity_temperatures_and_charge_info():
+    capacity = ("extended", 0x18F128F4, "data", 8, [0xF4, 0x01, 0x80, 0x02, 0x00, 0x00, 0x40, 0x00])
+    temps = ("extended", 0x18F228F4, "data", 8, [0x1F, 76, 77, 79, 75, 78, 0, 0])
+    charge = ("extended", 0x1806E5F4, "data", 8, [0x40, 0x02, 0xF4, 0x01, 0, 0, 0, 0])
+
+    assert "remain=50.0Ah" in jkbms_can.describe_packet(capacity)
+    assert "cycles=64" in jkbms_can.describe_packet(capacity)
+    assert "T1=26.0C" in jkbms_can.describe_packet(temps)
+    assert "T5=28.0C" in jkbms_can.describe_packet(temps)
+    assert "charge info V=57.6V I=50.0A" in jkbms_can.describe_packet(charge)
 
 
 def test_jkbms_modbus_parses_runtime_voltage_and_current_response():
@@ -178,6 +207,51 @@ def test_sigrok_growatt_can_decoder_derives_bus_level_from_raw_can_lines(monkeyp
     assert decoder.derive_can_rx(1, 1) == 1
 
 
+def test_sigrok_jkbms_can_package_exports_decoder(monkeypatch):
+    stub_sigrokdecode = types.SimpleNamespace(Decoder=object, OUTPUT_ANN=1, OUTPUT_PYTHON=2)
+    monkeypatch.setitem(sys.modules, "sigrokdecode", stub_sigrokdecode)
+    sys.path.insert(0, str(PULSEVIEW_SRD_DIR))
+    sys.path.insert(0, str(PULSEVIEW_DECODER_DIR))
+    sys.path.insert(0, str(DECODERS_DIR))
+
+    for name in ("can", "can.pd", "jkbms_can", "jkbms_can.pd", "jkbms_can.jkbms_can"):
+        sys.modules.pop(name, None)
+
+    module = importlib.import_module("jkbms_can")
+
+    assert module.Decoder.id == "jkbms_can"
+    assert module.Decoder.inputs == ["logic"]
+    assert jkbms_can.DECODER_VERSION in module.Decoder.name
+    assert any(option["id"] == "input_mode" for option in module.Decoder.options)
+
+
+def test_sigrok_jkbms_can_decoder_derives_bus_level_from_raw_can_lines(monkeypatch):
+    stub_sigrokdecode = types.SimpleNamespace(Decoder=object, OUTPUT_ANN=1, OUTPUT_PYTHON=2)
+    monkeypatch.setitem(sys.modules, "sigrokdecode", stub_sigrokdecode)
+    sys.path.insert(0, str(PULSEVIEW_SRD_DIR))
+    sys.path.insert(0, str(PULSEVIEW_DECODER_DIR))
+    sys.path.insert(0, str(DECODERS_DIR))
+
+    for name in ("can", "can.pd", "jkbms_can", "jkbms_can.pd", "jkbms_can.jkbms_can"):
+        sys.modules.pop(name, None)
+
+    module = importlib.import_module("jkbms_can")
+    decoder = module.Decoder()
+
+    decoder.options = {"input_mode": "rx/canl-direct"}
+    assert decoder.derive_can_rx(1) == 1
+    assert decoder.derive_can_rx(0) == 0
+
+    decoder.options = {"input_mode": "canh-inverted"}
+    assert decoder.derive_can_rx(0) == 1
+    assert decoder.derive_can_rx(1) == 0
+
+    decoder.options = {"input_mode": "canh-canl-diff"}
+    assert decoder.derive_can_rx(1, 0) == 0
+    assert decoder.derive_can_rx(0, 1) == 1
+    assert decoder.derive_can_rx(1, 1) == 1
+
+
 def test_sigrok_jkbms_modbus_package_exports_decoder(monkeypatch):
     stub_sigrokdecode = types.SimpleNamespace(Decoder=object, OUTPUT_ANN=1)
     monkeypatch.setitem(sys.modules, "sigrokdecode", stub_sigrokdecode)
@@ -231,3 +305,4 @@ def test_sigrok_jkbms_modbus_decoder_emits_annotations_for_uart_frames(monkeypat
     assert any("JKBMS Modbus req" in text for text in texts)
     assert any("JKBMS Modbus rsp" in text for text in texts)
     assert any("0x1290 pack_v=57.142V" in text for text in texts)
+
