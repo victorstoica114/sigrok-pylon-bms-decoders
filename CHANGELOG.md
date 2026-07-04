@@ -29,6 +29,7 @@
 - Bridge-mode example capture and PulseView session for Deye CAN traffic.
 - Bridge-mode example capture and PulseView session for GoodWe CAN traffic.
 - Bridge-mode example capture and PulseView session for Growatt CAN traffic with a SeplosBMS test topology.
+- Forward-mode example capture and PulseView session for Growatt CAN traffic with a JKBMS test topology.
 - Forward-mode example capture and PulseView session for Growatt CAN traffic with a SeplosBMS test topology.
 - Bridge-mode example capture and PulseView session for JKBMS CAN traffic.
 - Bridge-mode example capture and PulseView session for PACE Modbus RS485 traffic.
