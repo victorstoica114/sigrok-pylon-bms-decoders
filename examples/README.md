@@ -33,7 +33,7 @@ Current raw captures:
 | Bridge | Growatt inverter <-> bridge <-> SeplosBMS | SMA CAN | `bridge/sma-can-raw-capture.sr` | SMA-compatible CAN traffic. |
 | Bridge | Growatt inverter <-> bridge <-> SeplosBMS | Sofar CAN | `bridge/sofar-can-raw-capture.sr` | Sofar-compatible CAN traffic. |
 | Bridge | Growatt inverter <-> bridge <-> SeplosBMS | Victron CAN | `bridge/victron-can-raw-capture.sr` | Victron-compatible CAN traffic. |
-| Bridge | Growatt inverter <-> bridge <-> JKBMS | Voltronic Modbus RS485 | `bridge/voltronic-modbus-rs485-raw-capture.sr` | Voltronic/JK-007 RS485 polling. |
+| Bridge | Growatt inverter <-> bridge <-> SeplosBMS | Voltronic Modbus RS485 | `bridge/voltronic-modbus-rs485-raw-capture.sr` | Voltronic/JK-007 RS485 polling. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | WOW Modbus RS485 | `bridge/wow-modbus-rs485-raw-capture.sr` | WOW / JK 009 RS485 polling. |
 
 ## PulseView Sessions
@@ -55,7 +55,7 @@ Current PulseView session files:
 | Bridge | Growatt inverter <-> bridge <-> SeplosBMS | SMA CAN | `bridge/sma-can-pulseview-session.pvs` | CAN and SMA decoder layout. |
 | Bridge | Growatt inverter <-> bridge <-> SeplosBMS | Sofar CAN | `bridge/sofar-can-pulseview-session.pvs` | CAN and Sofar decoder layout. |
 | Bridge | Growatt inverter <-> bridge <-> SeplosBMS | Victron CAN | `bridge/victron-can-pulseview-session.pvs` | CAN and Victron decoder layout. |
-| Bridge | Growatt inverter <-> bridge <-> JKBMS | Voltronic Modbus RS485 | `bridge/voltronic-modbus-rs485-pulseview-session.pvs` | UART and Voltronic decoder layout. |
+| Bridge | Growatt inverter <-> bridge <-> SeplosBMS | Voltronic Modbus RS485 | `bridge/voltronic-modbus-rs485-pulseview-session.pvs` | UART and Voltronic decoder layout. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | WOW Modbus RS485 | `bridge/wow-modbus-rs485-pulseview-session.pvs` | UART and WOW decoder layout. |
 
 No `Forward` or `Direct cable` captures are committed yet.
