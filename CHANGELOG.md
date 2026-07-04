@@ -61,6 +61,7 @@
 ### Changed
 
 - Active decoder set is currently limited to validated decoders: `China Tower Modbus`, `Daly RS485`, `Deye CAN`, `GoodWe CAN`, `Growatt CAN`, `Growatt RS485`, `JKBMS CAN`, `JKBMS Modbus`, `PACE Modbus`, `Pylon CAN`, `Pylon RS485`, `SMA CAN`, `Sofar CAN`, `Victron CAN`, `Voltronic Modbus`, and `WOW Modbus`.
+- Updated bridge-mode example capture and PulseView session for Growatt CAN inverter traffic.
 - Updated bridge-mode example capture and PulseView session for Growatt RS485 inverter traffic.
 - Updated README screenshots for Growatt RS485 cell-voltage, status/pack telemetry, and limits/cell-extreme response blocks.
 - Updated bridge-mode example capture and PulseView session for JKBMS Modbus RS485 runtime polling.
