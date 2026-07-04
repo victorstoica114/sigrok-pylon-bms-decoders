@@ -39,6 +39,7 @@ Current raw captures:
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | Pylon RS485 | `bridge/pylon-rs485-raw-capture.sr` | Pylon-compatible RS485 ASCII traffic. |
 | Bridge | Anenji inverter <-> bridge <-> JKBMS | Pylon RS485 | `bridge/anenji-pylon-rs485-raw-capture.sr` | Pylon-compatible RS485 ASCII traffic. |
 | Forward | Anenji inverter <-> bridge in forward mode <-> JKBMS | Pylon RS485 | `bridge_forward/anenji-pylon-rs485-raw-capture.sr` | Pylon-compatible RS485 ASCII traffic in forward mode. |
+| Forward | Anenji inverter <-> bridge in forward mode <-> SeplosBMS | Pylon RS485 | `bridge_forward/anenji-seplos-pylon-rs485-raw-capture.sr` | Pylon-compatible RS485 ASCII traffic in forward mode. |
 | Bridge | Growatt inverter <-> bridge <-> SeplosBMS | SMA CAN | `bridge/sma-can-raw-capture.sr` | SMA-compatible CAN traffic. |
 | Bridge | Growatt inverter <-> bridge <-> SeplosBMS | Sofar CAN | `bridge/sofar-can-raw-capture.sr` | Sofar-compatible CAN traffic. |
 | Bridge | Growatt inverter <-> bridge <-> SeplosBMS | Victron CAN | `bridge/victron-can-raw-capture.sr` | Victron-compatible CAN traffic. |
@@ -70,6 +71,7 @@ Current PulseView session files:
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | Pylon RS485 | `bridge/pylon-rs485-pulseview-session.pvs` | UART and Pylon decoder layout. |
 | Bridge | Anenji inverter <-> bridge <-> JKBMS | Pylon RS485 | `bridge/anenji-pylon-rs485-pulseview-session.pvs` | UART and Pylon decoder layout. |
 | Forward | Anenji inverter <-> bridge in forward mode <-> JKBMS | Pylon RS485 | `bridge_forward/anenji-pylon-rs485-pulseview-session.pvs` | UART and Pylon decoder layout in forward mode. |
+| Forward | Anenji inverter <-> bridge in forward mode <-> SeplosBMS | Pylon RS485 | `bridge_forward/anenji-seplos-pylon-rs485-pulseview-session.pvs` | UART and Pylon decoder layout in forward mode. |
 | Bridge | Growatt inverter <-> bridge <-> SeplosBMS | SMA CAN | `bridge/sma-can-pulseview-session.pvs` | CAN and SMA decoder layout. |
 | Bridge | Growatt inverter <-> bridge <-> SeplosBMS | Sofar CAN | `bridge/sofar-can-pulseview-session.pvs` | CAN and Sofar decoder layout. |
 | Bridge | Growatt inverter <-> bridge <-> SeplosBMS | Victron CAN | `bridge/victron-can-pulseview-session.pvs` | CAN and Victron decoder layout. |
