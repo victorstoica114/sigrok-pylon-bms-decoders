@@ -30,6 +30,7 @@ Current raw captures:
 | Forward | Growatt inverter <-> bridge in forward mode <-> SeplosBMS | Growatt CAN | `bridge_forward/growatt-seplos-can-raw-capture.sr` | Inverter CAN traffic in forward mode. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | Growatt RS485 | `bridge/growatt-rs485-raw-capture.sr` | Inverter RS485 traffic. |
 | Bridge | Growatt inverter <-> bridge <-> SeplosBMS | Growatt RS485 | `bridge/growatt-seplos-rs485-raw-capture.sr` | Inverter RS485 traffic. |
+| Direct cable | Growatt inverter <-> direct cable <-> JKBMS | Growatt RS485 | `direct/growatt-rs485-raw-capture.sr` | Inverter RS485 traffic. |
 | Forward | Growatt inverter <-> bridge in forward mode <-> JKBMS | Growatt RS485 | `bridge_forward/growatt-rs485-raw-capture.sr` | Inverter RS485 traffic in forward mode. |
 | Forward | Growatt inverter <-> bridge in forward mode <-> SeplosBMS | Growatt RS485 | `bridge_forward/growatt-seplos-rs485-raw-capture.sr` | Inverter RS485 traffic in forward mode. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | JKBMS CAN | `bridge/jkbms-can-raw-capture.sr` | JK BMS CAN traffic. |
@@ -64,6 +65,7 @@ Current PulseView session files:
 | Forward | Growatt inverter <-> bridge in forward mode <-> SeplosBMS | Growatt CAN | `bridge_forward/growatt-seplos-can-pulseview-session.pvs` | CAN and Growatt decoder layout in forward mode. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | Growatt RS485 | `bridge/growatt-rs485-pulseview-session.pvs` | UART and Growatt decoder layout. |
 | Bridge | Growatt inverter <-> bridge <-> SeplosBMS | Growatt RS485 | `bridge/growatt-seplos-rs485-pulseview-session.pvs` | UART and Growatt decoder layout. |
+| Direct cable | Growatt inverter <-> direct cable <-> JKBMS | Growatt RS485 | `direct/growatt-rs485-pulseview-session.pvs` | UART and Growatt decoder layout. |
 | Forward | Growatt inverter <-> bridge in forward mode <-> JKBMS | Growatt RS485 | `bridge_forward/growatt-rs485-pulseview-session.pvs` | UART and Growatt decoder layout in forward mode. |
 | Forward | Growatt inverter <-> bridge in forward mode <-> SeplosBMS | Growatt RS485 | `bridge_forward/growatt-seplos-rs485-pulseview-session.pvs` | UART and Growatt decoder layout in forward mode. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | JKBMS CAN | `bridge/jkbms-can-pulseview-session.pvs` | CAN and JKBMS decoder layout. |
