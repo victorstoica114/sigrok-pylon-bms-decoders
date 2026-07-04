@@ -25,6 +25,7 @@ Current raw captures:
 | Bridge | Growatt inverter <-> bridge <-> SeplosBMS | GoodWe CAN | `bridge/goodwe-can-raw-capture.sr` | GoodWe-compatible CAN traffic. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | Growatt CAN | `bridge/growatt-can-raw-capture.sr` | Inverter CAN traffic. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | Growatt RS485 | `bridge/growatt-rs485-raw-capture.sr` | Inverter RS485 traffic. |
+| Forward | Growatt inverter <-> bridge in forward mode <-> JKBMS | Growatt RS485 | `bridge_forward/growatt-rs485-raw-capture.sr` | Inverter RS485 traffic in forward mode. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | JKBMS CAN | `bridge/jkbms-can-raw-capture.sr` | JK BMS CAN traffic. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | JKBMS Modbus RS485 | `bridge/jkbms-modbus-rs485-raw-capture.sr` | JK BMS runtime polling. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | PACE Modbus RS485 | `bridge/pace-modbus-rs485-raw-capture.sr` | PACE BMS RS485 polling. |
@@ -47,6 +48,7 @@ Current PulseView session files:
 | Bridge | Growatt inverter <-> bridge <-> SeplosBMS | GoodWe CAN | `bridge/goodwe-can-pulseview-session.pvs` | CAN and GoodWe decoder layout. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | Growatt CAN | `bridge/growatt-can-pulseview-session.pvs` | CAN decoder layout. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | Growatt RS485 | `bridge/growatt-rs485-pulseview-session.pvs` | UART and Growatt decoder layout. |
+| Forward | Growatt inverter <-> bridge in forward mode <-> JKBMS | Growatt RS485 | `bridge_forward/growatt-rs485-pulseview-session.pvs` | UART and Growatt decoder layout in forward mode. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | JKBMS CAN | `bridge/jkbms-can-pulseview-session.pvs` | CAN and JKBMS decoder layout. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | JKBMS Modbus RS485 | `bridge/jkbms-modbus-rs485-pulseview-session.pvs` | UART and JKBMS decoder layout. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | PACE Modbus RS485 | `bridge/pace-modbus-rs485-pulseview-session.pvs` | UART and PACE decoder layout. |
@@ -58,7 +60,7 @@ Current PulseView session files:
 | Bridge | Growatt inverter <-> bridge <-> SeplosBMS | Voltronic Modbus RS485 | `bridge/voltronic-modbus-rs485-pulseview-session.pvs` | UART and Voltronic decoder layout. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | WOW Modbus RS485 | `bridge/wow-modbus-rs485-pulseview-session.pvs` | UART and WOW decoder layout. |
 
-No `Forward` or `Direct cable` captures are committed yet.
+No `Direct cable` captures are committed yet.
 
 Open a `.sr` capture in PulseView, then load or recreate the matching `.pvs`
 session when you want the same decoder/channel layout used in the screenshots.
