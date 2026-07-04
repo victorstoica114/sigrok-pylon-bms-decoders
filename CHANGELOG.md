@@ -28,6 +28,7 @@
 - Bridge-mode example capture and PulseView session for Daly RS485 traffic.
 - Bridge-mode example capture and PulseView session for Deye CAN traffic.
 - Bridge-mode example capture and PulseView session for GoodWe CAN traffic.
+- Bridge-mode example capture and PulseView session for Growatt CAN traffic with a SeplosBMS test topology.
 - Bridge-mode example capture and PulseView session for JKBMS CAN traffic.
 - Bridge-mode example capture and PulseView session for PACE Modbus RS485 traffic.
 - Bridge-mode example capture and PulseView session for Pylon CAN traffic.
@@ -53,6 +54,7 @@
 - README screenshots for Victron CAN limits, SOC/SOH, pack telemetry, and vendor raw frames.
 - README screenshots for Voltronic Modbus request, wide-byte-count, runtime, limits, and status frames.
 - README screenshots for WOW Modbus runtime, cell-voltage, and temperature register blocks.
+- Offline analysis report for the Growatt CAN Seplos bridge capture.
 - Utility screenshot folder under `pictures/utile/` for later protocol review.
 
 ### Changed

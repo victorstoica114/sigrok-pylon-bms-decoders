@@ -177,6 +177,16 @@ PROTOCOL_CONFIGS: dict[str, ProtocolConfig] = {
         True,
         bitrate=500000,
     ),
+    "growatt_seplos_can": ProtocolConfig(
+        "growatt_seplos_can",
+        "Growatt CAN Seplos",
+        DECODERS_DIR / "growatt_can" / "growatt_can.py",
+        "can",
+        EXAMPLES_BRIDGE_DIR / "growatt-seplos-can-raw-capture.sr",
+        "CH0",
+        True,
+        bitrate=500000,
+    ),
     "jkbms_can": ProtocolConfig(
         "jkbms_can",
         "JKBMS CAN",

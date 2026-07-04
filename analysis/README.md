@@ -45,8 +45,8 @@ also writes [Bridge Capture Analysis Overview](reports/bridge-analysis-overview.
 - RS485/UART: `china_tower_modbus`, `daly_rs485`, `growatt_rs485`,
   `jkbms_modbus`, `pace_modbus`, `pylon_rs485`, `anenji_pylon_rs485`,
   `voltronic_modbus`, `wow_modbus`.
-- CAN: `deye_can`, `goodwe_can`, `growatt_can`, `jkbms_can`, `pylon_can`,
-  `sma_can`, `sofar_can`, `victron_can`.
+- CAN: `deye_can`, `goodwe_can`, `growatt_can`, `growatt_seplos_can`,
+  `jkbms_can`, `pylon_can`, `sma_can`, `sofar_can`, `victron_can`.
 
 ## Reports
 
@@ -64,6 +64,7 @@ Committed analysis reports live under `analysis/reports/`:
 - [Deye CAN Bridge Capture](reports/deye-can.md)
 - [GoodWe CAN Bridge Capture](reports/goodwe-can.md)
 - [Growatt CAN Bridge Capture](reports/growatt-can.md)
+- [Growatt CAN Seplos Bridge Capture](reports/growatt-seplos-can.md)
 - [JKBMS CAN Bridge Capture](reports/jkbms-can.md)
 - [Pylon CAN Bridge Capture](reports/pylon-can.md)
 - [SMA CAN Bridge Capture](reports/sma-can.md)
