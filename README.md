@@ -5,6 +5,7 @@ PulseView/libsigrokdecode protocol decoders for validated BMS/inverter captures.
 Active decoders:
 
 - `China Tower Modbus`: China Tower / JK 008 RS485 Modbus RTU frames.
+- `Daly RS485`: Daly BMS native RS485 and Daly Modbus RTU frames.
 - `Growatt RS485`: Growatt Modbus RTU frames over UART/RS485.
 - `Growatt CAN`: Growatt low-voltage BMS/inverter frames over Classic CAN.
 - `Deye CAN`: Deye-compatible low-voltage BMS frames over Classic CAN.
@@ -34,6 +35,7 @@ folder exists under `decoders/`.
 ```text
 decoders/
   china_tower_modbus/
+  daly_rs485/
   deye_can/
   goodwe_can/
   growatt_can/
@@ -51,6 +53,7 @@ decoders/
   wow_modbus/
 docs/
   china-tower-modbus-register-map.md
+  daly-rs485-frame-map.md
   decoder-implementation-checklist.md
   deye-can-frame-map.md
   goodwe-can-frame-map.md
@@ -73,6 +76,7 @@ examples/
   bridge_forward/
 pictures/
   china_tower_modbus/
+  daly_rs485/
   deye_can/
   goodwe_can/
   growatt_can/
@@ -136,6 +140,7 @@ before adding or merging a new decoder.
 Active maps:
 
 - [China Tower Modbus Register Map](docs/china-tower-modbus-register-map.md)
+- [Daly RS485 Frame and Register Map](docs/daly-rs485-frame-map.md)
 - [Deye CAN Frame Map](docs/deye-can-frame-map.md)
 - [GoodWe CAN Frame Map](docs/goodwe-can-frame-map.md)
 - [Growatt CAN Frame Map](docs/growatt-can-frame-map.md)
@@ -458,6 +463,36 @@ voltage registers, and warning/protection/status flag blocks.
 The current bridge-mode raw capture and PulseView session are listed in
 `examples/README.md` as `China Tower Modbus RS485`.
 
+## Daly RS485 Decoder
+
+`decoders/daly_rs485` stacks above the built-in `UART` decoder:
+
+```text
+logic -> uart -> daly_rs485
+```
+
+Typical logic-level UART settings:
+
+- baud: `9600`
+- data bits: `8`
+- parity: `none`
+- stop bits: `1`
+- bit order: `lsb-first`
+- line inversion: depends on the probe point/transceiver output
+
+The current bridge capture uses an Easun inverter, a Daly BMS, `CH0`, UART
+`9600 8N1`, and the saved PulseView session selects the `daly_rs485` decoder.
+
+The current published decoder is visible in PulseView as
+`Daly RS485 v2026.07.04a`. It handles Daly native 13-byte RS485 frames and the
+Daly Modbus RTU poller path used by the bridge, including request/response
+classification, CRC/checksum validation, cell-voltage blocks, SOC candidates,
+temperature registers, MOS temperature, native pack telemetry, status, balance,
+and failure-code frames.
+
+The current bridge-mode raw capture and PulseView session are listed in
+`examples/README.md` as `Daly RS485`.
+
 ## PACE Modbus Decoder
 
 `decoders/pace_modbus` stacks above the built-in `UART` decoder:
@@ -578,6 +613,20 @@ translator bridge, a Kingst LA2016 logic analyzer, and
 ![China Tower Modbus runtime and first cell block 0x0000..0x000C](pictures/china_tower_modbus/china-tower-modbus-0x0000-runtime-cells.png)
 
 ![China Tower Modbus cell voltages 0x0009..0x0018](pictures/china_tower_modbus/china-tower-modbus-0x0009-cell-voltages.png)
+
+## Daly RS485 Capture Screenshots
+
+The current screenshots use an Easun inverter, a Daly BMS, RS485 through the
+translator bridge, a Kingst LA2016 logic analyzer, and
+`Daly RS485 v2026.07.04a`.
+
+![Daly RS485 cell block response 0x0000..0x007E](pictures/daly_rs485/daly-rs485-0x0000-cells-response-1.png)
+
+![Daly RS485 repeated cell block response 0x0000..0x007E](pictures/daly_rs485/daly-rs485-0x0000-cells-response-2.png)
+
+![Daly RS485 cell block response zoom 0x0000..0x007E](pictures/daly_rs485/daly-rs485-0x0000-cells-response-3.png)
+
+![Daly RS485 later cell block response 0x0000..0x007E](pictures/daly_rs485/daly-rs485-0x0000-cells-response-4.png)
 
 ## PACE Modbus Capture Screenshots
 

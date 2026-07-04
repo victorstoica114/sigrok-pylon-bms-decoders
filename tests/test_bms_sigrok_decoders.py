@@ -7,6 +7,7 @@ from pathlib import Path
 
 DECODERS_DIR = Path(__file__).resolve().parents[1] / "decoders"
 CHINA_TOWER_MODBUS_DECODER_DIR = DECODERS_DIR / "china_tower_modbus"
+DALY_RS485_DECODER_DIR = DECODERS_DIR / "daly_rs485"
 DEYE_CAN_DECODER_DIR = DECODERS_DIR / "deye_can"
 GOODWE_CAN_DECODER_DIR = DECODERS_DIR / "goodwe_can"
 GROWATT_CAN_DECODER_DIR = DECODERS_DIR / "growatt_can"
@@ -33,6 +34,7 @@ def load_module(name, path):
 
 
 china_tower = load_module("china_tower_modbus_helper", CHINA_TOWER_MODBUS_DECODER_DIR / "china_tower_modbus.py")
+daly_rs485 = load_module("daly_rs485_helper", DALY_RS485_DECODER_DIR / "daly_rs485.py")
 deye_can = load_module("deye_can_helper", DEYE_CAN_DECODER_DIR / "deye_can.py")
 goodwe_can = load_module("goodwe_can_helper", GOODWE_CAN_DECODER_DIR / "goodwe_can.py")
 growatt_rs485 = load_module("growatt_rs485_helper", GROWATT_RS485_DECODER_DIR / "growatt.py")
@@ -70,11 +72,18 @@ def pylon_rs485_frame(addr, code, info_ascii=""):
     return ("~{}{:04X}\r".format(body, checksum)).encode("ascii")
 
 
+def daly_native_frame(addr, cmd, payload):
+    frame = bytearray([0xA5, addr, cmd, 0x08] + list(payload))
+    frame.append(daly_rs485.native_checksum(frame + b"\x00"))
+    return bytes(frame)
+
+
 def test_active_decoder_folders_are_validated_only():
     decoder_names = sorted(path.name for path in DECODERS_DIR.iterdir() if path.is_dir())
 
     assert decoder_names == [
         "china_tower_modbus",
+        "daly_rs485",
         "deye_can",
         "goodwe_can",
         "growatt_can",
@@ -326,6 +335,61 @@ def test_voltronic_modbus_parses_limits_and_status():
     assert "status=0x00C0" in voltronic.describe_frame(status_response)
     assert "charge_enable" in voltronic.describe_frame(status_response)
     assert "discharge_enable" in voltronic.describe_frame(status_response)
+
+
+def test_daly_rs485_parses_native_pack_and_cell_frames():
+    pack = daly_rs485.parse_frame(daly_native_frame(
+        0x01,
+        0x90,
+        [0x02, 0x3B, 0x00, 0x00, 0x75, 0x30, 0x03, 0xDE],
+    ))
+    cells = daly_rs485.parse_frame(daly_native_frame(
+        0x01,
+        0x91,
+        [0x0D, 0xF4, 0x05, 0x0D, 0xF0, 0x08, 0x00, 0x00],
+    ))
+
+    assert pack["checksum_ok"]
+    assert pack["protocol"] == "native"
+    assert "pack V=57.1V" in daly_rs485.describe_frame(pack)
+    assert "I=+0.0A" in daly_rs485.describe_frame(pack)
+    assert "SOC=99.0%" in daly_rs485.describe_frame(pack)
+    assert cells["checksum_ok"]
+    assert "cell_max=3.572V#5" in daly_rs485.describe_frame(cells)
+    assert "cell_min=3.568V#8" in daly_rs485.describe_frame(cells)
+    assert "Daly native rsp" in daly_rs485.frame_summary(cells)
+
+
+def test_daly_rs485_parses_modbus_cells_soc_and_temperatures():
+    request = daly_rs485.parse_frame(
+        with_modbus_crc([0x81, 0x03, 0x00, 0x00, 0x00, 0x7F], daly_rs485.modbus_crc16)
+    )
+    response_words = [0] * 91
+    response_words[:8] = [0x0DF0, 0x0DF1, 0x0DF2, 0x0DF3, 0x0DF4, 0x0DF1, 0x0DF0, 0x0DF2]
+    response_words[0x0030] = 70
+    response_words[0x0031] = 71
+    response_words[0x003A] = 865
+    response_words[0x003D] = 2
+    response_words[0x005A] = 69
+    response = daly_rs485.parse_frame(
+        with_modbus_crc([0x51, 0x03, len(response_words) * 2] + words_to_bytes(response_words),
+                        daly_rs485.modbus_crc16),
+        request,
+    )
+    decoded = daly_rs485.describe_frame(response)
+
+    assert request["crc_ok"]
+    assert request["start"] == 0x0000
+    assert request["count"] == 0x007F
+    assert response["crc_ok"]
+    assert response["registers"][0]["addr"] == 0x0000
+    assert response["registers"][-1]["addr"] == 0x005A
+    assert "cells count=8" in decoded
+    assert "C05=3.572V" in decoded
+    assert "SOC=86.5%#58" in decoded
+    assert "T1=30.0C" in decoded
+    assert "T2=31.0C" in decoded
+    assert "MOS=29.0C" in decoded
 
 
 def test_growatt_can_describes_live_frames():
@@ -1096,6 +1160,22 @@ def test_sigrok_wow_modbus_package_exports_decoder(monkeypatch):
     assert any(option["id"] == "inter_frame_gap_us" for option in module.Decoder.options)
 
 
+def test_sigrok_daly_rs485_package_exports_decoder(monkeypatch):
+    stub_sigrokdecode = types.SimpleNamespace(Decoder=object, OUTPUT_ANN=1)
+    monkeypatch.setitem(sys.modules, "sigrokdecode", stub_sigrokdecode)
+    sys.path.insert(0, str(DECODERS_DIR))
+
+    for name in ("daly_rs485", "daly_rs485.pd", "daly_rs485.daly_rs485"):
+        sys.modules.pop(name, None)
+
+    module = importlib.import_module("daly_rs485")
+
+    assert module.Decoder.id == "daly_rs485"
+    assert module.Decoder.inputs == ["uart"]
+    assert daly_rs485.VERSION in module.Decoder.name
+    assert any(option["id"] == "inter_frame_gap_us" for option in module.Decoder.options)
+
+
 def test_sigrok_pylon_rs485_package_exports_decoder(monkeypatch):
     stub_sigrokdecode = types.SimpleNamespace(Decoder=object, OUTPUT_ANN=1)
     monkeypatch.setitem(sys.modules, "sigrokdecode", stub_sigrokdecode)
@@ -1389,4 +1469,44 @@ def test_sigrok_wow_modbus_decoder_emits_annotations_for_uart_frames(monkeypatch
     assert any("WOW Modbus req" in text for text in texts)
     assert any("WOW Modbus rsp" in text for text in texts)
     assert any("0x0000 pack_i=+0.00A" in text for text in texts)
+
+
+def test_sigrok_daly_rs485_decoder_emits_annotations_for_uart_frames(monkeypatch):
+    class FakeSrdDecoder:
+        def register(self, output):
+            return output
+
+        def put(self, ss, es, output, data):
+            self.captured.append((ss, es, output, data))
+
+    stub_sigrokdecode = types.SimpleNamespace(Decoder=FakeSrdDecoder, OUTPUT_ANN=1)
+    monkeypatch.setitem(sys.modules, "sigrokdecode", stub_sigrokdecode)
+    sys.path.insert(0, str(DECODERS_DIR))
+
+    for name in ("daly_rs485", "daly_rs485.pd", "daly_rs485.daly_rs485"):
+        sys.modules.pop(name, None)
+
+    module = importlib.import_module("daly_rs485")
+    decoder = module.Decoder()
+    decoder.captured = []
+    decoder.start()
+
+    request = with_modbus_crc([0x81, 0x03, 0x00, 0x00, 0x00, 0x02], daly_rs485.modbus_crc16)
+    response = with_modbus_crc([0x51, 0x03, 0x04, 0x0D, 0xF0, 0x0D, 0xF2], daly_rs485.modbus_crc16)
+
+    for idx, byte in enumerate(request):
+        decoder.decode(idx, idx + 1, ("DATA", 1, (byte, [])))
+    for idx, byte in enumerate(response, start=100):
+        decoder.decode(idx, idx + 1, ("DATA", 0, (byte, [])))
+
+    texts = [
+        text
+        for _ss, _es, output, data in decoder.captured
+        if output == stub_sigrokdecode.OUTPUT_ANN
+        for text in data[1]
+    ]
+
+    assert any("Daly Modbus req" in text for text in texts)
+    assert any("Daly Modbus rsp" in text for text in texts)
+    assert any("cells count=2" in text for text in texts)
 

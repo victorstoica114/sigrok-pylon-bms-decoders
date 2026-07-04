@@ -5,8 +5,8 @@ mode.
 
 ## Test Setup
 
-- Inverter side: Growatt or Anenji, as listed in each capture row
-- BMS side: JKBMS or SeplosBMS, as listed in each capture row
+- Inverter side: Growatt, Anenji, or Easun, as listed in each capture row
+- BMS side: JKBMS, SeplosBMS, or Daly BMS, as listed in each capture row
 
 ## Translator Power Use
 
@@ -21,6 +21,7 @@ Current raw captures:
 | Translator mode | Test topology | Protocol | File | Description |
 | --- | --- | --- | --- | --- |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | China Tower Modbus RS485 | `bridge/china-tower-modbus-rs485-raw-capture.sr` | China Tower / JK 008 RS485 polling. |
+| Bridge | Easun inverter <-> bridge <-> Daly BMS | Daly RS485 | `bridge/easun-daly-rs485-raw-capture.sr` | Daly BMS RS485 traffic. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | Deye CAN | `bridge/deye-can-raw-capture.sr` | Deye-compatible CAN traffic. |
 | Bridge | Growatt inverter <-> bridge <-> SeplosBMS | GoodWe CAN | `bridge/goodwe-can-raw-capture.sr` | GoodWe-compatible CAN traffic. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | Growatt CAN | `bridge/growatt-can-raw-capture.sr` | Inverter CAN traffic. |
@@ -46,6 +47,7 @@ Current PulseView session files:
 | Translator mode | Test topology | Protocol | File | Description |
 | --- | --- | --- | --- | --- |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | China Tower Modbus RS485 | `bridge/china-tower-modbus-rs485-pulseview-session.pvs` | UART and China Tower decoder layout. |
+| Bridge | Easun inverter <-> bridge <-> Daly BMS | Daly RS485 | `bridge/easun-daly-rs485-pulseview-session.pvs` | UART and Daly decoder layout. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | Deye CAN | `bridge/deye-can-pulseview-session.pvs` | CAN and Deye decoder layout. |
 | Bridge | Growatt inverter <-> bridge <-> SeplosBMS | GoodWe CAN | `bridge/goodwe-can-pulseview-session.pvs` | CAN and GoodWe decoder layout. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | Growatt CAN | `bridge/growatt-can-pulseview-session.pvs` | CAN decoder layout. |
