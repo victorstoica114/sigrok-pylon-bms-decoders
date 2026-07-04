@@ -6,4 +6,3 @@ __pycache__/
 examples/Session *
 examples/new.*
 examples/*.sr.*
-analysis/out/
