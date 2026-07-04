@@ -45,6 +45,7 @@ decoders/
   pylon_rs485/
   sma_can/
   sofar_can/
+  utile/
   victron_can/
   voltronic_modbus/
   wow_modbus/
@@ -288,10 +289,11 @@ Typical settings:
   UART `invert_rx=yes`
 
 The current published decoder is visible in PulseView as
-`Pylon RS485 v2026.07.03a`. It handles Pylon-compatible ASCII request/response
+`Pylon RS485 v2026.07.04a`. It handles Pylon-compatible ASCII request/response
 frames over UART/RS485, including frame fields, length/checksum validation,
-`0x42` cell information, `0x61` analog telemetry, `0x62` alarm/status flags,
-and `0x63` charge/discharge status.
+payload annotations, `0x42` cell information, `0x61` analog telemetry with
+temperature decoding, `0x62` alarm/status flags, and `0x63`
+charge/discharge status.
 
 The current bridge-mode raw capture and PulseView session are listed in
 `examples/README.md` as `Pylon RS485`.
@@ -716,20 +718,16 @@ The current screenshots use a Pylon-compatible CAN capture decoded with
 
 ## Pylon RS485 Capture Screenshots
 
-The current screenshots use a Pylon-compatible RS485 ASCII capture decoded with
-`Pylon RS485 v2026.07.03a`.
+The current screenshots use an Anenji inverter, a JK BMS, RS485 through the
+translator bridge, and `Pylon RS485 v2026.07.04a`.
 
-![Pylon RS485 analog request 0x61](pictures/pylon_rs485/pylon-rs485-0x61-request.png)
+![Anenji Pylon RS485 analog request 0x61](pictures/pylon_rs485/anenji-pylon-rs485-0x61-request.png)
 
-![Pylon RS485 analog telemetry 0x61](pictures/pylon_rs485/pylon-rs485-0x61-analog-telemetry.png)
+![Anenji Pylon RS485 analog telemetry 0x61](pictures/pylon_rs485/anenji-pylon-rs485-0x61-analog-telemetry.png)
 
-![Pylon RS485 analog request and response 0x61](pictures/pylon_rs485/pylon-rs485-0x61-full-frame.png)
+![Anenji Pylon RS485 analog telemetry full response 0x61](pictures/pylon_rs485/anenji-pylon-rs485-0x61-full-response.png)
 
-![Pylon RS485 cell request 0x42](pictures/pylon_rs485/pylon-rs485-0x42-cell-request.png)
-
-![Pylon RS485 alarm/status flags 0x62](pictures/pylon_rs485/pylon-rs485-0x62-status-flags.png)
-
-![Pylon RS485 charge/discharge status 0x63](pictures/pylon_rs485/pylon-rs485-0x63-charge-discharge-status.png)
+![Anenji Pylon RS485 analog telemetry summary 0x61](pictures/pylon_rs485/anenji-pylon-rs485-0x61-summary.png)
 
 ## SMA CAN Capture Screenshots
 

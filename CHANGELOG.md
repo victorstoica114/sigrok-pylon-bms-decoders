@@ -13,7 +13,7 @@
 - PulseView/libsigrokdecode `JKBMS CAN v2026.07.03a` decoder for validated JK BMS native CAN V2.0 frames.
 - PulseView/libsigrokdecode `PACE Modbus v2026.07.04a` decoder for validated PACE BMS RS485 Modbus V1.3 frames.
 - PulseView/libsigrokdecode `Pylon CAN v2026.07.03a` decoder for validated Pylon-compatible low-voltage CAN frames.
-- PulseView/libsigrokdecode `Pylon RS485 v2026.07.03a` decoder for validated Pylon-compatible RS485 ASCII frames.
+- PulseView/libsigrokdecode `Pylon RS485 v2026.07.04a` decoder for validated Pylon-compatible RS485 ASCII frames.
 - PulseView/libsigrokdecode `SMA CAN v2026.07.04a` decoder for validated SMA Sunny Island compatible low-voltage CAN frames.
 - PulseView/libsigrokdecode `Sofar CAN v2026.07.04a` decoder for validated Sofar-compatible low-voltage CAN frames.
 - PulseView/libsigrokdecode `Victron CAN v2026.07.03a` decoder for validated Victron-compatible low-voltage CAN frames.
@@ -30,6 +30,7 @@
 - Bridge-mode example capture and PulseView session for PACE Modbus RS485 traffic.
 - Bridge-mode example capture and PulseView session for Pylon CAN traffic.
 - Bridge-mode example capture and PulseView session for Pylon RS485 ASCII traffic.
+- Bridge-mode example capture and PulseView session for Anenji/Pylon RS485 ASCII traffic.
 - Bridge-mode example capture and PulseView session for SMA CAN traffic.
 - Bridge-mode example capture and PulseView session for Sofar CAN traffic.
 - Bridge-mode example capture and PulseView session for Victron CAN traffic.
@@ -42,12 +43,13 @@
 - README screenshots for JKBMS CAN pack status, cell extremes, temperature, capacity, and raw info/status frames.
 - README screenshots for PACE Modbus runtime, cell-voltage, and temperature register blocks.
 - README screenshots for Pylon CAN limits, SOC/SOH, pack telemetry, module info, status, identity, and cell extreme frames.
-- README screenshots for Pylon RS485 analog telemetry, cell request, alarm/status flags, and charge/discharge status frames.
+- README screenshots for Pylon RS485 analog telemetry with temperature decoding.
 - README screenshots for SMA CAN limits, pack telemetry, vendor, manufacturer, and battery info frames.
 - README screenshots for Sofar CAN limits, SOC/SOH, pack telemetry, brand, and module raw frames.
 - README screenshots for Victron CAN limits, SOC/SOH, pack telemetry, and vendor raw frames.
 - README screenshots for Voltronic Modbus request, wide-byte-count, runtime, limits, and status frames.
 - README screenshots for WOW Modbus runtime, cell-voltage, and temperature register blocks.
+- Utility screenshot folder under `pictures/utile/` for later protocol review.
 
 ### Changed
 
@@ -56,6 +58,7 @@
 - Updated README screenshots for Growatt RS485 cell-voltage, status/pack telemetry, and limits/cell-extreme response blocks.
 - Updated bridge-mode example capture and PulseView session for JKBMS Modbus RS485 runtime polling.
 - Updated README screenshots for JKBMS Modbus RTU request, cell, cell-summary, SOC/SOH, and runtime register response blocks.
+- Updated Pylon RS485 decoder annotations for versioned rows, payload summaries, and `0x61` temperature decoding.
 - Repository rule clarified: decoders still under field test stay out of `decoders/` until they are validated and explicitly promoted.
 - README and regression tests now track only the active decoder folders.
 - The installer rebuilds `C:\ProgramData\libsigrokdecode\decoders` from built-ins plus active repository decoders, excluding stale custom decoder copies from PulseView's built-in directory.

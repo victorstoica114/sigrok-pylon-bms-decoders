@@ -548,9 +548,33 @@ def test_pylon_rs485_parses_live_requests_and_responses():
     assert "SOH=100%" in decoded61
     assert "cell_max=3.570V#5" in decoded61
     assert "cell_min=3.566V#11" in decoded61
+    assert "MOS=30.9C" in decoded61
+    assert "0x61 payload 48B" in pylon_rs485.describe_payload_texts(response61, 0x61)
 
     assert "status=0xC0 (charge=ON, discharge=ON, balance=OFF)" in pylon_rs485.describe_info(response63, 0x63)
     assert "0x62 flags=0x00000000 (no flags set)" == pylon_rs485.describe_info(response62, 0x62)
+
+
+def test_pylon_rs485_parses_anenji_bridge_temperature_telemetry():
+    response61 = pylon_rs485.parse_frame(pylon_rs485_frame(
+        0x02,
+        0x00,
+        "DEF60000560000000064640DF200010DEE00080BE70BEA00040BE400020BD50BD5",
+    ))
+    decoded61 = pylon_rs485.describe_info(response61, 0x61)
+
+    assert response61["length_ok"]
+    assert response61["checksum_ok"]
+    assert "V=57.078V" in decoded61
+    assert "SOC=86%" in decoded61
+    assert "SOH=100%" in decoded61
+    assert "cell_max=3.570V#1" in decoded61
+    assert "cell_min=3.566V#8" in decoded61
+    assert "MOS=31.6C" in decoded61
+    assert "T1=31.9C" in decoded61
+    assert "T2=31.3C" in decoded61
+    assert "T4=29.8C" in decoded61
+    assert "T5=29.8C" in decoded61
 
 
 def test_pylon_rs485_describes_cell_lists():
