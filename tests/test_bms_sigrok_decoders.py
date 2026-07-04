@@ -20,6 +20,7 @@ SMA_CAN_DECODER_DIR = DECODERS_DIR / "sma_can"
 SOFAR_CAN_DECODER_DIR = DECODERS_DIR / "sofar_can"
 VICTRON_CAN_DECODER_DIR = DECODERS_DIR / "victron_can"
 VOLTRONIC_MODBUS_DECODER_DIR = DECODERS_DIR / "voltronic_modbus"
+WOW_MODBUS_DECODER_DIR = DECODERS_DIR / "wow_modbus"
 PULSEVIEW_DECODER_DIR = Path(r"C:\Program Files\sigrok\PulseView\share\libsigrokdecode\decoders")
 PULSEVIEW_SRD_DIR = Path(r"C:\Program Files\sigrok\PulseView\share\libsigrokdecode")
 
@@ -45,6 +46,7 @@ sma_can = load_module("sma_can_helper", SMA_CAN_DECODER_DIR / "sma_can.py")
 sofar_can = load_module("sofar_can_helper", SOFAR_CAN_DECODER_DIR / "sofar_can.py")
 victron_can = load_module("victron_can_helper", VICTRON_CAN_DECODER_DIR / "victron_can.py")
 voltronic = load_module("voltronic_modbus_helper", VOLTRONIC_MODBUS_DECODER_DIR / "voltronic_modbus.py")
+wow_modbus = load_module("wow_modbus_helper", WOW_MODBUS_DECODER_DIR / "wow_modbus.py")
 
 
 def with_modbus_crc(body, crc_func=growatt_rs485.modbus_crc16):
@@ -86,6 +88,7 @@ def test_active_decoder_folders_are_validated_only():
         "sofar_can",
         "victron_can",
         "voltronic_modbus",
+        "wow_modbus",
     ]
 
 
@@ -219,6 +222,61 @@ def test_pace_modbus_parses_cells_and_temperatures():
     assert "max=3.524V#1" in decoded
     assert "temp2=30.4C" in decoded
     assert "mos_temp=28.6C" in decoded
+
+
+def test_wow_modbus_parses_runtime_summary():
+    request = wow_modbus.parse_frame(
+        with_modbus_crc([0x01, 0x03, 0x00, 0x00, 0x00, 0x0D], wow_modbus.modbus_crc16)
+    )
+    response_words = [
+        0x0000, 0x164C, 0x0057, 0x0064, 0x01B0, 0x01F4, 0x01F4,
+        0x0000, 0x0000, 0x0000, 0x0000, 0x000C, 0x0000,
+    ]
+    response = wow_modbus.parse_frame(
+        with_modbus_crc([0x01, 0x03, 0x1A] + words_to_bytes(response_words), wow_modbus.modbus_crc16),
+        request,
+    )
+    decoded = wow_modbus.describe_frame(response)
+
+    assert request["crc_ok"]
+    assert request["start"] == 0x0000
+    assert request["count"] == 0x000D
+    assert response["crc_ok"]
+    assert response["registers"][0]["addr"] == 0x0000
+    assert response["registers"][-1]["addr"] == 0x000C
+    assert "pack_i=+0.00A" in decoded
+    assert "pack_v=57.08V" in decoded
+    assert "SOC=87%" in decoded
+    assert "SOH=100%" in decoded
+    assert "remain=4.32Ah" in decoded
+    assert "full=5.00Ah" in decoded
+    assert "design=5.00Ah" in decoded
+
+
+def test_wow_modbus_parses_cells_and_temperatures():
+    request = wow_modbus.parse_frame(
+        with_modbus_crc([0x01, 0x03, 0x00, 0x0F, 0x00, 0x16], wow_modbus.modbus_crc16)
+    )
+    response_words = [
+        0x0DF2, 0x0DED, 0x0DEF, 0x0DEE, 0x0DEF, 0x0DF1, 0x0DEE, 0x0DEF,
+        0x0DEF, 0x0DEF, 0x0DF0, 0x0DF2, 0x0DF3, 0x0DF2, 0x0DF1, 0x0DF3,
+        0x013B, 0x0139, 0x0140, 0x0128, 0x013C, 0x013A,
+    ]
+    response = wow_modbus.parse_frame(
+        with_modbus_crc([0x01, 0x03, 0x2C] + words_to_bytes(response_words), wow_modbus.modbus_crc16),
+        request,
+    )
+    decoded = wow_modbus.describe_frame(response)
+
+    assert response["crc_ok"]
+    assert response["registers"][0]["addr"] == 0x000F
+    assert response["registers"][-1]["addr"] == 0x0024
+    assert "cells count=16" in decoded
+    assert "C01=3.570V" in decoded
+    assert "min=3.565V#2" in decoded
+    assert "max=3.571V#13" in decoded
+    assert "temp1=31.5C" in decoded
+    assert "env_temp=31.4C" in decoded
 
 
 def test_voltronic_modbus_parses_wide_byte_count_runtime_values():
@@ -999,6 +1057,21 @@ def test_sigrok_voltronic_modbus_package_exports_decoder(monkeypatch):
     assert any(option["id"] == "inter_frame_gap_us" for option in module.Decoder.options)
 
 
+def test_sigrok_wow_modbus_package_exports_decoder(monkeypatch):
+    stub_sigrokdecode = types.SimpleNamespace(Decoder=object, OUTPUT_ANN=1)
+    monkeypatch.setitem(sys.modules, "sigrokdecode", stub_sigrokdecode)
+    sys.path.insert(0, str(DECODERS_DIR))
+
+    for name in ("wow_modbus", "wow_modbus.pd", "wow_modbus.wow_modbus"):
+        sys.modules.pop(name, None)
+
+    module = importlib.import_module("wow_modbus")
+
+    assert module.Decoder.id == "wow_modbus"
+    assert module.Decoder.inputs == ["uart"]
+    assert any(option["id"] == "inter_frame_gap_us" for option in module.Decoder.options)
+
+
 def test_sigrok_pylon_rs485_package_exports_decoder(monkeypatch):
     stub_sigrokdecode = types.SimpleNamespace(Decoder=object, OUTPUT_ANN=1)
     monkeypatch.setitem(sys.modules, "sigrokdecode", stub_sigrokdecode)
@@ -1234,4 +1307,62 @@ def test_sigrok_voltronic_modbus_decoder_emits_annotations_for_uart_frames(monke
     assert any("Voltronic Modbus req" in text for text in texts)
     assert any("Voltronic Modbus rsp" in text for text in texts)
     assert any("0x0032 pack_v=56.0V" in text for text in texts)
+
+
+def test_sigrok_wow_modbus_decoder_emits_annotations_for_uart_frames(monkeypatch):
+    class FakeSrdDecoder:
+        def register(self, output):
+            return output
+
+        def put(self, ss, es, output, data):
+            self.captured.append((ss, es, output, data))
+
+    stub_sigrokdecode = types.SimpleNamespace(Decoder=FakeSrdDecoder, OUTPUT_ANN=1)
+    monkeypatch.setitem(sys.modules, "sigrokdecode", stub_sigrokdecode)
+    sys.path.insert(0, str(DECODERS_DIR))
+
+    for name in ("wow_modbus", "wow_modbus.pd", "wow_modbus.wow_modbus"):
+        sys.modules.pop(name, None)
+
+    module = importlib.import_module("wow_modbus")
+    decoder = module.Decoder()
+    decoder.captured = []
+    decoder.start()
+
+    request = with_modbus_crc([0x01, 0x03, 0x00, 0x00, 0x00, 0x0D], wow_modbus.modbus_crc16)
+    response = with_modbus_crc(
+        [
+            0x01, 0x03, 0x1A,
+            0x00, 0x00,
+            0x16, 0x4C,
+            0x00, 0x57,
+            0x00, 0x64,
+            0x01, 0xB0,
+            0x01, 0xF4,
+            0x01, 0xF4,
+            0x00, 0x00,
+            0x00, 0x00,
+            0x00, 0x00,
+            0x00, 0x00,
+            0x00, 0x0C,
+            0x00, 0x00,
+        ],
+        wow_modbus.modbus_crc16,
+    )
+
+    for idx, byte in enumerate(request):
+        decoder.decode(idx, idx + 1, ("DATA", 1, (byte, [])))
+    for idx, byte in enumerate(response, start=100):
+        decoder.decode(idx, idx + 1, ("DATA", 0, (byte, [])))
+
+    texts = [
+        text
+        for _ss, _es, output, data in decoder.captured
+        if output == stub_sigrokdecode.OUTPUT_ANN
+        for text in data[1]
+    ]
+
+    assert any("WOW Modbus req" in text for text in texts)
+    assert any("WOW Modbus rsp" in text for text in texts)
+    assert any("0x0000 pack_i=+0.00A" in text for text in texts)
 

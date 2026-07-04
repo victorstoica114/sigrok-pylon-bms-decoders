@@ -18,6 +18,7 @@ Active decoders:
 - `JKBMS CAN`: JK BMS native CAN V2.0 frames over Classic CAN.
 - `PACE Modbus`: PACE BMS RS485 Modbus V1.3 frames.
 - `Voltronic Modbus`: Voltronic/JK-007 compatible RS485 Modbus RTU frames.
+- `WOW Modbus`: WOW / JK 009 RS485 Modbus RTU frames.
 
 Rule for this repository: `decoders/` contains only decoders that were validated
 on captures and explicitly accepted for publication. Decoders that are still in
@@ -46,6 +47,7 @@ decoders/
   sofar_can/
   victron_can/
   voltronic_modbus/
+  wow_modbus/
 docs/
   china-tower-modbus-register-map.md
   decoder-implementation-checklist.md
@@ -62,6 +64,7 @@ docs/
   sofar-can-frame-map.md
   victron-can-frame-map.md
   voltronic-modbus-register-map.md
+  wow-modbus-register-map.md
 examples/
   README.md
   bridge/
@@ -82,6 +85,7 @@ pictures/
   sofar_can/
   victron_can/
   voltronic_modbus/
+  wow_modbus/
 tests/
 install-pulseview-decoders.ps1
 start-pulseview.ps1
@@ -144,6 +148,7 @@ Active maps:
 - [Sofar CAN Frame Map](docs/sofar-can-frame-map.md)
 - [Victron CAN Frame Map](docs/victron-can-frame-map.md)
 - [Voltronic Modbus Register Map](docs/voltronic-modbus-register-map.md)
+- [WOW Modbus Register Map](docs/wow-modbus-register-map.md)
 
 ## Growatt RS485 Decoder
 
@@ -479,6 +484,36 @@ temperature registers, and warning/protection/status flag blocks.
 The current bridge-mode raw capture and PulseView session are listed in
 `examples/README.md` as `PACE Modbus RS485`.
 
+## WOW Modbus Decoder
+
+`decoders/wow_modbus` stacks above the built-in `UART` decoder:
+
+```text
+logic -> uart -> wow_modbus
+```
+
+Typical logic-level UART settings:
+
+- baud: `9600`
+- data bits: `8`
+- parity: `none`
+- stop bits: `1`
+- bit order: `lsb-first`
+- line inversion: depends on the probe point/transceiver output
+
+The current bridge capture uses `CH0`, UART `9600 8N1`, and `invert_rx=no` in
+the saved PulseView session.
+
+The current published decoder is visible in PulseView as
+`WOW Modbus v2026.07.04a`. It handles WOW / JK 009 RS485 Modbus RTU requests,
+responses, exceptions, CRC checks, runtime summary registers, per-cell voltage
+registers, temperature registers, and warning/protection/status flag blocks.
+The register layout is the PACE-compatible V1.3 map used by the firmware
+poller.
+
+The current bridge-mode raw capture and PulseView session are listed in
+`examples/README.md` as `WOW Modbus RS485`.
+
 ## Voltronic Modbus Decoder
 
 `decoders/voltronic_modbus` stacks above the built-in `UART` decoder:
@@ -555,6 +590,20 @@ translator bridge, a Kingst LA2016 logic analyzer, and
 ![PACE Modbus cell and temperature response 0x000F..0x0024](pictures/pace_modbus/pace-modbus-0x000f-cell-temperatures-response.png)
 
 ![PACE Modbus repeated cell and temperature response 0x000F..0x0024](pictures/pace_modbus/pace-modbus-0x000f-cell-temperatures-repeat.png)
+
+## WOW Modbus Capture Screenshots
+
+The current screenshots use a Growatt inverter, a JK BMS, RS485 through the
+translator bridge, a Kingst LA2016 logic analyzer, and
+`WOW Modbus v2026.07.04a`.
+
+![WOW Modbus cell and temperature request 0x000F..0x0024](pictures/wow_modbus/wow-modbus-0x000f-cell-temperatures-request.png)
+
+![WOW Modbus cell and temperature response 0x000F..0x0024](pictures/wow_modbus/wow-modbus-0x000f-cell-temperatures-response.png)
+
+![WOW Modbus cell and temperature response zoom 0x000F..0x0024](pictures/wow_modbus/wow-modbus-0x000f-cell-temperatures-zoom.png)
+
+![WOW Modbus runtime response 0x0000..0x000C](pictures/wow_modbus/wow-modbus-0x0000-runtime-response.png)
 
 ## Voltronic Modbus Capture Screenshots
 

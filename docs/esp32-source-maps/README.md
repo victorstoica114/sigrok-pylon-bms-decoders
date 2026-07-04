@@ -18,6 +18,7 @@ Copied files:
 - `main/protocols/jkbms_modbus/jkbms_modbus_registers_map.h`
 - `main/protocols/pace_modbus/pace_modbus_registers_map.c`
 - `main/protocols/pace_modbus/pace_modbus_registers_map.h`
+  - Also used as the WOW / JK 009 PACE-compatible register layout.
 - `main/protocols/pylon/pylon_registers_map.h`
 - `main/protocols/pylon/pylon_rs485_protocol.h`
 - `main/protocols/rs485_growatt/rs485_growatt_registers_map.c`
