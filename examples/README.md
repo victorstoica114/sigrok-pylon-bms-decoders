@@ -31,6 +31,7 @@ Current raw captures:
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | Pylon CAN | `bridge/pylon-can-raw-capture.sr` | Pylon-compatible CAN traffic. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | Pylon RS485 | `bridge/pylon-rs485-raw-capture.sr` | Pylon-compatible RS485 ASCII traffic. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | SMA CAN | `bridge/sma-can-raw-capture.sr` | SMA-compatible CAN traffic. |
+| Bridge | Growatt inverter <-> bridge <-> JKBMS | Sofar CAN | `bridge/sofar-can-raw-capture.sr` | Sofar-compatible CAN traffic. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | Victron CAN | `bridge/victron-can-raw-capture.sr` | Victron-compatible CAN traffic. |
 
 ## PulseView Sessions
@@ -50,6 +51,7 @@ Current PulseView session files:
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | Pylon CAN | `bridge/pylon-can-pulseview-session.pvs` | CAN and Pylon decoder layout. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | Pylon RS485 | `bridge/pylon-rs485-pulseview-session.pvs` | UART and Pylon decoder layout. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | SMA CAN | `bridge/sma-can-pulseview-session.pvs` | CAN and SMA decoder layout. |
+| Bridge | Growatt inverter <-> bridge <-> JKBMS | Sofar CAN | `bridge/sofar-can-pulseview-session.pvs` | CAN and Sofar decoder layout. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | Victron CAN | `bridge/victron-can-pulseview-session.pvs` | CAN and Victron decoder layout. |
 
 No `Forward` or `Direct cable` captures are committed yet.

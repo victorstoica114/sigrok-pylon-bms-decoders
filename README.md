@@ -12,6 +12,7 @@ Active decoders:
 - `Pylon CAN`: Pylon-compatible low-voltage BMS frames over Classic CAN.
 - `Pylon RS485`: Pylon-compatible ASCII frames over UART/RS485.
 - `SMA CAN`: SMA Sunny Island compatible low-voltage BMS frames over Classic CAN.
+- `Sofar CAN`: Sofar-compatible low-voltage BMS frames over Classic CAN.
 - `Victron CAN`: Victron-compatible low-voltage BMS frames over Classic CAN.
 - `JKBMS Modbus`: JK BMS RS485 Modbus RTU runtime frames.
 - `JKBMS CAN`: JK BMS native CAN V2.0 frames over Classic CAN.
@@ -41,6 +42,7 @@ decoders/
   pylon_can/
   pylon_rs485/
   sma_can/
+  sofar_can/
   victron_can/
 docs/
   china-tower-modbus-register-map.md
@@ -55,6 +57,7 @@ docs/
   pylon-can-frame-map.md
   pylon-rs485-frame-map.md
   sma-can-frame-map.md
+  sofar-can-frame-map.md
   victron-can-frame-map.md
 examples/
   README.md
@@ -73,6 +76,7 @@ pictures/
   pylon_can/
   pylon_rs485/
   sma_can/
+  sofar_can/
   victron_can/
 tests/
 install-pulseview-decoders.ps1
@@ -133,6 +137,7 @@ Active maps:
 - [Pylon CAN Frame Map](docs/pylon-can-frame-map.md)
 - [Pylon RS485 Frame Map](docs/pylon-rs485-frame-map.md)
 - [SMA CAN Frame Map](docs/sma-can-frame-map.md)
+- [Sofar CAN Frame Map](docs/sofar-can-frame-map.md)
 - [Victron CAN Frame Map](docs/victron-can-frame-map.md)
 
 ## Growatt RS485 Decoder
@@ -330,6 +335,32 @@ info raw frames.
 
 The current bridge-mode raw capture and PulseView session are listed in
 `examples/README.md` as `SMA CAN`.
+
+## Sofar CAN Decoder
+
+`decoders/sofar_can` is a standalone decoder. Add `Sofar CAN` directly from
+the PulseView decoder selector.
+
+Typical settings:
+
+- nominal bitrate: `500000`
+- fast bitrate: unused for Classic CAN; leave at `500000`
+- sample point: start with `70%`; try `75%` or `80%` if annotations are unstable
+- input mode:
+  - `rx/canl-direct` for transceiver `RXD` or digitized `CANL`
+  - `canh-inverted` for digitized `CANH` when recessive/dominant are inverted
+  - `canh-canl-diff` with CH0 as `CANH` and CH1 as `CANL`
+
+The current bridge capture uses `CH0` and `input_mode=canh-inverted`.
+
+The current published decoder is visible in PulseView as
+`Sofar CAN v2026.07.04a`. It handles the validated Sofar-compatible
+low-voltage profile used by the bridge: limits, SOC/SOH, pack telemetry,
+module info, status, brand, module raw words, temperature/cell extremes, and
+extreme index frames.
+
+The current bridge-mode raw capture and PulseView session are listed in
+`examples/README.md` as `Sofar CAN`.
 
 ## JKBMS CAN Decoder
 
@@ -609,6 +640,21 @@ The current screenshots use an SMA-compatible CAN capture decoded with
 ![SMA CAN manufacturer 0x35E](pictures/sma_can/sma-can-0x35e-manufacturer.png)
 
 ![SMA CAN battery info 0x35F](pictures/sma_can/sma-can-0x35f-battery-info.png)
+
+## Sofar CAN Capture Screenshots
+
+The current screenshots use a Sofar-compatible CAN capture decoded with
+`Sofar CAN v2026.07.04a`.
+
+![Sofar CAN limits 0x351](pictures/sofar_can/sofar-can-0x351-limits.png)
+
+![Sofar CAN SOC/SOH 0x355](pictures/sofar_can/sofar-can-0x355-soc-soh.png)
+
+![Sofar CAN pack telemetry 0x356](pictures/sofar_can/sofar-can-0x356-pack-telemetry.png)
+
+![Sofar CAN brand 0x35E](pictures/sofar_can/sofar-can-0x35e-brand.png)
+
+![Sofar CAN module raw 0x35F](pictures/sofar_can/sofar-can-0x35f-module-raw.png)
 
 ## Victron CAN Capture Screenshots
 

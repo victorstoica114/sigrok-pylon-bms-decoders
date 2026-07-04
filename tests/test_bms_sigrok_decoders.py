@@ -17,6 +17,7 @@ PACE_MODBUS_DECODER_DIR = DECODERS_DIR / "pace_modbus"
 PYLON_CAN_DECODER_DIR = DECODERS_DIR / "pylon_can"
 PYLON_RS485_DECODER_DIR = DECODERS_DIR / "pylon_rs485"
 SMA_CAN_DECODER_DIR = DECODERS_DIR / "sma_can"
+SOFAR_CAN_DECODER_DIR = DECODERS_DIR / "sofar_can"
 VICTRON_CAN_DECODER_DIR = DECODERS_DIR / "victron_can"
 PULSEVIEW_DECODER_DIR = Path(r"C:\Program Files\sigrok\PulseView\share\libsigrokdecode\decoders")
 PULSEVIEW_SRD_DIR = Path(r"C:\Program Files\sigrok\PulseView\share\libsigrokdecode")
@@ -40,6 +41,7 @@ pace_modbus = load_module("pace_modbus_helper", PACE_MODBUS_DECODER_DIR / "pace_
 pylon_can = load_module("pylon_can_helper", PYLON_CAN_DECODER_DIR / "pylon_can.py")
 pylon_rs485 = load_module("pylon_rs485_helper", PYLON_RS485_DECODER_DIR / "pylon.py")
 sma_can = load_module("sma_can_helper", SMA_CAN_DECODER_DIR / "sma_can.py")
+sofar_can = load_module("sofar_can_helper", SOFAR_CAN_DECODER_DIR / "sofar_can.py")
 victron_can = load_module("victron_can_helper", VICTRON_CAN_DECODER_DIR / "victron_can.py")
 
 
@@ -79,6 +81,7 @@ def test_active_decoder_folders_are_validated_only():
         "pylon_can",
         "pylon_rs485",
         "sma_can",
+        "sofar_can",
         "victron_can",
     ]
 
@@ -346,6 +349,26 @@ def test_sma_can_describes_live_frames():
     assert "raw=AA AA 02 AA AA AA 02 00" in sma_can.describe_packet(vendor)
     assert "SMA manufacturer 'SMA'" in sma_can.describe_packet(manufacturer)
     assert "0x35F SMA battery info" in sma_can.describe_packet(battery)
+
+
+def test_sofar_can_describes_live_frames():
+    limits = ("standard", 0x351, "data", 8, [0x40, 0x02, 0x08, 0x07, 0x08, 0x07, 0x00, 0x02])
+    soc = ("standard", 0x355, "data", 8, [0x46, 0x00, 0x64, 0x00, 0x6C, 0x1B, 0x00, 0x00])
+    pack = ("standard", 0x356, "data", 8, [0xEE, 0x15, 0x00, 0x00, 0xF8, 0x00, 0x00, 0x00])
+    brand = ("standard", 0x35E, "data", 8, [0x53, 0x6F, 0x66, 0x61, 0x72, 0x20, 0x20, 0x20])
+    module = ("standard", 0x35F, "data", 8, [0x00, 0x00, 0x00, 0x01, 0x22, 0x01, 0x00, 0x00])
+
+    assert "chgV=57.6V" in sofar_can.describe_packet(limits)
+    assert "chgI=180.0A" in sofar_can.describe_packet(limits)
+    assert "disI=180.0A" in sofar_can.describe_packet(limits)
+    assert "lowV=51.2V" in sofar_can.describe_packet(limits)
+    assert "SOC=70%" in sofar_can.describe_packet(soc)
+    assert "SOH=100%" in sofar_can.describe_packet(soc)
+    assert "V=56.14V" in sofar_can.describe_packet(pack)
+    assert "I=+0.0A" in sofar_can.describe_packet(pack)
+    assert "temp=24.8C" in sofar_can.describe_packet(pack)
+    assert "Sofar brand 'Sofar'" in sofar_can.describe_packet(brand)
+    assert "u16=[0, 256, 290, 0]" in sofar_can.describe_packet(module)
 
 
 def test_pylon_can_describes_live_frames():
@@ -713,6 +736,51 @@ def test_sigrok_sma_can_decoder_derives_bus_level_from_raw_can_lines(monkeypatch
         sys.modules.pop(name, None)
 
     module = importlib.import_module("sma_can")
+    decoder = module.Decoder()
+
+    decoder.options = {"input_mode": "rx/canl-direct"}
+    assert decoder.derive_can_rx(1) == 1
+    assert decoder.derive_can_rx(0) == 0
+
+    decoder.options = {"input_mode": "canh-inverted"}
+    assert decoder.derive_can_rx(0) == 1
+    assert decoder.derive_can_rx(1) == 0
+
+    decoder.options = {"input_mode": "canh-canl-diff"}
+    assert decoder.derive_can_rx(1, 0) == 0
+    assert decoder.derive_can_rx(0, 1) == 1
+    assert decoder.derive_can_rx(1, 1) == 1
+
+
+def test_sigrok_sofar_can_package_exports_decoder(monkeypatch):
+    stub_sigrokdecode = types.SimpleNamespace(Decoder=object, OUTPUT_ANN=1, OUTPUT_PYTHON=2)
+    monkeypatch.setitem(sys.modules, "sigrokdecode", stub_sigrokdecode)
+    sys.path.insert(0, str(PULSEVIEW_SRD_DIR))
+    sys.path.insert(0, str(PULSEVIEW_DECODER_DIR))
+    sys.path.insert(0, str(DECODERS_DIR))
+
+    for name in ("can", "can.pd", "sofar_can", "sofar_can.pd", "sofar_can.sofar_can"):
+        sys.modules.pop(name, None)
+
+    module = importlib.import_module("sofar_can")
+
+    assert module.Decoder.id == "sofar_can"
+    assert module.Decoder.inputs == ["logic"]
+    assert sofar_can.VERSION in module.Decoder.name
+    assert any(option["id"] == "input_mode" for option in module.Decoder.options)
+
+
+def test_sigrok_sofar_can_decoder_derives_bus_level_from_raw_can_lines(monkeypatch):
+    stub_sigrokdecode = types.SimpleNamespace(Decoder=object, OUTPUT_ANN=1, OUTPUT_PYTHON=2)
+    monkeypatch.setitem(sys.modules, "sigrokdecode", stub_sigrokdecode)
+    sys.path.insert(0, str(PULSEVIEW_SRD_DIR))
+    sys.path.insert(0, str(PULSEVIEW_DECODER_DIR))
+    sys.path.insert(0, str(DECODERS_DIR))
+
+    for name in ("can", "can.pd", "sofar_can", "sofar_can.pd", "sofar_can.sofar_can"):
+        sys.modules.pop(name, None)
+
+    module = importlib.import_module("sofar_can")
     decoder = module.Decoder()
 
     decoder.options = {"input_mode": "rx/canl-direct"}
