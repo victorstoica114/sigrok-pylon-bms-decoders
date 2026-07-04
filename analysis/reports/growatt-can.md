@@ -16,10 +16,10 @@ python analysis/analyze_capture.py examples/bridge/growatt-can-raw-capture.sr --
 
 | Metric | Value |
 | --- | ---: |
-| Total samples scanned | 2,000,000,691 |
+| Total samples scanned | 2,000,000,717 |
 | Samplerate | 200,000,000 Hz |
-| Capture duration | 10.000003 s |
-| Analysis runtime | 7.250 s |
+| Capture duration | 10.000004 s |
+| Analysis runtime | 13.172 s |
 | Channel | `CH0` |
 | Inverted input | `true` |
 | CAN bitrate | 500,000 bit/s |
@@ -31,29 +31,31 @@ python analysis/analyze_capture.py examples/bridge/growatt-can-raw-capture.sr --
 
 | Metric | Count |
 | --- | ---: |
-| Total CAN frames | 237 |
-| Unique CAN IDs | 8 |
-| CAN cycles | 37 |
+| Total CAN frames | 519 |
+| Unique CAN IDs | 10 |
+| CAN cycles | 1 |
 
 ## Timing Statistics
 
 | Measurement | n | Avg (us) | Min (us) | Max (us) | P50 (us) | P95 (us) |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| `cycle_duration_us` | 37 | 19,950.799 | 221.400 | 100,347.320 | 1,739.195 | 82,038.312 |
-| `inter_cycle_gap_us` | 36 | 248,676.040 | 107,484.730 | 398,446.700 | 198,666.805 | 398,264.199 |
+| `cycle_duration_us` | 1 | 9,980,699.265 | 9,980,699.265 | 9,980,699.265 | 9,980,699.265 | 9,980,699.265 |
+| `inter_cycle_gap_us` | 0 |  |  |  |  |  |
 
 ## CAN IDs
 
 | CAN ID | Frames |
 | --- | ---: |
-| `0x301` | 20 |
-| `0x311` | 33 |
-| `0x312` | 33 |
-| `0x313` | 33 |
-| `0x314` | 33 |
-| `0x319` | 33 |
-| `0x320` | 33 |
-| `0x322` | 19 |
+| `0x301` | 19 |
+| `0x311` | 55 |
+| `0x312` | 55 |
+| `0x313` | 55 |
+| `0x314` | 56 |
+| `0x319` | 56 |
+| `0x320` | 56 |
+| `0x321` | 56 |
+| `0x322` | 56 |
+| `0x323` | 55 |
 
 Definitions:
 

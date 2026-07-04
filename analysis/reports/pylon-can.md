@@ -19,7 +19,7 @@ python analysis/analyze_capture.py examples/bridge/pylon-can-raw-capture.sr --pr
 | Total samples scanned | 2,000,001,251 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 10.000006 s |
-| Analysis runtime | 7.844 s |
+| Analysis runtime | 7.734 s |
 | Channel | `CH1` |
 | Inverted input | `true` |
 | CAN bitrate | 500,000 bit/s |

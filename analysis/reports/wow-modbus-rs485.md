@@ -19,7 +19,7 @@ python analysis/analyze_capture.py examples/bridge/wow-modbus-rs485-raw-capture.
 | Total samples scanned | 2,000,000,515 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 10.000003 s |
-| Analysis runtime | 11.953 s |
+| Analysis runtime | 11.843 s |
 | Channel | `CH0` |
 | Inverted input | `false` |
 | UART baud | 9,600 bit/s |

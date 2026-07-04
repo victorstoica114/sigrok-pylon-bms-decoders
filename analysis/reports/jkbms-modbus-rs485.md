@@ -19,7 +19,7 @@ python analysis/analyze_capture.py examples/bridge/jkbms-modbus-rs485-raw-captur
 | Total samples scanned | 2,000,000,255 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 10.000001 s |
-| Analysis runtime | 7.859 s |
+| Analysis runtime | 7.609 s |
 | Channel | `CH0` |
 | Inverted input | `true` |
 | UART baud | 115,200 bit/s |

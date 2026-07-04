@@ -6,7 +6,7 @@
 - Samplerate: 200000000 Hz
 - Total samples scanned: 2000000241
 - Capture duration: 10.000001 s
-- Analysis runtime: 9.687 s
+- Analysis runtime: 9.656 s
 - Channel: CH1
 - Inverted input: true
 - CAN bitrate: 500000

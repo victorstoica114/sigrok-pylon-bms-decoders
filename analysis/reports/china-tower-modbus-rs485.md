@@ -19,7 +19,7 @@ python analysis/analyze_capture.py examples/bridge/china-tower-modbus-rs485-raw-
 | Total samples scanned | 2,000,000,421 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 10.000002 s |
-| Analysis runtime | 11.015 s |
+| Analysis runtime | 11.078 s |
 | Channel | `CH0` |
 | Inverted input | `true` |
 | UART baud | 9,600 bit/s |

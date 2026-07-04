@@ -1,0 +1,31 @@
+sequence_no,complete,status,request_frame_no,response_frame_no,slave,func,start_reg,count,request_start_us,request_end_us,response_start_us,response_end_us,request_to_response_us,full_exchange_us,request_summary,response_summary
+1,true,complete,2,3,18,97,,,1119209.790,1137832.440,1149870.065,1270702.680,12037.625,151492.890,Pylon req addr=0x12 cid2=0x61 analog/telemetry chk=OK len=0 empty,Pylon rsp addr=0x12 OK cid2=0x61 chk=OK analog/telemetry len=98
+2,true,complete,4,5,18,99,,,1933164.825,1951787.480,1961336.185,1998835.985,9548.705,65671.160,Pylon req addr=0x12 cid2=0x63 charge/discharge status chk=OK len=0 empty,Pylon rsp addr=0x12 OK cid2=0x63 chk=OK charge/discharge status len=18
+3,true,complete,6,7,18,97,,,2719089.815,2737712.485,2749866.280,2870698.890,12153.795,151609.075,Pylon req addr=0x12 cid2=0x61 analog/telemetry chk=OK len=0 empty,Pylon rsp addr=0x12 OK cid2=0x61 chk=OK analog/telemetry len=98
+4,true,complete,9,10,18,99,,,4398960.345,4417582.980,4427322.810,4464822.620,9739.830,65862.275,Pylon req addr=0x12 cid2=0x63 charge/discharge status chk=OK len=0 empty,Pylon rsp addr=0x12 OK cid2=0x63 chk=OK charge/discharge status len=18
+5,true,complete,11,12,18,97,,,5198921.165,5217543.835,5227395.830,5348228.450,9851.995,149307.285,Pylon req addr=0x12 cid2=0x61 analog/telemetry chk=OK len=0 empty,Pylon rsp addr=0x12 OK cid2=0x61 chk=OK analog/telemetry len=98
+6,true,complete,14,15,18,99,,,6878767.205,6897389.875,6907306.865,6944806.670,9916.990,66039.465,Pylon req addr=0x12 cid2=0x63 charge/discharge status chk=OK len=0 empty,Pylon rsp addr=0x12 OK cid2=0x63 chk=OK charge/discharge status len=18
+7,true,complete,16,17,18,97,,,7678729.875,7697352.540,7707373.390,7828206.000,10020.850,149476.125,Pylon req addr=0x12 cid2=0x61 analog/telemetry chk=OK len=0 empty,Pylon rsp addr=0x12 OK cid2=0x61 chk=OK analog/telemetry len=98
+8,true,complete,19,20,18,99,,,9358602.845,9377225.515,9386294.945,9423794.750,9069.430,65191.905,Pylon req addr=0x12 cid2=0x63 charge/discharge status chk=OK len=0 empty,Pylon rsp addr=0x12 OK cid2=0x63 chk=OK charge/discharge status len=18
+9,false,request_replaced,1,,2,97,,,239257.075,257879.745,,,,,Pylon req addr=0x02 cid2=0x61 analog/telemetry chk=OK len=0 empty,
+10,true,complete,22,23,18,97,,,11038494.065,11057116.710,11066349.325,11187181.940,9232.615,148687.875,Pylon req addr=0x12 cid2=0x61 analog/telemetry chk=OK len=0 empty,Pylon rsp addr=0x12 OK cid2=0x61 chk=OK analog/telemetry len=98
+11,true,complete,24,25,18,99,,,11838434.710,11857057.365,11866279.025,11903778.825,9221.660,65344.115,Pylon req addr=0x12 cid2=0x63 charge/discharge status chk=OK len=0 empty,Pylon rsp addr=0x12 OK cid2=0x63 chk=OK charge/discharge status len=18
+12,true,complete,26,27,18,97,,,12638375.690,12656998.350,12666345.555,12787178.165,9347.205,148802.475,Pylon req addr=0x12 cid2=0x61 analog/telemetry chk=OK len=0 empty,Pylon rsp addr=0x12 OK cid2=0x61 chk=OK analog/telemetry len=98
+13,false,request_replaced,8,,34,97,,,3519028.830,3537651.500,,,,,Pylon req addr=0x22 cid2=0x61 analog/telemetry chk=OK len=0 empty,
+14,true,complete,29,30,18,99,,,14318266.595,14336889.215,14346263.085,14383762.885,9373.870,65496.290,Pylon req addr=0x12 cid2=0x63 charge/discharge status chk=OK len=0 empty,Pylon rsp addr=0x12 OK cid2=0x63 chk=OK charge/discharge status len=18
+15,true,complete,31,32,18,97,,,15118204.385,15136827.030,15146323.105,15267155.715,9496.075,148951.330,Pylon req addr=0x12 cid2=0x61 analog/telemetry chk=OK len=0 empty,Pylon rsp addr=0x12 OK cid2=0x61 chk=OK analog/telemetry len=98
+16,false,request_replaced,13,,50,97,,,5998857.800,6017480.480,,,,,Pylon req addr=0x32 cid2=0x61 analog/telemetry chk=OK len=0 empty,
+17,true,complete,34,35,18,99,,,16798075.750,16816698.370,16826240.630,16863740.435,9542.260,65664.685,Pylon req addr=0x12 cid2=0x63 charge/discharge status chk=OK len=0 empty,Pylon rsp addr=0x12 OK cid2=0x63 chk=OK charge/discharge status len=18
+18,true,complete,36,37,18,97,,,17598017.115,17616639.745,17626313.655,17747146.265,9673.910,149129.150,Pylon req addr=0x12 cid2=0x61 analog/telemetry chk=OK len=0 empty,Pylon rsp addr=0x12 OK cid2=0x61 chk=OK analog/telemetry len=98
+19,false,request_replaced,18,,66,97,,,8478670.310,8497292.975,,,,,Pylon req addr=0x42 cid2=0x61 analog/telemetry chk=OK len=0 empty,
+20,true,complete,39,40,18,99,,,19277886.250,19296508.890,19306231.175,19343730.980,9722.285,65844.730,Pylon req addr=0x12 cid2=0x63 charge/discharge status chk=OK len=0 empty,Pylon rsp addr=0x12 OK cid2=0x63 chk=OK charge/discharge status len=18
+21,false,request_replaced,21,,2,97,,,10158540.080,10177162.750,,,,,Pylon req addr=0x02 cid2=0x61 analog/telemetry chk=OK len=0 empty,
+22,true,complete,42,43,18,97,,,20957758.300,20976380.920,20986285.540,21107118.155,9904.620,149359.855,Pylon req addr=0x12 cid2=0x61 analog/telemetry chk=OK len=0 empty,Pylon rsp addr=0x12 OK cid2=0x61 chk=OK analog/telemetry len=98
+23,true,complete,44,45,18,99,,,21757721.795,21776344.440,21786215.230,21823715.035,9870.790,65993.240,Pylon req addr=0x12 cid2=0x63 charge/discharge status chk=OK len=0 empty,Pylon rsp addr=0x12 OK cid2=0x63 chk=OK charge/discharge status len=18
+24,true,complete,46,47,18,97,,,22557659.110,22576281.770,22586281.745,22707114.355,9999.975,149455.245,Pylon req addr=0x12 cid2=0x61 analog/telemetry chk=OK len=0 empty,Pylon rsp addr=0x12 OK cid2=0x61 chk=OK analog/telemetry len=98
+25,false,request_replaced,28,,34,97,,,13438312.125,13456934.770,,,,,Pylon req addr=0x22 cid2=0x61 analog/telemetry chk=OK len=0 empty,
+26,true,complete,49,50,18,99,,,24237550.465,24256173.095,24266192.775,24303692.585,10019.680,66142.120,Pylon req addr=0x12 cid2=0x63 charge/discharge status chk=OK len=0 empty,Pylon rsp addr=0x12 OK cid2=0x63 chk=OK charge/discharge status len=18
+27,false,unmatched_request,33,,50,97,,,15926117.420,15944740.100,,,,,Pylon req addr=0x32 cid2=0x61 analog/telemetry chk=OK len=0 empty,
+28,false,unmatched_request,38,,66,97,,,18397977.870,18416600.515,,,,,Pylon req addr=0x42 cid2=0x61 analog/telemetry chk=OK len=0 empty,
+29,false,unmatched_request,41,,2,97,,,20077826.340,20096448.980,,,,,Pylon req addr=0x02 cid2=0x61 analog/telemetry chk=OK len=0 empty,
+30,false,unmatched_request,48,,34,97,,,23357620.450,23376243.080,,,,,Pylon req addr=0x22 cid2=0x61 analog/telemetry chk=OK len=0 empty,

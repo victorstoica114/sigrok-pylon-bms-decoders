@@ -25,6 +25,8 @@ from typing import Callable, Iterable
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DECODERS_DIR = REPO_ROOT / "decoders"
 EXAMPLES_BRIDGE_DIR = REPO_ROOT / "examples" / "bridge"
+EXAMPLES_FORWARD_DIR = REPO_ROOT / "examples" / "bridge_forward"
+EXAMPLES_DIRECT_DIR = REPO_ROOT / "examples" / "direct"
 DEFAULT_OUT_DIR = REPO_ROOT / "analysis" / "out"
 DEFAULT_REPORT_DIR = REPO_ROOT / "analysis" / "reports"
 
@@ -81,6 +83,50 @@ PROTOCOL_CONFIGS: dict[str, ProtocolConfig] = {
         baud=9600,
         inter_frame_gap_us=5000,
     ),
+    "growatt_seplos_rs485": ProtocolConfig(
+        "growatt_seplos_rs485",
+        "Growatt RS485 Seplos",
+        DECODERS_DIR / "growatt_rs485" / "growatt.py",
+        "modbus",
+        EXAMPLES_BRIDGE_DIR / "growatt-seplos-rs485-raw-capture.sr",
+        "CH0",
+        False,
+        baud=9600,
+        inter_frame_gap_us=5000,
+    ),
+    "direct_growatt_rs485": ProtocolConfig(
+        "direct_growatt_rs485",
+        "Growatt RS485 JKBMS",
+        DECODERS_DIR / "growatt_rs485" / "growatt.py",
+        "modbus",
+        EXAMPLES_DIRECT_DIR / "growatt-rs485-raw-capture.sr",
+        "CH0",
+        False,
+        baud=9600,
+        inter_frame_gap_us=5000,
+    ),
+    "forward_growatt_rs485": ProtocolConfig(
+        "forward_growatt_rs485",
+        "Growatt RS485 JKBMS",
+        DECODERS_DIR / "growatt_rs485" / "growatt.py",
+        "modbus",
+        EXAMPLES_FORWARD_DIR / "growatt-rs485-raw-capture.sr",
+        "CH0",
+        False,
+        baud=9600,
+        inter_frame_gap_us=5000,
+    ),
+    "forward_growatt_seplos_rs485": ProtocolConfig(
+        "forward_growatt_seplos_rs485",
+        "Growatt RS485 Seplos",
+        DECODERS_DIR / "growatt_rs485" / "growatt.py",
+        "modbus",
+        EXAMPLES_FORWARD_DIR / "growatt-seplos-rs485-raw-capture.sr",
+        "CH0",
+        False,
+        baud=9600,
+        inter_frame_gap_us=5000,
+    ),
     "jkbms_modbus": ProtocolConfig(
         "jkbms_modbus",
         "JKBMS Modbus RS485",
@@ -120,6 +166,50 @@ PROTOCOL_CONFIGS: dict[str, ProtocolConfig] = {
         DECODERS_DIR / "pylon_rs485" / "pylon.py",
         "pylon_rs485",
         EXAMPLES_BRIDGE_DIR / "anenji-pylon-rs485-raw-capture.sr",
+        "CH0",
+        False,
+        baud=9600,
+        inter_frame_gap_us=5000,
+    ),
+    "direct_anenji_jkbms_pylon_rs485": ProtocolConfig(
+        "direct_anenji_jkbms_pylon_rs485",
+        "Anenji Pylon RS485 JKBMS",
+        DECODERS_DIR / "pylon_rs485" / "pylon.py",
+        "pylon_rs485",
+        EXAMPLES_DIRECT_DIR / "anenji-jkbms-pylon-rs485-raw-capture.sr",
+        "CH0",
+        False,
+        baud=9600,
+        inter_frame_gap_us=5000,
+    ),
+    "direct_anenji_seplos_pylon_rs485": ProtocolConfig(
+        "direct_anenji_seplos_pylon_rs485",
+        "Anenji Pylon RS485 Seplos",
+        DECODERS_DIR / "pylon_rs485" / "pylon.py",
+        "pylon_rs485",
+        EXAMPLES_DIRECT_DIR / "anenji-seplos-pylon-rs485-raw-capture.sr",
+        "CH0",
+        False,
+        baud=9600,
+        inter_frame_gap_us=5000,
+    ),
+    "forward_anenji_pylon_rs485": ProtocolConfig(
+        "forward_anenji_pylon_rs485",
+        "Anenji Pylon RS485 JKBMS",
+        DECODERS_DIR / "pylon_rs485" / "pylon.py",
+        "pylon_rs485",
+        EXAMPLES_FORWARD_DIR / "anenji-pylon-rs485-raw-capture.sr",
+        "CH0",
+        False,
+        baud=9600,
+        inter_frame_gap_us=5000,
+    ),
+    "forward_anenji_seplos_pylon_rs485": ProtocolConfig(
+        "forward_anenji_seplos_pylon_rs485",
+        "Anenji Pylon RS485 Seplos",
+        DECODERS_DIR / "pylon_rs485" / "pylon.py",
+        "pylon_rs485",
+        EXAMPLES_FORWARD_DIR / "anenji-seplos-pylon-rs485-raw-capture.sr",
         "CH0",
         False,
         baud=9600,
@@ -183,6 +273,48 @@ PROTOCOL_CONFIGS: dict[str, ProtocolConfig] = {
         DECODERS_DIR / "growatt_can" / "growatt_can.py",
         "can",
         EXAMPLES_BRIDGE_DIR / "growatt-seplos-can-raw-capture.sr",
+        "CH0",
+        True,
+        bitrate=500000,
+    ),
+    "direct_growatt_can": ProtocolConfig(
+        "direct_growatt_can",
+        "Growatt CAN JKBMS",
+        DECODERS_DIR / "growatt_can" / "growatt_can.py",
+        "can",
+        EXAMPLES_DIRECT_DIR / "growatt-can-raw-capture.sr",
+        "CH0",
+        True,
+        bitrate=500000,
+        sample_point_pct=75.0,
+    ),
+    "direct_growatt_seplos_can": ProtocolConfig(
+        "direct_growatt_seplos_can",
+        "Growatt CAN Seplos",
+        DECODERS_DIR / "growatt_can" / "growatt_can.py",
+        "can",
+        EXAMPLES_DIRECT_DIR / "growatt-seplos-can-raw-capture.sr",
+        "CH0",
+        True,
+        bitrate=500000,
+        sample_point_pct=75.0,
+    ),
+    "forward_growatt_can": ProtocolConfig(
+        "forward_growatt_can",
+        "Growatt CAN JKBMS",
+        DECODERS_DIR / "growatt_can" / "growatt_can.py",
+        "can",
+        EXAMPLES_FORWARD_DIR / "growatt-can-raw-capture.sr",
+        "CH0",
+        True,
+        bitrate=500000,
+    ),
+    "forward_growatt_seplos_can": ProtocolConfig(
+        "forward_growatt_seplos_can",
+        "Growatt CAN Seplos",
+        DECODERS_DIR / "growatt_can" / "growatt_can.py",
+        "can",
+        EXAMPLES_FORWARD_DIR / "growatt-seplos-can-raw-capture.sr",
         "CH0",
         True,
         bitrate=500000,
@@ -1297,8 +1429,31 @@ def can_cycle_values(result: AnalysisResult, mode: str) -> list[float]:
     return values
 
 
+def topology_label_for(config: ProtocolConfig) -> str:
+    parent = config.capture.parent.name
+    if parent == "bridge_forward":
+        return "Bridge Forward"
+    if parent == "direct":
+        return "Direct"
+    return "Bridge"
+
+
+def output_stem_for(config: ProtocolConfig) -> str:
+    stem = config.capture.stem
+    parent = config.capture.parent.name
+    if parent == "bridge_forward":
+        return f"bridge-forward-{stem}"
+    if parent == "direct":
+        return f"direct-{stem}"
+    return stem
+
+
+def display_title_for(config: ProtocolConfig) -> str:
+    return f"{config.title} {topology_label_for(config)}"
+
+
 def report_name_for(config: ProtocolConfig) -> str:
-    stem = config.capture.stem.replace("-raw-capture", "")
+    stem = output_stem_for(config).replace("-raw-capture", "")
     return f"{stem}.md"
 
 
@@ -1404,7 +1559,7 @@ def overview_stat(values: list[float], mode: str) -> str:
 
 def write_report_md(path: Path, result: AnalysisResult) -> None:
     lines = [
-        f"# {result.config.title} Bridge Capture",
+        f"# {display_title_for(result.config)} Capture",
         "",
         "Source capture:",
         "",
@@ -1520,9 +1675,9 @@ def write_report_md(path: Path, result: AnalysisResult) -> None:
         "## Generated Tables",
         "",
         "```text",
-        f"analysis/out/{result.config.capture.stem}.frames.csv",
-        f"analysis/out/{result.config.capture.stem}.sequences.csv",
-        f"analysis/out/{result.config.capture.stem}.summary.md",
+        f"analysis/out/{output_stem_for(result.config)}.frames.csv",
+        f"analysis/out/{output_stem_for(result.config)}.sequences.csv",
+        f"analysis/out/{output_stem_for(result.config)}.summary.md",
         "```",
     ])
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
@@ -1531,7 +1686,7 @@ def write_report_md(path: Path, result: AnalysisResult) -> None:
 def write_outputs(result: AnalysisResult, out_dir: Path, report_dir: Path) -> tuple[Path, Path, Path, Path]:
     out_dir.mkdir(parents=True, exist_ok=True)
     report_dir.mkdir(parents=True, exist_ok=True)
-    stem = result.config.capture.stem
+    stem = output_stem_for(result.config)
     frames_path = out_dir / f"{stem}.frames.csv"
     sequences_path = out_dir / f"{stem}.sequences.csv"
     summary_path = out_dir / f"{stem}.summary.md"
@@ -1621,12 +1776,12 @@ def write_overview_md(path: Path, results: list[AnalysisResult]) -> None:
     serial_results = [result for result in results if result.config.kind != "can"]
     can_results = [result for result in results if result.config.kind == "can"]
     lines = [
-        "# Bridge Capture Analysis Overview",
+        "# Capture Analysis Overview",
         "",
         "Generated by:",
         "",
         "```powershell",
-        "python analysis/analyze_capture.py --all-bridge --quiet",
+        "python analysis/analyze_capture.py --all-captures --quiet",
         "```",
         "",
         "## RS485/UART Captures",
@@ -1640,7 +1795,7 @@ def write_overview_md(path: Path, results: list[AnalysisResult]) -> None:
         complete_count = sum(1 for sequence in result.sequences if sequence.complete)
         report_link = report_name_for(result.config)
         lines.append(
-            f"| [{result.config.title}]({report_link}) "
+            f"| [{display_title_for(result.config)}]({report_link}) "
             f"| {len(result.frames)} "
             f"| {complete_count} "
             f"| {len(result.sequences) - complete_count} "
@@ -1664,7 +1819,7 @@ def write_overview_md(path: Path, results: list[AnalysisResult]) -> None:
         decode_errors = result.counters.get("can_stuff_errors", 0) + result.counters.get("can_decode_errors", 0)
         report_link = report_name_for(result.config)
         lines.append(
-            f"| [{result.config.title}]({report_link}) "
+            f"| [{display_title_for(result.config)}]({report_link}) "
             f"| {len(result.frames)} "
             f"| {len(can_ids)} "
             f"| {len(result.cycles)} "
@@ -1691,17 +1846,20 @@ def write_overview_outputs(results: list[AnalysisResult], out_dir: Path, report_
 def infer_config_for_capture(capture: Path) -> ProtocolConfig | None:
     resolved = capture.resolve()
     for config in PROTOCOL_CONFIGS.values():
-        if config.capture.resolve() == resolved or config.capture.name == capture.name:
+        if config.capture.resolve() == resolved:
             return config
+    matches = [config for config in PROTOCOL_CONFIGS.values() if config.capture.name == capture.name]
+    if len(matches) == 1:
+        return matches[0]
     return None
 
 
 def target_configs(args) -> list[ProtocolConfig]:
-    if args.all_bridge:
+    if args.all_captures or args.all_bridge:
         return list(PROTOCOL_CONFIGS.values())
 
     if args.capture is None:
-        raise SystemExit("capture is required unless --all-bridge is used")
+        raise SystemExit("capture is required unless --all-captures is used")
 
     capture = args.capture.resolve()
     base = infer_config_for_capture(capture)
@@ -1731,7 +1889,8 @@ def target_configs(args) -> list[ProtocolConfig]:
 def build_arg_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Analyze sigrok/PulseView captures offline.")
     parser.add_argument("capture", nargs="?", type=Path, help="Path to a .sr capture file.")
-    parser.add_argument("--all-bridge", action="store_true", help="Analyze every known bridge capture.")
+    parser.add_argument("--all-captures", action="store_true", help="Analyze every known example capture.")
+    parser.add_argument("--all-bridge", action="store_true", help="Compatibility alias for --all-captures.")
     parser.add_argument("--list-targets", action="store_true", help="List built-in bridge targets and exit.")
     parser.add_argument("--protocol", choices=sorted(PROTOCOL_CONFIGS), help="Protocol decoder to run.")
     parser.add_argument("--channel", help="Logic channel/probe name to decode.")
@@ -1777,7 +1936,7 @@ def main(argv: list[str] | None = None) -> int:
         else:
             print(f"decoded {len(result.frames)} frames and {len(result.sequences)} sequence rows in {result.elapsed_s:.3f}s")
 
-    if args.all_bridge:
+    if args.all_captures or args.all_bridge:
         overview_csv_path, overview_md_path = write_overview_outputs(results, args.out_dir, args.report_dir)
         print(f"overview_csv: {overview_csv_path}")
         print(f"overview_report: {overview_md_path}")

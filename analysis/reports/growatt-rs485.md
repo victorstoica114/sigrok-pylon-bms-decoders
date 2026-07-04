@@ -16,14 +16,14 @@ python analysis/analyze_capture.py examples/bridge/growatt-rs485-raw-capture.sr 
 
 | Metric | Value |
 | --- | ---: |
-| Total samples scanned | 2,000,000,623 |
+| Total samples scanned | 2,000,001,405 |
 | Samplerate | 200,000,000 Hz |
-| Capture duration | 10.000003 s |
-| Analysis runtime | 9.625 s |
+| Capture duration | 10.000007 s |
+| Analysis runtime | 9.516 s |
 | Channel | `CH0` |
 | Inverted input | `false` |
 | UART baud | 9,600 bit/s |
-| UART bytes decoded | 1,027 |
+| UART bytes decoded | 1,029 |
 | UART invalid start bits | 0 |
 | UART invalid stop bits | 0 |
 
@@ -49,8 +49,8 @@ python analysis/analyze_capture.py examples/bridge/growatt-rs485-raw-capture.sr 
 
 | Measurement | n | Avg (us) | Min (us) | Max (us) | P50 (us) | P95 (us) |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| `request_to_response_us` | 25 | 4,656.807 | 4,320.610 | 5,394.950 | 4,589.795 | 5,282.182 |
-| `full_exchange_us` | 25 | 48,908.271 | 42,251.070 | 53,729.940 | 50,759.735 | 53,501.203 |
+| `request_to_response_us` | 25 | 4,759.997 | 4,301.185 | 5,361.060 | 4,643.880 | 5,294.317 |
+| `full_exchange_us` | 25 | 49,094.793 | 42,255.805 | 53,555.285 | 50,788.940 | 53,520.070 |
 
 Definitions:
 
