@@ -31,6 +31,7 @@
 - Bridge-mode example capture and PulseView session for Pylon CAN traffic.
 - Bridge-mode example capture and PulseView session for Pylon RS485 ASCII traffic.
 - Bridge-mode example capture and PulseView session for Anenji/Pylon RS485 ASCII traffic.
+- Forward-mode example capture and PulseView session for Anenji/Pylon RS485 ASCII traffic.
 - Bridge-mode example capture and PulseView session for SMA CAN traffic.
 - Bridge-mode example capture and PulseView session for Sofar CAN traffic.
 - Bridge-mode example capture and PulseView session for Victron CAN traffic.
