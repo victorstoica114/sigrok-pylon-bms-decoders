@@ -34,9 +34,24 @@ Committed analysis reports live under `analysis/reports/`:
 
 Important timing fields:
 
-- `turnaround_us`: response start minus request end.
-- `round_trip_us`: response end minus request start.
+```text
+request start ---- request end    response start ---- response end
+              <-- request_to_response -->
+<---------------------- full_exchange ----------------->
+```
+
+- `request_to_response_us`: response start minus request end.
+- `full_exchange_us`: response end minus request start.
 - `gap_from_previous_us`: current frame start minus previous frame end.
+
+Statistics columns:
+
+- `n`: number of complete request/response sequences included.
+- `avg`: arithmetic mean across those sequences.
+- `min`: fastest observed value.
+- `max`: slowest observed value.
+- `p50`: median value; half of the observations are below this value.
+- `p95`: 95th percentile; 95% of observations are below this value.
 
 ## Design Notes
 

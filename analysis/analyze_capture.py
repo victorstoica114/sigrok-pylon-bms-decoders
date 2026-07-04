@@ -557,8 +557,8 @@ def sequence_timing(sequence: SequenceRow, samplerate: int) -> dict[str, float |
             "request_end_us": None,
             "response_start_us": None,
             "response_end_us": None,
-            "turnaround_us": None,
-            "round_trip_us": None,
+            "request_to_response_us": None,
+            "full_exchange_us": None,
         }
 
     return {
@@ -566,10 +566,10 @@ def sequence_timing(sequence: SequenceRow, samplerate: int) -> dict[str, float |
         "request_end_us": None if request is None else sample_to_us(request.end_sample, samplerate),
         "response_start_us": None if response is None else sample_to_us(response.start_sample, samplerate),
         "response_end_us": None if response is None else sample_to_us(response.end_sample, samplerate),
-        "turnaround_us": None
+        "request_to_response_us": None
         if request is None or response is None
         else us_between(request.end_sample, response.start_sample, samplerate),
-        "round_trip_us": None
+        "full_exchange_us": None
         if request is None or response is None
         else us_between(request.start_sample, response.end_sample, samplerate),
     }
@@ -590,8 +590,8 @@ def write_sequences_csv(path: Path, sequences: list[SequenceRow], samplerate: in
         "request_end_us",
         "response_start_us",
         "response_end_us",
-        "turnaround_us",
-        "round_trip_us",
+        "request_to_response_us",
+        "full_exchange_us",
         "request_summary",
         "response_summary",
     ]
@@ -620,8 +620,8 @@ def write_sequences_csv(path: Path, sequences: list[SequenceRow], samplerate: in
                     "request_end_us": fmt_float(timing["request_end_us"]),
                     "response_start_us": fmt_float(timing["response_start_us"]),
                     "response_end_us": fmt_float(timing["response_end_us"]),
-                    "turnaround_us": fmt_float(timing["turnaround_us"]),
-                    "round_trip_us": fmt_float(timing["round_trip_us"]),
+                    "request_to_response_us": fmt_float(timing["request_to_response_us"]),
+                    "full_exchange_us": fmt_float(timing["full_exchange_us"]),
                     "request_summary": "" if request is None else request.summary,
                     "response_summary": "" if response is None else response.summary,
                 }
@@ -646,9 +646,10 @@ def stats_block(label: str, values: list[float]) -> list[str]:
         return [f"- {label}: n=0"]
     return [
         (
-            f"- {label}: n={len(values)}, min={min(values):.3f} us, "
-            f"avg={statistics.fmean(values):.3f} us, p50={percentile(values, 0.50):.3f} us, "
-            f"p95={percentile(values, 0.95):.3f} us, max={max(values):.3f} us"
+            f"- {label}: n={len(values)}, avg={statistics.fmean(values):.3f} us, "
+            f"min={min(values):.3f} us, max={max(values):.3f} us, "
+            f"p50={percentile(values, 0.50):.3f} us, "
+            f"p95={percentile(values, 0.95):.3f} us"
         )
     ]
 
@@ -665,16 +666,16 @@ def write_summary_md(
     frames = assembler.frames
     sequences = assembler.sequences
     complete_sequences = [sequence for sequence in sequences if sequence.complete]
-    turnaround_values = [
-        sequence_timing(sequence, metadata.samplerate)["turnaround_us"]
+    request_to_response_values = [
+        sequence_timing(sequence, metadata.samplerate)["request_to_response_us"]
         for sequence in complete_sequences
     ]
-    round_trip_values = [
-        sequence_timing(sequence, metadata.samplerate)["round_trip_us"]
+    full_exchange_values = [
+        sequence_timing(sequence, metadata.samplerate)["full_exchange_us"]
         for sequence in complete_sequences
     ]
-    turnaround_clean = [float(value) for value in turnaround_values if value is not None]
-    round_trip_clean = [float(value) for value in round_trip_values if value is not None]
+    request_to_response_clean = [float(value) for value in request_to_response_values if value is not None]
+    full_exchange_clean = [float(value) for value in full_exchange_values if value is not None]
 
     request_count = sum(1 for frame in frames if frame.type == "request")
     response_count = sum(1 for frame in frames if frame.type == "response")
@@ -714,8 +715,8 @@ def write_summary_md(
         "",
         "## Timing",
         "",
-        *stats_block("turnaround_us", turnaround_clean),
-        *stats_block("round_trip_us", round_trip_clean),
+        *stats_block("request_to_response_us", request_to_response_clean),
+        *stats_block("full_exchange_us", full_exchange_clean),
     ]
 
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
