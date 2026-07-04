@@ -19,6 +19,7 @@ PYLON_RS485_DECODER_DIR = DECODERS_DIR / "pylon_rs485"
 SMA_CAN_DECODER_DIR = DECODERS_DIR / "sma_can"
 SOFAR_CAN_DECODER_DIR = DECODERS_DIR / "sofar_can"
 VICTRON_CAN_DECODER_DIR = DECODERS_DIR / "victron_can"
+VOLTRONIC_MODBUS_DECODER_DIR = DECODERS_DIR / "voltronic_modbus"
 PULSEVIEW_DECODER_DIR = Path(r"C:\Program Files\sigrok\PulseView\share\libsigrokdecode\decoders")
 PULSEVIEW_SRD_DIR = Path(r"C:\Program Files\sigrok\PulseView\share\libsigrokdecode")
 
@@ -43,6 +44,7 @@ pylon_rs485 = load_module("pylon_rs485_helper", PYLON_RS485_DECODER_DIR / "pylon
 sma_can = load_module("sma_can_helper", SMA_CAN_DECODER_DIR / "sma_can.py")
 sofar_can = load_module("sofar_can_helper", SOFAR_CAN_DECODER_DIR / "sofar_can.py")
 victron_can = load_module("victron_can_helper", VICTRON_CAN_DECODER_DIR / "victron_can.py")
+voltronic = load_module("voltronic_modbus_helper", VOLTRONIC_MODBUS_DECODER_DIR / "voltronic_modbus.py")
 
 
 def with_modbus_crc(body, crc_func=growatt_rs485.modbus_crc16):
@@ -83,6 +85,7 @@ def test_active_decoder_folders_are_validated_only():
         "sma_can",
         "sofar_can",
         "victron_can",
+        "voltronic_modbus",
     ]
 
 
@@ -216,6 +219,55 @@ def test_pace_modbus_parses_cells_and_temperatures():
     assert "max=3.524V#1" in decoded
     assert "temp2=30.4C" in decoded
     assert "mos_temp=28.6C" in decoded
+
+
+def test_voltronic_modbus_parses_wide_byte_count_runtime_values():
+    request = voltronic.parse_frame(
+        with_modbus_crc([0x01, 0x03, 0x00, 0x32, 0x00, 0x01], voltronic.modbus_crc16)
+    )
+    response = voltronic.parse_frame(
+        with_modbus_crc([0x01, 0x03, 0x00, 0x02, 0x02, 0x30], voltronic.modbus_crc16),
+        request,
+    )
+    decoded = voltronic.describe_frame(response)
+
+    assert request["crc_ok"]
+    assert request["start"] == 0x0032
+    assert response["crc_ok"]
+    assert response["format"] == "wide-byte-count"
+    assert response["registers"][0]["addr"] == 0x0032
+    assert "pack_v=56.0V" in decoded
+
+    soc_request = voltronic.parse_frame(
+        with_modbus_crc([0x01, 0x03, 0x00, 0x33, 0x00, 0x01], voltronic.modbus_crc16)
+    )
+    soc_response = voltronic.parse_frame(
+        with_modbus_crc([0x01, 0x03, 0x00, 0x02, 0x00, 0x46], voltronic.modbus_crc16),
+        soc_request,
+    )
+    assert "SOC=70%" in voltronic.describe_frame(soc_response)
+
+
+def test_voltronic_modbus_parses_limits_and_status():
+    charge_request = voltronic.parse_frame(
+        with_modbus_crc([0x01, 0x03, 0x00, 0x72, 0x00, 0x01], voltronic.modbus_crc16)
+    )
+    charge_response = voltronic.parse_frame(
+        with_modbus_crc([0x01, 0x03, 0x00, 0x02, 0x07, 0x08], voltronic.modbus_crc16),
+        charge_request,
+    )
+    status_request = voltronic.parse_frame(
+        with_modbus_crc([0x01, 0x03, 0x00, 0x74, 0x00, 0x01], voltronic.modbus_crc16)
+    )
+    status_response = voltronic.parse_frame(
+        with_modbus_crc([0x01, 0x03, 0x00, 0x02, 0x00, 0xC0], voltronic.modbus_crc16),
+        status_request,
+    )
+
+    assert "chg_i_limit=180.0A" in voltronic.describe_frame(charge_response)
+    assert "status=0x00C0" in voltronic.describe_frame(status_response)
+    assert "charge_enable" in voltronic.describe_frame(status_response)
+    assert "discharge_enable" in voltronic.describe_frame(status_response)
 
 
 def test_growatt_can_describes_live_frames():
@@ -932,6 +984,21 @@ def test_sigrok_pace_modbus_package_exports_decoder(monkeypatch):
     assert any(option["id"] == "inter_frame_gap_us" for option in module.Decoder.options)
 
 
+def test_sigrok_voltronic_modbus_package_exports_decoder(monkeypatch):
+    stub_sigrokdecode = types.SimpleNamespace(Decoder=object, OUTPUT_ANN=1)
+    monkeypatch.setitem(sys.modules, "sigrokdecode", stub_sigrokdecode)
+    sys.path.insert(0, str(DECODERS_DIR))
+
+    for name in ("voltronic_modbus", "voltronic_modbus.pd", "voltronic_modbus.voltronic_modbus"):
+        sys.modules.pop(name, None)
+
+    module = importlib.import_module("voltronic_modbus")
+
+    assert module.Decoder.id == "voltronic_modbus"
+    assert module.Decoder.inputs == ["uart"]
+    assert any(option["id"] == "inter_frame_gap_us" for option in module.Decoder.options)
+
+
 def test_sigrok_pylon_rs485_package_exports_decoder(monkeypatch):
     stub_sigrokdecode = types.SimpleNamespace(Decoder=object, OUTPUT_ANN=1)
     monkeypatch.setitem(sys.modules, "sigrokdecode", stub_sigrokdecode)
@@ -1127,4 +1194,44 @@ def test_sigrok_pace_modbus_decoder_emits_annotations_for_uart_frames(monkeypatc
     assert any("PACE Modbus req" in text for text in texts)
     assert any("PACE Modbus rsp" in text for text in texts)
     assert any("0x0000 pack_i=-0.76A" in text for text in texts)
+
+
+def test_sigrok_voltronic_modbus_decoder_emits_annotations_for_uart_frames(monkeypatch):
+    class FakeSrdDecoder:
+        def register(self, output):
+            return output
+
+        def put(self, ss, es, output, data):
+            self.captured.append((ss, es, output, data))
+
+    stub_sigrokdecode = types.SimpleNamespace(Decoder=FakeSrdDecoder, OUTPUT_ANN=1)
+    monkeypatch.setitem(sys.modules, "sigrokdecode", stub_sigrokdecode)
+    sys.path.insert(0, str(DECODERS_DIR))
+
+    for name in ("voltronic_modbus", "voltronic_modbus.pd", "voltronic_modbus.voltronic_modbus"):
+        sys.modules.pop(name, None)
+
+    module = importlib.import_module("voltronic_modbus")
+    decoder = module.Decoder()
+    decoder.captured = []
+    decoder.start()
+
+    request = with_modbus_crc([0x01, 0x03, 0x00, 0x32, 0x00, 0x01], voltronic.modbus_crc16)
+    response = with_modbus_crc([0x01, 0x03, 0x00, 0x02, 0x02, 0x30], voltronic.modbus_crc16)
+
+    for idx, byte in enumerate(request):
+        decoder.decode(idx, idx + 1, ("DATA", 1, (byte, [])))
+    for idx, byte in enumerate(response, start=100):
+        decoder.decode(idx, idx + 1, ("DATA", 0, (byte, [])))
+
+    texts = [
+        text
+        for _ss, _es, output, data in decoder.captured
+        if output == stub_sigrokdecode.OUTPUT_ANN
+        for text in data[1]
+    ]
+
+    assert any("Voltronic Modbus req" in text for text in texts)
+    assert any("Voltronic Modbus rsp" in text for text in texts)
+    assert any("0x0032 pack_v=56.0V" in text for text in texts)
 

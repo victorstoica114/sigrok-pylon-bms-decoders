@@ -17,6 +17,7 @@ Active decoders:
 - `JKBMS Modbus`: JK BMS RS485 Modbus RTU runtime frames.
 - `JKBMS CAN`: JK BMS native CAN V2.0 frames over Classic CAN.
 - `PACE Modbus`: PACE BMS RS485 Modbus V1.3 frames.
+- `Voltronic Modbus`: Voltronic/JK-007 compatible RS485 Modbus RTU frames.
 
 Rule for this repository: `decoders/` contains only decoders that were validated
 on captures and explicitly accepted for publication. Decoders that are still in
@@ -44,6 +45,7 @@ decoders/
   sma_can/
   sofar_can/
   victron_can/
+  voltronic_modbus/
 docs/
   china-tower-modbus-register-map.md
   decoder-implementation-checklist.md
@@ -59,6 +61,7 @@ docs/
   sma-can-frame-map.md
   sofar-can-frame-map.md
   victron-can-frame-map.md
+  voltronic-modbus-register-map.md
 examples/
   README.md
   bridge/
@@ -78,6 +81,7 @@ pictures/
   sma_can/
   sofar_can/
   victron_can/
+  voltronic_modbus/
 tests/
 install-pulseview-decoders.ps1
 start-pulseview.ps1
@@ -139,6 +143,7 @@ Active maps:
 - [SMA CAN Frame Map](docs/sma-can-frame-map.md)
 - [Sofar CAN Frame Map](docs/sofar-can-frame-map.md)
 - [Victron CAN Frame Map](docs/victron-can-frame-map.md)
+- [Voltronic Modbus Register Map](docs/voltronic-modbus-register-map.md)
 
 ## Growatt RS485 Decoder
 
@@ -474,6 +479,35 @@ temperature registers, and warning/protection/status flag blocks.
 The current bridge-mode raw capture and PulseView session are listed in
 `examples/README.md` as `PACE Modbus RS485`.
 
+## Voltronic Modbus Decoder
+
+`decoders/voltronic_modbus` stacks above the built-in `UART` decoder:
+
+```text
+logic -> uart -> voltronic_modbus
+```
+
+Typical logic-level UART settings:
+
+- baud: `9600`
+- data bits: `8`
+- parity: `none`
+- stop bits: `1`
+- bit order: `lsb-first`
+- line inversion: depends on the probe point/transceiver output
+
+The current bridge capture uses `CH1`, UART `9600 8N1`, and no explicit RX
+inversion setting in the saved PulseView session.
+
+The current published decoder is visible in PulseView as
+`Voltronic Modbus v2026.07.04e`. It handles Voltronic/JK-007 compatible Modbus
+RTU requests and responses, classic and function-first prefixes, standard and
+wide-byte-count response formats, CRC checks, public Voltronic runtime
+registers, and JK compact runtime blocks used by some Voltronic routes.
+
+The current bridge-mode raw capture and PulseView session are listed in
+`examples/README.md` as `Voltronic Modbus RS485`.
+
 ## JKBMS Modbus Capture Screenshots
 
 The current screenshots use a Growatt inverter, a JK BMS, RS485 through the
@@ -521,6 +555,28 @@ translator bridge, a Kingst LA2016 logic analyzer, and
 ![PACE Modbus cell and temperature response 0x000F..0x0024](pictures/pace_modbus/pace-modbus-0x000f-cell-temperatures-response.png)
 
 ![PACE Modbus repeated cell and temperature response 0x000F..0x0024](pictures/pace_modbus/pace-modbus-0x000f-cell-temperatures-repeat.png)
+
+## Voltronic Modbus Capture Screenshots
+
+The current screenshots use a Growatt inverter, a JK BMS, RS485 through the
+translator bridge, a Kingst LA2016 logic analyzer, and
+`Voltronic Modbus v2026.07.04e`.
+
+![Voltronic Modbus request for 0x0001](pictures/voltronic_modbus/voltronic-modbus-0x0001-request.png)
+
+![Voltronic Modbus wide byte count response](pictures/voltronic_modbus/voltronic-modbus-wide-byte-count-response.png)
+
+![Voltronic Modbus discharge current 0x0031](pictures/voltronic_modbus/voltronic-modbus-0x0031-discharge-current.png)
+
+![Voltronic Modbus pack voltage 0x0032](pictures/voltronic_modbus/voltronic-modbus-0x0032-pack-voltage.png)
+
+![Voltronic Modbus SOC 0x0033](pictures/voltronic_modbus/voltronic-modbus-0x0033-soc.png)
+
+![Voltronic Modbus charge current limit 0x0072](pictures/voltronic_modbus/voltronic-modbus-0x0072-charge-current-limit.png)
+
+![Voltronic Modbus discharge current limit 0x0073](pictures/voltronic_modbus/voltronic-modbus-0x0073-discharge-current-limit.png)
+
+![Voltronic Modbus charge/discharge status 0x0074](pictures/voltronic_modbus/voltronic-modbus-0x0074-status.png)
 
 ## JKBMS CAN Capture Screenshots
 
