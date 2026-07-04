@@ -1,30 +1,30 @@
-# China Tower Modbus RS485 Bridge Capture
+# PACE Modbus RS485 Bridge Capture
 
 Source capture:
 
 ```text
-examples/bridge/china-tower-modbus-rs485-raw-capture.sr
+examples/bridge/pace-modbus-rs485-raw-capture.sr
 ```
 
 Analysis command:
 
 ```powershell
-python analysis/analyze_capture.py examples/bridge/china-tower-modbus-rs485-raw-capture.sr --protocol china_tower_modbus --quiet
+python analysis/analyze_capture.py examples/bridge/pace-modbus-rs485-raw-capture.sr --protocol pace_modbus --quiet
 ```
 
 ## Decode Summary
 
 | Metric | Value |
 | --- | ---: |
-| Total samples scanned | 2,000,000,421 |
+| Total samples scanned | 2,000,000,831 |
 | Samplerate | 200,000,000 Hz |
-| Capture duration | 10.000002 s |
-| Analysis runtime | 11.015 s |
+| Capture duration | 10.000004 s |
+| Analysis runtime | 12.172 s |
 | Channel | `CH0` |
 | Inverted input | `true` |
 | UART baud | 9,600 bit/s |
-| UART bytes decoded | 1,356 |
-| UART invalid start bits | 3 |
+| UART bytes decoded | 1,894 |
+| UART invalid start bits | 4 |
 | UART invalid stop bits | 0 |
 
 ## Frame Counts
@@ -49,8 +49,8 @@ python analysis/analyze_capture.py examples/bridge/china-tower-modbus-rs485-raw-
 
 | Measurement | n | Avg (us) | Min (us) | Max (us) | P50 (us) | P95 (us) |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| `request_to_response_us` | 39 | 5,015.035 | 4,286.525 | 5,549.810 | 5,038.930 | 5,337.927 |
-| `full_exchange_us` | 39 | 42,238.361 | 25,536.900 | 53,654.395 | 47,129.775 | 53,525.724 |
+| `request_to_response_us` | 39 | 4,987.736 | 4,396.025 | 5,385.960 | 4,991.105 | 5,260.878 |
+| `full_exchange_us` | 39 | 56,207.464 | 46,480.715 | 66,221.520 | 47,356.220 | 66,064.784 |
 
 Definitions:
 
@@ -66,7 +66,7 @@ request start ---- request end    response start ---- response end
 ## Generated Tables
 
 ```text
-analysis/out/china-tower-modbus-rs485-raw-capture.frames.csv
-analysis/out/china-tower-modbus-rs485-raw-capture.sequences.csv
-analysis/out/china-tower-modbus-rs485-raw-capture.summary.md
+analysis/out/pace-modbus-rs485-raw-capture.frames.csv
+analysis/out/pace-modbus-rs485-raw-capture.sequences.csv
+analysis/out/pace-modbus-rs485-raw-capture.summary.md
 ```

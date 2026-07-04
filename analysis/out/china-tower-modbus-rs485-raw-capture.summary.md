@@ -6,7 +6,10 @@
 - Samplerate: 200000000 Hz
 - Total samples scanned: 2000000421
 - Capture duration: 10.000002 s
-- Analysis runtime: 11.250 s
+- Analysis runtime: 11.015 s
+- Channel: CH0
+- Inverted input: true
+- UART baud: 9600
 - UART bytes decoded: 1356
 - UART invalid start bits: 3
 - UART invalid stop bits: 0
@@ -17,7 +20,7 @@
 - Requests: 40
 - Responses: 39
 - Exceptions: 0
-- CRC bad frames: 0
+- Bad/invalid frames: 0
 - Invalid frames: 0
 - Incomplete frame buffers dropped on gaps: 1
 

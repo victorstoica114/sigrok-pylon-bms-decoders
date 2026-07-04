@@ -1,38 +1,38 @@
-# China Tower Modbus RS485 Bridge Capture
+# Voltronic Modbus RS485 Bridge Capture
 
 Source capture:
 
 ```text
-examples/bridge/china-tower-modbus-rs485-raw-capture.sr
+examples/bridge/voltronic-modbus-rs485-raw-capture.sr
 ```
 
 Analysis command:
 
 ```powershell
-python analysis/analyze_capture.py examples/bridge/china-tower-modbus-rs485-raw-capture.sr --protocol china_tower_modbus --quiet
+python analysis/analyze_capture.py examples/bridge/voltronic-modbus-rs485-raw-capture.sr --protocol voltronic_modbus --quiet
 ```
 
 ## Decode Summary
 
 | Metric | Value |
 | --- | ---: |
-| Total samples scanned | 2,000,000,421 |
+| Total samples scanned | 2,000,000,877 |
 | Samplerate | 200,000,000 Hz |
-| Capture duration | 10.000002 s |
-| Analysis runtime | 11.015 s |
-| Channel | `CH0` |
-| Inverted input | `true` |
+| Capture duration | 10.000004 s |
+| Analysis runtime | 9.016 s |
+| Channel | `CH1` |
+| Inverted input | `false` |
 | UART baud | 9,600 bit/s |
-| UART bytes decoded | 1,356 |
-| UART invalid start bits | 3 |
+| UART bytes decoded | 624 |
+| UART invalid start bits | 0 |
 | UART invalid stop bits | 0 |
 
 ## Frame Counts
 
 | Metric | Count |
 | --- | ---: |
-| Total frames | 79 |
-| Requests | 40 |
+| Total frames | 78 |
+| Requests | 39 |
 | Responses | 39 |
 | Exceptions | 0 |
 | Bad/invalid frames | 0 |
@@ -41,16 +41,16 @@ python analysis/analyze_capture.py examples/bridge/china-tower-modbus-rs485-raw-
 
 | Metric | Count |
 | --- | ---: |
-| Total sequence rows | 40 |
+| Total sequence rows | 39 |
 | Complete request/response sequences | 39 |
-| Incomplete/orphan rows | 1 |
+| Incomplete/orphan rows | 0 |
 
 ## Timing Statistics
 
 | Measurement | n | Avg (us) | Min (us) | Max (us) | P50 (us) | P95 (us) |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| `request_to_response_us` | 39 | 5,015.035 | 4,286.525 | 5,549.810 | 5,038.930 | 5,337.927 |
-| `full_exchange_us` | 39 | 42,238.361 | 25,536.900 | 53,654.395 | 47,129.775 | 53,525.724 |
+| `request_to_response_us` | 39 | 99,796.750 | 99,374.265 | 104,836.495 | 99,490.160 | 101,837.191 |
+| `full_exchange_us` | 39 | 117,921.656 | 117,499.170 | 122,961.420 | 117,615.085 | 119,962.102 |
 
 Definitions:
 
@@ -66,7 +66,7 @@ request start ---- request end    response start ---- response end
 ## Generated Tables
 
 ```text
-analysis/out/china-tower-modbus-rs485-raw-capture.frames.csv
-analysis/out/china-tower-modbus-rs485-raw-capture.sequences.csv
-analysis/out/china-tower-modbus-rs485-raw-capture.summary.md
+analysis/out/voltronic-modbus-rs485-raw-capture.frames.csv
+analysis/out/voltronic-modbus-rs485-raw-capture.sequences.csv
+analysis/out/voltronic-modbus-rs485-raw-capture.summary.md
 ```

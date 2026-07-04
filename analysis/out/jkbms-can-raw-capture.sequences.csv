@@ -1,0 +1,2 @@
+sequence_no,frame_count,start_us,end_us,duration_us,gap_from_previous_us,unique_can_ids,first_frame_no,last_frame_no
+1,344,4009.875,9912002.590,9907992.715,,0x1806E5F4 0x18E028F4 0x18E128F4 0x18E228F4 0x18E328F4 0x18F128F4 0x18F228F4 0x18F428F4 0x18F528F4 0x2F4 0x4F4 0x5F4,1,344
