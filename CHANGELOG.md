@@ -71,6 +71,7 @@
 - Updated forward-mode example capture and PulseView session for Growatt CAN traffic with a SeplosBMS test topology.
 - Updated bridge-mode example capture and PulseView session for Growatt RS485 traffic with a JKBMS test topology.
 - Updated bridge-mode example capture and PulseView session for Anenji/Pylon RS485 ASCII traffic with a JKBMS test topology.
+- Updated direct-cable example capture and PulseView session for Anenji/Pylon RS485 ASCII traffic with a SeplosBMS test topology.
 - Updated forward-mode example capture and PulseView session for Anenji/Pylon RS485 ASCII traffic.
 - Updated README screenshots for Growatt RS485 cell-voltage, status/pack telemetry, and limits/cell-extreme response blocks.
 - Updated bridge-mode example capture and PulseView session for JKBMS Modbus RS485 runtime polling.
