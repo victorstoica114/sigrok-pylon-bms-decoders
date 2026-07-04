@@ -32,6 +32,7 @@
 - Forward-mode example capture and PulseView session for Growatt CAN traffic with a JKBMS test topology.
 - Forward-mode example capture and PulseView session for Growatt CAN traffic with a SeplosBMS test topology.
 - Bridge-mode example capture and PulseView session for Growatt RS485 traffic with a SeplosBMS test topology.
+- Forward-mode example capture and PulseView session for Growatt RS485 traffic with a SeplosBMS test topology.
 - Bridge-mode example capture and PulseView session for JKBMS CAN traffic.
 - Bridge-mode example capture and PulseView session for PACE Modbus RS485 traffic.
 - Bridge-mode example capture and PulseView session for Pylon CAN traffic.
