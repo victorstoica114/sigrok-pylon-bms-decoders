@@ -1,3 +1,9 @@
+[General]
+decode_signals=1
+generated_signals=0
+views=1
+meta_objs=0
+
 [CH0]
 name=CH0
 enabled=true
@@ -127,7 +133,7 @@ conv_options=0
 [decode_signal0]
 name=Pylon RS485 v2026.07.04a
 enabled=true
-color=4281510450
+color=4286722730
 conversion_type=0
 conv_options=0
 decoders=2
@@ -186,18 +192,12 @@ channel0\assigned_signal_name=CH0
 channel1\name=TX
 channel1\initial_pin_state=2
 
-[General]
-decode_signals=1
-generated_signals=0
-views=1
-meta_objs=0
-
 [view0]
-scale=0.02800830644346472
+scale=0.008298757340248963
 v_offset=-65
 splitter_state=@ByteArray(\0\0\0\xff\0\0\0\x1\0\0\0\x2\0\0\0\xa1\0\0\x4\xc6\x1\0\0\0\x1\x1\0\0\0\x1\0)
 segment_display_mode=1
-offset=22 serialization::archive 14 0 0 0 0 7 73962868 5440625 69457430 81132605 42486753 0 1 0 6
+offset=22 serialization::archive 14 0 0 0 0 0 0 0 0 0 0 0 0 0 6
 zero_offset=22 serialization::archive 14 0 0 0 0 0 0 0 0 0 0 0 0 0 6
 CH0\trace_height=26
 CH1\trace_height=26
