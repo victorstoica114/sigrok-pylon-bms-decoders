@@ -38,6 +38,7 @@
 - Bridge-mode example capture and PulseView session for Pylon CAN traffic.
 - Bridge-mode example capture and PulseView session for Pylon RS485 ASCII traffic.
 - Bridge-mode example capture and PulseView session for Anenji/Pylon RS485 ASCII traffic.
+- Direct-cable example capture and PulseView session for Anenji/Pylon RS485 ASCII traffic with a SeplosBMS test topology.
 - Forward-mode example capture and PulseView session for Anenji/Pylon RS485 ASCII traffic.
 - Forward-mode example capture and PulseView session for Anenji/Pylon RS485 ASCII traffic with a SeplosBMS test topology.
 - Bridge-mode example capture and PulseView session for SMA CAN traffic.

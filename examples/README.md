@@ -38,6 +38,7 @@ Current raw captures:
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | Pylon CAN | `bridge/pylon-can-raw-capture.sr` | Pylon-compatible CAN traffic. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | Pylon RS485 | `bridge/pylon-rs485-raw-capture.sr` | Pylon-compatible RS485 ASCII traffic. |
 | Bridge | Anenji inverter <-> bridge <-> JKBMS | Pylon RS485 | `bridge/anenji-pylon-rs485-raw-capture.sr` | Pylon-compatible RS485 ASCII traffic. |
+| Direct cable | Anenji inverter <-> direct cable <-> SeplosBMS | Pylon RS485 | `direct/anenji-seplos-pylon-rs485-raw-capture.sr` | Pylon-compatible RS485 ASCII traffic. |
 | Forward | Anenji inverter <-> bridge in forward mode <-> JKBMS | Pylon RS485 | `bridge_forward/anenji-pylon-rs485-raw-capture.sr` | Pylon-compatible RS485 ASCII traffic in forward mode. |
 | Forward | Anenji inverter <-> bridge in forward mode <-> SeplosBMS | Pylon RS485 | `bridge_forward/anenji-seplos-pylon-rs485-raw-capture.sr` | Pylon-compatible RS485 ASCII traffic in forward mode. |
 | Bridge | Growatt inverter <-> bridge <-> SeplosBMS | SMA CAN | `bridge/sma-can-raw-capture.sr` | SMA-compatible CAN traffic. |
@@ -70,6 +71,7 @@ Current PulseView session files:
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | Pylon CAN | `bridge/pylon-can-pulseview-session.pvs` | CAN and Pylon decoder layout. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | Pylon RS485 | `bridge/pylon-rs485-pulseview-session.pvs` | UART and Pylon decoder layout. |
 | Bridge | Anenji inverter <-> bridge <-> JKBMS | Pylon RS485 | `bridge/anenji-pylon-rs485-pulseview-session.pvs` | UART and Pylon decoder layout. |
+| Direct cable | Anenji inverter <-> direct cable <-> SeplosBMS | Pylon RS485 | `direct/anenji-seplos-pylon-rs485-pulseview-session.pvs` | UART and Pylon decoder layout. |
 | Forward | Anenji inverter <-> bridge in forward mode <-> JKBMS | Pylon RS485 | `bridge_forward/anenji-pylon-rs485-pulseview-session.pvs` | UART and Pylon decoder layout in forward mode. |
 | Forward | Anenji inverter <-> bridge in forward mode <-> SeplosBMS | Pylon RS485 | `bridge_forward/anenji-seplos-pylon-rs485-pulseview-session.pvs` | UART and Pylon decoder layout in forward mode. |
 | Bridge | Growatt inverter <-> bridge <-> SeplosBMS | SMA CAN | `bridge/sma-can-pulseview-session.pvs` | CAN and SMA decoder layout. |
@@ -77,8 +79,6 @@ Current PulseView session files:
 | Bridge | Growatt inverter <-> bridge <-> SeplosBMS | Victron CAN | `bridge/victron-can-pulseview-session.pvs` | CAN and Victron decoder layout. |
 | Bridge | Growatt inverter <-> bridge <-> SeplosBMS | Voltronic Modbus RS485 | `bridge/voltronic-modbus-rs485-pulseview-session.pvs` | UART and Voltronic decoder layout. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | WOW Modbus RS485 | `bridge/wow-modbus-rs485-pulseview-session.pvs` | UART and WOW decoder layout. |
-
-No `Direct cable` captures are committed yet.
 
 Open a `.sr` capture in PulseView, then load or recreate the matching `.pvs`
 session when you want the same decoder/channel layout used in the screenshots.
