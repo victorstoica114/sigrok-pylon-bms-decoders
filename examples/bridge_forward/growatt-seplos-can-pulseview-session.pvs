@@ -180,11 +180,11 @@ views=1
 meta_objs=0
 
 [view0]
-scale=0.026512180986351143
+scale=0.026512181410545954
 v_offset=-65
 splitter_state=@ByteArray(\0\0\0\xff\0\0\0\x1\0\0\0\x2\0\0\0]\0\0\x5\n\x1\0\0\0\x1\x1\0\0\0\x1\0)
 segment_display_mode=1
-offset=22 serialization::archive 14 0 0 0 0 13 63511648 80174807 4253436 84064500 84874650 0 1 0 6
+offset=22 serialization::archive 14 0 0 0 0 6 84996213 3692071 28147146 51273106 93787080 0 1 0 6
 zero_offset=22 serialization::archive 14 0 0 0 0 0 0 0 0 0 0 0 0 0 6
 CH0\trace_height=26
 CH1\trace_height=26
