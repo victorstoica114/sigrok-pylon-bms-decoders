@@ -29,6 +29,9 @@ EXAMPLES_FORWARD_DIR = REPO_ROOT / "examples" / "bridge_forward"
 EXAMPLES_DIRECT_DIR = REPO_ROOT / "examples" / "direct"
 DEFAULT_OUT_DIR = REPO_ROOT / "analysis" / "out"
 DEFAULT_REPORT_DIR = REPO_ROOT / "analysis" / "reports"
+DEFAULT_README = REPO_ROOT / "analysis" / "README.md"
+README_REPORTS_BEGIN = "<!-- BEGIN GENERATED CONSOLIDATED REPORTS -->"
+README_REPORTS_END = "<!-- END GENERATED CONSOLIDATED REPORTS -->"
 
 TRANSITION_RE = re.compile(b"\x00\x01|\x01\x00")
 
@@ -47,6 +50,12 @@ class ProtocolConfig:
     sample_point_pct: float = 70.0
     inter_frame_gap_us: int = 5000
     cycle_gap_us: int = 100000
+
+
+@dataclass(frozen=True)
+class TopologyComparisonGroup:
+    name: str
+    target_protocols: tuple[str, ...]
 
 
 PROTOCOL_CONFIGS: dict[str, ProtocolConfig] = {
@@ -372,6 +381,34 @@ PROTOCOL_CONFIGS: dict[str, ProtocolConfig] = {
 }
 
 
+TOPOLOGY_COMPARISON_GROUPS: tuple[TopologyComparisonGroup, ...] = (
+    TopologyComparisonGroup(
+        "Growatt CAN JKBMS",
+        ("growatt_can", "forward_growatt_can", "direct_growatt_can"),
+    ),
+    TopologyComparisonGroup(
+        "Growatt CAN SeplosBMS",
+        ("growatt_seplos_can", "forward_growatt_seplos_can", "direct_growatt_seplos_can"),
+    ),
+    TopologyComparisonGroup(
+        "Growatt RS485 JKBMS",
+        ("growatt_rs485", "forward_growatt_rs485", "direct_growatt_rs485"),
+    ),
+    TopologyComparisonGroup(
+        "Growatt RS485 SeplosBMS",
+        ("growatt_seplos_rs485", "forward_growatt_seplos_rs485"),
+    ),
+    TopologyComparisonGroup(
+        "Anenji Pylon RS485 JKBMS",
+        ("anenji_pylon_rs485", "forward_anenji_pylon_rs485", "direct_anenji_jkbms_pylon_rs485"),
+    ),
+    TopologyComparisonGroup(
+        "Anenji Pylon RS485 SeplosBMS",
+        ("forward_anenji_seplos_pylon_rs485", "direct_anenji_seplos_pylon_rs485"),
+    ),
+)
+
+
 @dataclass(frozen=True)
 class SrMetadata:
     samplerate: int
@@ -429,6 +466,12 @@ class AnalysisResult:
     sequences: list[SequenceRow] = field(default_factory=list)
     cycles: list[CycleRow] = field(default_factory=list)
     counters: dict[str, int] = field(default_factory=dict)
+
+
+@dataclass(frozen=True)
+class OverviewRecord:
+    config: ProtocolConfig
+    metrics: dict[str, str]
 
 
 def load_helper_module(name: str, path: Path):
@@ -1833,6 +1876,349 @@ def write_overview_md(path: Path, results: list[AnalysisResult]) -> None:
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
+def overview_record_from_result(result: AnalysisResult) -> OverviewRecord:
+    return OverviewRecord(
+        result.config,
+        {key: str(value) for key, value in overview_csv_row(result).items()},
+    )
+
+
+def read_overview_records(path: Path) -> list[OverviewRecord]:
+    records = []
+    with path.open(newline="", encoding="utf-8") as handle:
+        reader = csv.DictReader(handle)
+        for row in reader:
+            config = PROTOCOL_CONFIGS.get(row.get("target", ""))
+            if config is None:
+                continue
+            records.append(OverviewRecord(config, dict(row)))
+    return records
+
+
+def comparison_topology_label_for(config: ProtocolConfig) -> str:
+    parent = config.capture.parent.name
+    if parent == "bridge_forward":
+        return "Bridge Forward"
+    if parent == "direct":
+        return "Direct cable"
+    return "Bridge"
+
+
+def comparison_kind_label_for(config: ProtocolConfig) -> str:
+    return "CAN" if config.kind == "can" else "RS485/UART"
+
+
+def metric_text(record: OverviewRecord, name: str) -> str:
+    return record.metrics.get(name, "")
+
+
+def metric_number(record: OverviewRecord, name: str) -> float | None:
+    text = metric_text(record, name)
+    if text == "":
+        return None
+    try:
+        return float(text)
+    except ValueError:
+        return None
+
+
+def fixed_metric(record: OverviewRecord, name: str, decimals: int = 3) -> str:
+    value = metric_number(record, name)
+    return "" if value is None else f"{value:.{decimals}f}"
+
+
+def rate_metric(record: OverviewRecord, numerator_name: str) -> str:
+    numerator = metric_number(record, numerator_name)
+    duration_s = metric_number(record, "duration_s")
+    if numerator is None or duration_s is None or duration_s <= 0:
+        return ""
+    return f"{numerator / duration_s:.3f}"
+
+
+def comparison_groups(records: list[OverviewRecord]) -> list[tuple[TopologyComparisonGroup, list[OverviewRecord]]]:
+    by_target = {record.config.protocol: record for record in records}
+    groups = []
+    for group in TOPOLOGY_COMPARISON_GROUPS:
+        group_records = [by_target[target] for target in group.target_protocols if target in by_target]
+        if len(group_records) >= 2:
+            groups.append((group, group_records))
+    return groups
+
+
+def report_link_for_record(record: OverviewRecord) -> str:
+    return f"[details]({report_name_for(record.config)})"
+
+
+def comparison_csv_row(group: TopologyComparisonGroup, record: OverviewRecord) -> dict[str, str]:
+    return {
+        "group": group.name,
+        "topology": comparison_topology_label_for(record.config),
+        "target": record.config.protocol,
+        "kind": comparison_kind_label_for(record.config),
+        "capture": metric_text(record, "capture"),
+        "duration_s": metric_text(record, "duration_s"),
+        "frames": metric_text(record, "frames"),
+        "frames_per_s": rate_metric(record, "frames"),
+        "complete_sequences": metric_text(record, "complete_sequences"),
+        "complete_sequences_per_s": rate_metric(record, "complete_sequences"),
+        "incomplete_orphan_rows": metric_text(record, "incomplete_orphan_rows"),
+        "can_cycles": metric_text(record, "can_cycles"),
+        "can_cycles_per_s": rate_metric(record, "can_cycles"),
+        "unique_can_ids": metric_text(record, "unique_can_ids"),
+        "bad_or_invalid_frames": metric_text(record, "bad_or_invalid_frames"),
+        "decode_errors": metric_text(record, "decode_errors"),
+        "request_to_response_avg_us": metric_text(record, "request_to_response_avg_us"),
+        "request_to_response_p95_us": metric_text(record, "request_to_response_p95_us"),
+        "full_exchange_avg_us": metric_text(record, "full_exchange_avg_us"),
+        "full_exchange_p95_us": metric_text(record, "full_exchange_p95_us"),
+        "cycle_duration_avg_us": metric_text(record, "cycle_duration_avg_us"),
+        "cycle_duration_p95_us": metric_text(record, "cycle_duration_p95_us"),
+        "inter_cycle_gap_avg_us": metric_text(record, "inter_cycle_gap_avg_us"),
+        "inter_cycle_gap_p95_us": metric_text(record, "inter_cycle_gap_p95_us"),
+    }
+
+
+def write_comparison_csv(path: Path, records: list[OverviewRecord]) -> None:
+    fieldnames = [
+        "group",
+        "topology",
+        "target",
+        "kind",
+        "capture",
+        "duration_s",
+        "frames",
+        "frames_per_s",
+        "complete_sequences",
+        "complete_sequences_per_s",
+        "incomplete_orphan_rows",
+        "can_cycles",
+        "can_cycles_per_s",
+        "unique_can_ids",
+        "bad_or_invalid_frames",
+        "decode_errors",
+        "request_to_response_avg_us",
+        "request_to_response_p95_us",
+        "full_exchange_avg_us",
+        "full_exchange_p95_us",
+        "cycle_duration_avg_us",
+        "cycle_duration_p95_us",
+        "inter_cycle_gap_avg_us",
+        "inter_cycle_gap_p95_us",
+    ]
+    with path.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer.writeheader()
+        for group, group_records in comparison_groups(records):
+            for record in group_records:
+                writer.writerow(comparison_csv_row(group, record))
+
+
+def comparison_highlight_rows(
+    groups: list[tuple[TopologyComparisonGroup, list[OverviewRecord]]],
+    metric_name: str,
+) -> list[str]:
+    rows = []
+    for group, group_records in groups:
+        candidates = [
+            (record, metric_number(record, metric_name))
+            for record in group_records
+            if metric_number(record, metric_name) is not None
+        ]
+        if len(candidates) < 2:
+            continue
+        fastest = min(candidates, key=lambda item: item[1] or 0.0)
+        slowest = max(candidates, key=lambda item: item[1] or 0.0)
+        fastest_value = fastest[1] or 0.0
+        slowest_value = slowest[1] or 0.0
+        rows.append(
+            f"| {group.name} "
+            f"| {comparison_topology_label_for(fastest[0].config)} "
+            f"| {fastest_value:.3f} "
+            f"| {comparison_topology_label_for(slowest[0].config)} "
+            f"| {slowest_value:.3f} "
+            f"| {slowest_value - fastest_value:.3f} |"
+        )
+    return rows
+
+
+def write_serial_comparison_group(lines: list[str], group: TopologyComparisonGroup, records: list[OverviewRecord]) -> None:
+    lines.extend([
+        "",
+        f"### {group.name}",
+        "",
+        "| Topology | Report | Duration (s) | Frames | Frames/s | Complete | Complete/s | Incomplete | Bad/invalid | Req->Rsp avg (us) | Req->Rsp P95 (us) | Full avg (us) | Full P95 (us) |",
+        "| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
+    ])
+    for record in records:
+        lines.append(
+            f"| {comparison_topology_label_for(record.config)} "
+            f"| {report_link_for_record(record)} "
+            f"| {fixed_metric(record, 'duration_s')} "
+            f"| {metric_text(record, 'frames')} "
+            f"| {rate_metric(record, 'frames')} "
+            f"| {metric_text(record, 'complete_sequences')} "
+            f"| {rate_metric(record, 'complete_sequences')} "
+            f"| {metric_text(record, 'incomplete_orphan_rows')} "
+            f"| {metric_text(record, 'bad_or_invalid_frames')} "
+            f"| {metric_text(record, 'request_to_response_avg_us')} "
+            f"| {metric_text(record, 'request_to_response_p95_us')} "
+            f"| {metric_text(record, 'full_exchange_avg_us')} "
+            f"| {metric_text(record, 'full_exchange_p95_us')} |"
+        )
+
+
+def write_can_comparison_group(lines: list[str], group: TopologyComparisonGroup, records: list[OverviewRecord]) -> None:
+    lines.extend([
+        "",
+        f"### {group.name}",
+        "",
+        "| Topology | Report | Duration (s) | Frames | Frames/s | CAN IDs | Cycles | Cycles/s | Decode errors | Cycle avg (us) | Cycle P95 (us) | Gap avg (us) | Gap P95 (us) |",
+        "| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
+    ])
+    for record in records:
+        lines.append(
+            f"| {comparison_topology_label_for(record.config)} "
+            f"| {report_link_for_record(record)} "
+            f"| {fixed_metric(record, 'duration_s')} "
+            f"| {metric_text(record, 'frames')} "
+            f"| {rate_metric(record, 'frames')} "
+            f"| {metric_text(record, 'unique_can_ids')} "
+            f"| {metric_text(record, 'can_cycles')} "
+            f"| {rate_metric(record, 'can_cycles')} "
+            f"| {metric_text(record, 'decode_errors')} "
+            f"| {metric_text(record, 'cycle_duration_avg_us')} "
+            f"| {metric_text(record, 'cycle_duration_p95_us')} "
+            f"| {metric_text(record, 'inter_cycle_gap_avg_us')} "
+            f"| {metric_text(record, 'inter_cycle_gap_p95_us')} |"
+        )
+
+
+def write_comparison_md(path: Path, records: list[OverviewRecord]) -> None:
+    grouped = comparison_groups(records)
+    serial_groups = [(group, rows) for group, rows in grouped if rows[0].config.kind != "can"]
+    can_groups = [(group, rows) for group, rows in grouped if rows[0].config.kind == "can"]
+
+    lines = [
+        "# Topology Comparison Report",
+        "",
+        "Generated by the full analysis run, or refreshed from an existing overview CSV:",
+        "",
+        "```powershell",
+        "python analysis/analyze_capture.py --all-captures --quiet",
+        "python analysis/analyze_capture.py --comparison-only",
+        "```",
+        "",
+        "This report compares captures that share the same inverter, protocol, and BMS side across Bridge, Bridge Forward, and Direct cable topologies.",
+        "",
+        "Notes:",
+        "",
+        "- Capture durations are not identical; `frames/s`, `complete/s`, and `cycles/s` normalize counts by capture duration.",
+        "- RS485/UART latency columns use complete request/response pairs only.",
+        "- CAN cycle duration can be dominated by capture length when only one cycle is detected.",
+    ]
+
+    lines.extend([
+        "",
+        "## RS485/UART Highlights",
+        "",
+        "| Group | Lowest Req->Rsp avg topology | Lowest Req->Rsp avg (us) | Highest Req->Rsp avg topology | Highest Req->Rsp avg (us) | Spread (us) |",
+        "| --- | --- | ---: | --- | ---: | ---: |",
+    ])
+    highlight_rows = comparison_highlight_rows(serial_groups, "request_to_response_avg_us")
+    lines.extend(highlight_rows or ["| No comparable RS485/UART groups |  |  |  |  |  |"])
+
+    lines.extend([
+        "",
+        "## CAN Highlights",
+        "",
+        "| Group | Lowest cycle avg topology | Lowest cycle avg (us) | Highest cycle avg topology | Highest cycle avg (us) | Spread (us) |",
+        "| --- | --- | ---: | --- | ---: | ---: |",
+    ])
+    highlight_rows = comparison_highlight_rows(can_groups, "cycle_duration_avg_us")
+    lines.extend(highlight_rows or ["| No comparable CAN groups |  |  |  |  |  |"])
+
+    lines.extend([
+        "",
+        "## RS485/UART Comparisons",
+    ])
+    for group, rows in serial_groups:
+        write_serial_comparison_group(lines, group, rows)
+
+    lines.extend([
+        "",
+        "## CAN Comparisons",
+    ])
+    for group, rows in can_groups:
+        write_can_comparison_group(lines, group, rows)
+
+    lines.extend([
+        "",
+        "## Generated Tables",
+        "",
+        "```text",
+        "analysis/out/topology-comparison.csv",
+        "```",
+    ])
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def write_comparison_outputs(records: list[OverviewRecord], out_dir: Path, report_dir: Path) -> tuple[Path, Path]:
+    out_dir.mkdir(parents=True, exist_ok=True)
+    report_dir.mkdir(parents=True, exist_ok=True)
+    csv_path = out_dir / "topology-comparison.csv"
+    md_path = report_dir / "topology-comparison.md"
+    write_comparison_csv(csv_path, records)
+    write_comparison_md(md_path, records)
+    return csv_path, md_path
+
+
+def shifted_report_text(path: Path) -> list[str]:
+    lines = []
+    for line in path.read_text(encoding="utf-8").strip().splitlines():
+        if line.startswith("#"):
+            lines.append(f"###{line}")
+        else:
+            lines.append(line)
+    return lines
+
+
+def consolidated_reports_block(readme_path: Path, report_dir: Path) -> str:
+    lines = [
+        README_REPORTS_BEGIN,
+        "",
+        "## Consolidated Reports",
+        "",
+        "This section is generated from every Markdown file under `analysis/reports/`.",
+        "",
+    ]
+    for report_path in sorted(report_dir.glob("*.md")):
+        try:
+            report_link = report_path.resolve().relative_to(readme_path.parent.resolve()).as_posix()
+        except ValueError:
+            report_link = report_path.as_posix()
+        lines.extend([
+            f"### [{report_path.stem}]({report_link})",
+            "",
+            *shifted_report_text(report_path),
+            "",
+        ])
+    lines.append(README_REPORTS_END)
+    return "\n".join(lines)
+
+
+def update_readme_reports(readme_path: Path, report_dir: Path) -> None:
+    text = readme_path.read_text(encoding="utf-8")
+    block = consolidated_reports_block(readme_path, report_dir)
+    begin = text.find(README_REPORTS_BEGIN)
+    end = text.find(README_REPORTS_END)
+    if begin == -1 or end == -1:
+        updated = text.rstrip() + "\n\n" + block
+    else:
+        end += len(README_REPORTS_END)
+        updated = text[:begin].rstrip() + "\n\n" + block + text[end:].rstrip()
+    readme_path.write_text(updated.rstrip() + "\n", encoding="utf-8")
+
+
 def write_overview_outputs(results: list[AnalysisResult], out_dir: Path, report_dir: Path) -> tuple[Path, Path]:
     out_dir.mkdir(parents=True, exist_ok=True)
     report_dir.mkdir(parents=True, exist_ok=True)
@@ -1903,6 +2289,10 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--cycle-gap-us", type=int, help="CAN gap threshold for cycle grouping.")
     parser.add_argument("--out-dir", type=Path, default=DEFAULT_OUT_DIR, help="Directory for generated CSV/summary files.")
     parser.add_argument("--report-dir", type=Path, default=DEFAULT_REPORT_DIR, help="Directory for readable reports.")
+    parser.add_argument("--comparison-only", action="store_true", help="Write topology comparison reports from an existing overview CSV.")
+    parser.add_argument("--overview-csv", type=Path, help="Overview CSV to use with --comparison-only.")
+    parser.add_argument("--update-readme-reports", action="store_true", help="Refresh the consolidated reports section in analysis/README.md.")
+    parser.add_argument("--readme", type=Path, default=DEFAULT_README, help="README file updated by --update-readme-reports.")
     parser.add_argument("--max-samples", type=int, help="Stop after this many samples.")
     parser.add_argument("--quiet", action="store_true", help="Suppress progress messages.")
     return parser
@@ -1915,6 +2305,28 @@ def main(argv: list[str] | None = None) -> int:
     if args.list_targets:
         for config in PROTOCOL_CONFIGS.values():
             print(f"{config.protocol}: {config.capture.relative_to(REPO_ROOT)}")
+        return 0
+
+    if args.comparison_only:
+        overview_csv = args.overview_csv or args.out_dir / "bridge-analysis-overview.csv"
+        if not overview_csv.exists():
+            print(f"Overview CSV not found: {overview_csv}", file=sys.stderr)
+            return 2
+        records = read_overview_records(overview_csv)
+        if not records:
+            print(f"No known targets found in: {overview_csv}", file=sys.stderr)
+            return 2
+        comparison_csv_path, comparison_md_path = write_comparison_outputs(records, args.out_dir, args.report_dir)
+        print(f"comparison_csv: {comparison_csv_path}")
+        print(f"comparison_report: {comparison_md_path}")
+        if args.update_readme_reports:
+            update_readme_reports(args.readme, args.report_dir)
+            print(f"readme: {args.readme}")
+        return 0
+
+    if args.update_readme_reports and args.capture is None and not args.all_captures and not args.all_bridge:
+        update_readme_reports(args.readme, args.report_dir)
+        print(f"readme: {args.readme}")
         return 0
 
     configs = target_configs(args)
@@ -1940,6 +2352,17 @@ def main(argv: list[str] | None = None) -> int:
         overview_csv_path, overview_md_path = write_overview_outputs(results, args.out_dir, args.report_dir)
         print(f"overview_csv: {overview_csv_path}")
         print(f"overview_report: {overview_md_path}")
+        comparison_csv_path, comparison_md_path = write_comparison_outputs(
+            [overview_record_from_result(result) for result in results],
+            args.out_dir,
+            args.report_dir,
+        )
+        print(f"comparison_csv: {comparison_csv_path}")
+        print(f"comparison_report: {comparison_md_path}")
+
+    if args.update_readme_reports:
+        update_readme_reports(args.readme, args.report_dir)
+        print(f"readme: {args.readme}")
 
     return 0
 
