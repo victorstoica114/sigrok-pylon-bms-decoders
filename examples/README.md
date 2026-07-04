@@ -6,7 +6,7 @@ mode.
 ## Test Setup
 
 - Inverter side: Growatt
-- BMS side: JKBMS
+- BMS side: JKBMS or SeplosBMS, as listed in each capture row
 
 ## Translator Power Use
 
@@ -22,7 +22,7 @@ Current raw captures:
 | --- | --- | --- | --- | --- |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | China Tower Modbus RS485 | `bridge/china-tower-modbus-rs485-raw-capture.sr` | China Tower / JK 008 RS485 polling. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | Deye CAN | `bridge/deye-can-raw-capture.sr` | Deye-compatible CAN traffic. |
-| Bridge | Growatt inverter <-> bridge <-> JKBMS | GoodWe CAN | `bridge/goodwe-can-raw-capture.sr` | GoodWe-compatible CAN traffic. |
+| Bridge | Growatt inverter <-> bridge <-> SeplosBMS | GoodWe CAN | `bridge/goodwe-can-raw-capture.sr` | GoodWe-compatible CAN traffic. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | Growatt CAN | `bridge/growatt-can-raw-capture.sr` | Inverter CAN traffic. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | Growatt RS485 | `bridge/growatt-rs485-raw-capture.sr` | Inverter RS485 traffic. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | JKBMS CAN | `bridge/jkbms-can-raw-capture.sr` | JK BMS CAN traffic. |
@@ -30,9 +30,9 @@ Current raw captures:
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | PACE Modbus RS485 | `bridge/pace-modbus-rs485-raw-capture.sr` | PACE BMS RS485 polling. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | Pylon CAN | `bridge/pylon-can-raw-capture.sr` | Pylon-compatible CAN traffic. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | Pylon RS485 | `bridge/pylon-rs485-raw-capture.sr` | Pylon-compatible RS485 ASCII traffic. |
-| Bridge | Growatt inverter <-> bridge <-> JKBMS | SMA CAN | `bridge/sma-can-raw-capture.sr` | SMA-compatible CAN traffic. |
-| Bridge | Growatt inverter <-> bridge <-> JKBMS | Sofar CAN | `bridge/sofar-can-raw-capture.sr` | Sofar-compatible CAN traffic. |
-| Bridge | Growatt inverter <-> bridge <-> JKBMS | Victron CAN | `bridge/victron-can-raw-capture.sr` | Victron-compatible CAN traffic. |
+| Bridge | Growatt inverter <-> bridge <-> SeplosBMS | SMA CAN | `bridge/sma-can-raw-capture.sr` | SMA-compatible CAN traffic. |
+| Bridge | Growatt inverter <-> bridge <-> SeplosBMS | Sofar CAN | `bridge/sofar-can-raw-capture.sr` | Sofar-compatible CAN traffic. |
+| Bridge | Growatt inverter <-> bridge <-> SeplosBMS | Victron CAN | `bridge/victron-can-raw-capture.sr` | Victron-compatible CAN traffic. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | Voltronic Modbus RS485 | `bridge/voltronic-modbus-rs485-raw-capture.sr` | Voltronic/JK-007 RS485 polling. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | WOW Modbus RS485 | `bridge/wow-modbus-rs485-raw-capture.sr` | WOW / JK 009 RS485 polling. |
 
@@ -44,7 +44,7 @@ Current PulseView session files:
 | --- | --- | --- | --- | --- |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | China Tower Modbus RS485 | `bridge/china-tower-modbus-rs485-pulseview-session.pvs` | UART and China Tower decoder layout. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | Deye CAN | `bridge/deye-can-pulseview-session.pvs` | CAN and Deye decoder layout. |
-| Bridge | Growatt inverter <-> bridge <-> JKBMS | GoodWe CAN | `bridge/goodwe-can-pulseview-session.pvs` | CAN and GoodWe decoder layout. |
+| Bridge | Growatt inverter <-> bridge <-> SeplosBMS | GoodWe CAN | `bridge/goodwe-can-pulseview-session.pvs` | CAN and GoodWe decoder layout. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | Growatt CAN | `bridge/growatt-can-pulseview-session.pvs` | CAN decoder layout. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | Growatt RS485 | `bridge/growatt-rs485-pulseview-session.pvs` | UART and Growatt decoder layout. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | JKBMS CAN | `bridge/jkbms-can-pulseview-session.pvs` | CAN and JKBMS decoder layout. |
@@ -52,9 +52,9 @@ Current PulseView session files:
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | PACE Modbus RS485 | `bridge/pace-modbus-rs485-pulseview-session.pvs` | UART and PACE decoder layout. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | Pylon CAN | `bridge/pylon-can-pulseview-session.pvs` | CAN and Pylon decoder layout. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | Pylon RS485 | `bridge/pylon-rs485-pulseview-session.pvs` | UART and Pylon decoder layout. |
-| Bridge | Growatt inverter <-> bridge <-> JKBMS | SMA CAN | `bridge/sma-can-pulseview-session.pvs` | CAN and SMA decoder layout. |
-| Bridge | Growatt inverter <-> bridge <-> JKBMS | Sofar CAN | `bridge/sofar-can-pulseview-session.pvs` | CAN and Sofar decoder layout. |
-| Bridge | Growatt inverter <-> bridge <-> JKBMS | Victron CAN | `bridge/victron-can-pulseview-session.pvs` | CAN and Victron decoder layout. |
+| Bridge | Growatt inverter <-> bridge <-> SeplosBMS | SMA CAN | `bridge/sma-can-pulseview-session.pvs` | CAN and SMA decoder layout. |
+| Bridge | Growatt inverter <-> bridge <-> SeplosBMS | Sofar CAN | `bridge/sofar-can-pulseview-session.pvs` | CAN and Sofar decoder layout. |
+| Bridge | Growatt inverter <-> bridge <-> SeplosBMS | Victron CAN | `bridge/victron-can-pulseview-session.pvs` | CAN and Victron decoder layout. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | Voltronic Modbus RS485 | `bridge/voltronic-modbus-rs485-pulseview-session.pvs` | UART and Voltronic decoder layout. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | WOW Modbus RS485 | `bridge/wow-modbus-rs485-pulseview-session.pvs` | UART and WOW decoder layout. |
 
