@@ -26,6 +26,7 @@ Current raw captures:
 | Bridge | Growatt inverter <-> bridge <-> SeplosBMS | GoodWe CAN | `bridge/goodwe-can-raw-capture.sr` | GoodWe-compatible CAN traffic. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | Growatt CAN | `bridge/growatt-can-raw-capture.sr` | Inverter CAN traffic. |
 | Bridge | Growatt inverter <-> bridge <-> SeplosBMS | Growatt CAN | `bridge/growatt-seplos-can-raw-capture.sr` | Inverter CAN traffic. |
+| Forward | Growatt inverter <-> bridge in forward mode <-> SeplosBMS | Growatt CAN | `bridge_forward/growatt-seplos-can-raw-capture.sr` | Inverter CAN traffic in forward mode. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | Growatt RS485 | `bridge/growatt-rs485-raw-capture.sr` | Inverter RS485 traffic. |
 | Forward | Growatt inverter <-> bridge in forward mode <-> JKBMS | Growatt RS485 | `bridge_forward/growatt-rs485-raw-capture.sr` | Inverter RS485 traffic in forward mode. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | JKBMS CAN | `bridge/jkbms-can-raw-capture.sr` | JK BMS CAN traffic. |
@@ -53,6 +54,7 @@ Current PulseView session files:
 | Bridge | Growatt inverter <-> bridge <-> SeplosBMS | GoodWe CAN | `bridge/goodwe-can-pulseview-session.pvs` | CAN and GoodWe decoder layout. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | Growatt CAN | `bridge/growatt-can-pulseview-session.pvs` | CAN decoder layout. |
 | Bridge | Growatt inverter <-> bridge <-> SeplosBMS | Growatt CAN | `bridge/growatt-seplos-can-pulseview-session.pvs` | CAN and Growatt decoder layout. |
+| Forward | Growatt inverter <-> bridge in forward mode <-> SeplosBMS | Growatt CAN | `bridge_forward/growatt-seplos-can-pulseview-session.pvs` | CAN and Growatt decoder layout in forward mode. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | Growatt RS485 | `bridge/growatt-rs485-pulseview-session.pvs` | UART and Growatt decoder layout. |
 | Forward | Growatt inverter <-> bridge in forward mode <-> JKBMS | Growatt RS485 | `bridge_forward/growatt-rs485-pulseview-session.pvs` | UART and Growatt decoder layout in forward mode. |
 | Bridge | Growatt inverter <-> bridge <-> JKBMS | JKBMS CAN | `bridge/jkbms-can-pulseview-session.pvs` | CAN and JKBMS decoder layout. |

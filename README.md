@@ -203,7 +203,7 @@ The decoder covers the Growatt low-voltage CAN frame IDs used by the bridge,
 including pack telemetry, limits, status/alarms, cell extremes, temperatures,
 and metadata frames.
 
-The current bridge-mode raw captures and PulseView sessions are listed in
+The current raw captures and PulseView sessions are listed in
 `examples/README.md` as `Growatt CAN`.
 
 ## Deye CAN Decoder
