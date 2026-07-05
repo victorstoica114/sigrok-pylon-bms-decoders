@@ -3,8 +3,7 @@
 Protocol scope: Sofar-compatible low-voltage BMS frames over Classic CAN.
 
 Payload fields are little-endian. This map follows the active
-`decoders/sofar_can` implementation and the local source map under
-`docs/esp32-source-maps/main/protocols/sofar`.
+`decoders/sofar_can` implementation.
 
 ## Sofar CAN Frames
 

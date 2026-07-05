@@ -3,8 +3,7 @@
 Protocol: Voltronic Power inverter/BMS RS485 Modbus profile, plus the
 JK-007/Voltronic compact runtime map observed by the translator.
 
-This map follows the active `decoders/voltronic_modbus` implementation and the
-local source map under `docs/esp32-source-maps/main/protocols/voltronic_modbus`.
+This map follows the active `decoders/voltronic_modbus` implementation.
 
 - Default slave address: `0x01`
 - Supported read functions: `0x03`, `0x04`

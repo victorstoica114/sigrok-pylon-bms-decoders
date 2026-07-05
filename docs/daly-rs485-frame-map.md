@@ -2,8 +2,7 @@
 
 Protocol scope: Daly BMS native RS485 frames and Daly Modbus RTU polling.
 
-This map follows the local firmware source map used by `decoders/daly_rs485`:
-`docs/esp32-source-maps/main/protocols/daly_rs485/daly_rs485_bms_task.c`.
+This map follows the active `decoders/daly_rs485` implementation.
 
 - Native frame length: `13` bytes
 - Native start byte: `0xA5`

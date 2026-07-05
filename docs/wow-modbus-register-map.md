@@ -3,9 +3,7 @@
 Protocol: WOW / JK 009 BMS RS485 Modbus RTU.
 
 The WOW decoder follows the PACE-compatible V1.3 register layout used by the
-firmware poller. Source map:
-`docs/esp32-source-maps/main/protocols/pace_modbus/pace_modbus_registers_map.h`
-and `docs/esp32-source-maps/main/protocols/pace_modbus/pace_modbus_registers_map.c`.
+active `decoders/wow_modbus` implementation.
 
 - Default slave address: `0x01`
 - Supported read functions: `0x03`, `0x04`

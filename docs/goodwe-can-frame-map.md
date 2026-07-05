@@ -3,9 +3,9 @@
 Protocol scope: GoodWe-compatible low-voltage BMS CAN frames, including the
 JK/Pylon compatibility dialect observed in the current GoodWe bridge capture.
 
-The ESP32 source map defines the native GoodWe `0x453..0x458` frames. The
-PulseView decoder also recognizes the JK/Pylon-compatible `0x351..0x371` frames
-used by the validated capture.
+This map documents the native GoodWe `0x453..0x458` frames. The PulseView
+decoder also recognizes the JK/Pylon-compatible `0x351..0x371` frames used by
+the validated capture.
 
 Payload words are little-endian.
 

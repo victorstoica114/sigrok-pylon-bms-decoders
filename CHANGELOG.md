@@ -85,3 +85,6 @@
 - README and regression tests now track only the active decoder folders.
 - The installer rebuilds `C:\ProgramData\libsigrokdecode\decoders` from built-ins plus active repository decoders, excluding stale custom decoder copies from PulseView's built-in directory.
 
+### Removed
+
+- ESP32 source-map mirror under `docs/esp32-source-maps`; the maintained protocol maps now live directly under `docs/`.

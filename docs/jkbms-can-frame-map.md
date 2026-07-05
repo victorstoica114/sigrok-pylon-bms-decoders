@@ -2,9 +2,9 @@
 
 Protocol scope: JK BMS native CAN V2.0 profile over Classic CAN.
 
-The ESP32 source map defines the observed JK CAN IDs with node suffix `0x4`.
-The PulseView decoder normalizes the low CAN ID nibble so the same command can
-be decoded when the node suffix changes.
+This map documents the observed JK CAN IDs with node suffix `0x4`. The
+PulseView decoder normalizes the low CAN ID nibble so the same command can be
+decoded when the node suffix changes.
 
 Payload words are little-endian.
 
