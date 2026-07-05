@@ -13,4 +13,5 @@ analysis/latex/*.fls
 analysis/latex/*.log
 analysis/latex/*.out
 analysis/latex/*.pdf
+!analysis/latex/sigrok-pylon-bms-capture-analysis.pdf
 analysis/latex/*.synctex.gz

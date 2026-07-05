@@ -19,6 +19,7 @@ The generator reads:
 and writes:
 
 - `analysis/latex/main.tex`
+- `analysis/latex/sigrok-pylon-bms-capture-analysis.pdf` after local compile
 
 ## Overleaf
 
@@ -33,4 +34,6 @@ If a LaTeX distribution is installed:
 latexmk -pdf -interaction=nonstopmode -halt-on-error -outdir=analysis/latex/build analysis/latex/main.tex
 ```
 
-Build outputs are ignored by git.
+Build outputs are ignored by git. The final compiled report is copied into
+`analysis/latex/sigrok-pylon-bms-capture-analysis.pdf` and committed for easy
+review from the repository.
