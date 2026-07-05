@@ -20,6 +20,7 @@ cable` means the inverter and BMS were connected without the translator.
 | Translator mode | Runtime | Energy |
 | --- | --- | --- |
 | Bridge | 2 h 38 min | 3640 mWh |
+| Forward | 1 h 43 min | 1744 mWh |
 
 ## Raw Data
 
