@@ -19,7 +19,7 @@ python analysis/analyze_capture.py examples/bridge_forward/growatt-can-raw-captu
 | Total samples scanned | 2,000,000,571 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 10.000003 s |
-| Analysis runtime | 13.109 s |
+| Analysis runtime | 13.250 s |
 | Channel | `CH0` |
 | Inverted input | `true` |
 | CAN bitrate | 500,000 bit/s |

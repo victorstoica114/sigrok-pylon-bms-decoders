@@ -19,7 +19,7 @@ python analysis/analyze_capture.py examples/bridge_forward/growatt-seplos-can-ra
 | Total samples scanned | 2,000,001,019 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 10.000005 s |
-| Analysis runtime | 8.031 s |
+| Analysis runtime | 7.969 s |
 | Channel | `CH0` |
 | Inverted input | `true` |
 | CAN bitrate | 500,000 bit/s |

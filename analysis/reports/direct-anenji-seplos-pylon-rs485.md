@@ -19,7 +19,7 @@ python analysis/analyze_capture.py examples/direct/anenji-seplos-pylon-rs485-raw
 | Total samples scanned | 5,000,000,307 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 25.000002 s |
-| Analysis runtime | 21.812 s |
+| Analysis runtime | 21.328 s |
 | Channel | `CH0` |
 | Inverted input | `false` |
 | UART baud | 9,600 bit/s |

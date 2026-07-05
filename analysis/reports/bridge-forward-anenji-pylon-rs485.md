@@ -19,7 +19,7 @@ python analysis/analyze_capture.py examples/bridge_forward/anenji-pylon-rs485-ra
 | Total samples scanned | 2,000,000,887 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 10.000004 s |
-| Analysis runtime | 9.906 s |
+| Analysis runtime | 9.766 s |
 | Channel | `CH0` |
 | Inverted input | `false` |
 | UART baud | 9,600 bit/s |

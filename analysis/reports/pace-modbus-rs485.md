@@ -19,7 +19,7 @@ python analysis/analyze_capture.py examples/bridge/pace-modbus-rs485-raw-capture
 | Total samples scanned | 2,000,000,831 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 10.000004 s |
-| Analysis runtime | 12.109 s |
+| Analysis runtime | 11.969 s |
 | Channel | `CH0` |
 | Inverted input | `true` |
 | UART baud | 9,600 bit/s |

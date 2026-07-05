@@ -19,7 +19,7 @@ python analysis/analyze_capture.py examples/bridge/goodwe-can-raw-capture.sr --p
 | Total samples scanned | 2,000,000,373 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 10.000002 s |
-| Analysis runtime | 7.703 s |
+| Analysis runtime | 7.640 s |
 | Channel | `CH1` |
 | Inverted input | `true` |
 | CAN bitrate | 500,000 bit/s |

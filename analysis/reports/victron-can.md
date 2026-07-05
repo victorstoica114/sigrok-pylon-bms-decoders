@@ -19,7 +19,7 @@ python analysis/analyze_capture.py examples/bridge/victron-can-raw-capture.sr --
 | Total samples scanned | 2,000,000,241 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 10.000001 s |
-| Analysis runtime | 9.656 s |
+| Analysis runtime | 9.625 s |
 | Channel | `CH1` |
 | Inverted input | `true` |
 | CAN bitrate | 500,000 bit/s |

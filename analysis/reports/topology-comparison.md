@@ -14,22 +14,60 @@ Notes:
 - Capture durations are not identical; `frames/s`, `complete/s`, and `cycles/s` normalize counts by capture duration.
 - RS485/UART latency columns use complete request/response pairs only.
 - CAN cycle duration can be dominated by capture length when only one cycle is detected.
+- The first comparison tables include only groups where Bridge, Bridge Forward, and Direct cable all exist.
 
-## RS485/UART Highlights
+## Three-mode RS485/UART Deltas
+
+| Group | Metric | Bridge | Bridge Forward | Direct cable | Forward vs Bridge | Direct vs Bridge | Direct vs Forward |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Growatt RS485 JKBMS | Complete exchanges/s | 2.500 | 2.500 | 2.000 | +0.000 (+0.0%) | -0.500 (-20.0%) | -0.500 (-20.0%) |
+| Growatt RS485 JKBMS | Req->Rsp avg (us) | 4759.997 | 5008.099 | 5126.758 | +248.102 (+5.2%) | +366.761 (+7.7%) | +118.659 (+2.4%) |
+| Growatt RS485 JKBMS | Req->Rsp P95 (us) | 5294.317 | 5293.782 | 5438.647 | -0.535 (-0.0%) | +144.330 (+2.7%) | +144.865 (+2.7%) |
+| Growatt RS485 JKBMS | Full exchange avg (us) | 49094.793 | 48926.211 | 59337.414 | -168.582 (-0.3%) | +10242.621 (+20.9%) | +10411.203 (+21.3%) |
+| Growatt RS485 JKBMS | Full exchange P95 (us) | 53520.070 | 53484.774 | 75000.908 | -35.296 (-0.1%) | +21480.838 (+40.1%) | +21516.134 (+40.2%) |
+| Anenji Pylon RS485 JKBMS | Complete exchanges/s | 0.800 | 0.800 | 0.800 | -0.000 (-0.0%) | -0.000 (-0.0%) | +0.000 (+0.0%) |
+| Anenji Pylon RS485 JKBMS | Req->Rsp avg (us) | 9706.670 | 5488.619 | 5124.941 | -4218.051 (-43.5%) | -4581.729 (-47.2%) | -363.678 (-6.6%) |
+| Anenji Pylon RS485 JKBMS | Req->Rsp P95 (us) | 9912.793 | 6190.079 | 5692.958 | -3722.714 (-37.6%) | -4219.835 (-42.6%) | -497.121 (-8.0%) |
+| Anenji Pylon RS485 JKBMS | Full exchange avg (us) | 111164.319 | 106950.364 | 102917.894 | -4213.955 (-3.8%) | -8246.425 (-7.4%) | -4032.470 (-3.8%) |
+| Anenji Pylon RS485 JKBMS | Full exchange P95 (us) | 153034.215 | 149320.428 | 145154.533 | -3713.787 (-2.4%) | -7879.682 (-5.1%) | -4165.895 (-2.8%) |
+
+## Three-mode CAN Deltas
+
+| Group | Metric | Bridge | Bridge Forward | Direct cable | Forward vs Bridge | Direct vs Bridge | Direct vs Forward |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Growatt CAN JKBMS | Frames/s | 51.900 | 52.000 | 52.000 | +0.100 (+0.2%) | +0.100 (+0.2%) | +0.000 (+0.0%) |
+| Growatt CAN JKBMS | Cycles/s | 0.100 | 0.100 | 0.200 | +0.000 (+0.0%) | +0.100 (+100.0%) | +0.100 (+100.0%) |
+| Growatt CAN JKBMS | Cycle avg (us) | 9980699.265 | 9980680.500 | 4980232.085 | -18.765 (-0.0%) | -5000467.180 (-50.1%) | -5000448.415 (-50.1%) |
+| Growatt CAN JKBMS | Cycle P95 (us) | 9980699.265 | 9980680.500 | 4980232.085 | -18.765 (-0.0%) | -5000467.180 (-50.1%) | -5000448.415 (-50.1%) |
+| Growatt CAN SeplosBMS | Frames/s | 13.000 | 12.900 | 13.000 | -0.100 (-0.8%) | +0.000 (+0.0%) | +0.100 (+0.8%) |
+| Growatt CAN SeplosBMS | Cycles/s | 1.000 | 1.100 | 1.200 | +0.100 (+10.0%) | +0.200 (+20.0%) | +0.100 (+9.1%) |
+| Growatt CAN SeplosBMS | Cycle avg (us) | 851373.724 | 755942.000 | 687125.942 | -95431.724 (-11.2%) | -164247.782 (-19.3%) | -68816.058 (-9.1%) |
+| Growatt CAN SeplosBMS | Cycle P95 (us) | 1221318.481 | 861952.157 | 831768.787 | -359366.324 (-29.4%) | -389549.694 (-31.9%) | -30183.370 (-3.5%) |
+| Growatt CAN SeplosBMS | Inter-cycle gap avg (us) | 155493.468 | 160226.810 | 168228.483 | +4733.342 (+3.0%) | +12735.015 (+8.2%) | +8001.673 (+5.0%) |
+| Growatt CAN SeplosBMS | Inter-cycle gap P95 (us) | 165776.235 | 165777.835 | 168229.680 | +1.600 (+0.0%) | +2453.445 (+1.5%) | +2451.845 (+1.5%) |
+
+## Three-mode RS485/UART Highlights
 
 | Group | Lowest Req->Rsp avg topology | Lowest Req->Rsp avg (us) | Highest Req->Rsp avg topology | Highest Req->Rsp avg (us) | Spread (us) |
 | --- | --- | ---: | --- | ---: | ---: |
 | Growatt RS485 JKBMS | Bridge | 4759.997 | Direct cable | 5126.758 | 366.761 |
-| Growatt RS485 SeplosBMS | Bridge | 49517.093 | Bridge Forward | 49604.182 | 87.089 |
 | Anenji Pylon RS485 JKBMS | Direct cable | 5124.941 | Bridge | 9706.670 | 4581.729 |
-| Anenji Pylon RS485 SeplosBMS | Bridge Forward | 9469.731 | Direct cable | 9887.208 | 417.477 |
 
-## CAN Highlights
+## Three-mode CAN Highlights
 
 | Group | Lowest cycle avg topology | Lowest cycle avg (us) | Highest cycle avg topology | Highest cycle avg (us) | Spread (us) |
 | --- | --- | ---: | --- | ---: | ---: |
 | Growatt CAN JKBMS | Direct cable | 4980232.085 | Bridge | 9980699.265 | 5000467.180 |
 | Growatt CAN SeplosBMS | Direct cable | 687125.942 | Bridge | 851373.724 | 164247.782 |
+
+## Partial Topology Coverage
+
+These groups are still useful, but they do not have all three modes captured yet.
+
+| Group | Available modes | Missing modes |
+| --- | --- | --- |
+| Growatt RS485 SeplosBMS | Bridge, Bridge Forward | Direct cable |
+| Anenji Pylon RS485 SeplosBMS | Bridge Forward, Direct cable | Bridge |
 
 ## RS485/UART Comparisons
 
@@ -85,4 +123,5 @@ Notes:
 
 ```text
 analysis/out/topology-comparison.csv
+analysis/out/topology-three-mode-comparison.csv
 ```

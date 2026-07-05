@@ -19,7 +19,7 @@ python analysis/analyze_capture.py examples/bridge/voltronic-modbus-rs485-raw-ca
 | Total samples scanned | 2,000,000,877 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 10.000004 s |
-| Analysis runtime | 8.953 s |
+| Analysis runtime | 8.875 s |
 | Channel | `CH1` |
 | Inverted input | `false` |
 | UART baud | 9,600 bit/s |

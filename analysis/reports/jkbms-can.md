@@ -19,7 +19,7 @@ python analysis/analyze_capture.py examples/bridge/jkbms-can-raw-capture.sr --pr
 | Total samples scanned | 2,000,000,879 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 10.000004 s |
-| Analysis runtime | 8.375 s |
+| Analysis runtime | 8.344 s |
 | Channel | `CH1` |
 | Inverted input | `true` |
 | CAN bitrate | 250,000 bit/s |

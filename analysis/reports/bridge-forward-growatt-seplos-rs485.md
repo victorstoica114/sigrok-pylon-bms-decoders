@@ -19,7 +19,7 @@ python analysis/analyze_capture.py examples/bridge_forward/growatt-seplos-rs485-
 | Total samples scanned | 2,000,000,077 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 10.000000 s |
-| Analysis runtime | 9.031 s |
+| Analysis runtime | 9.344 s |
 | Channel | `CH0` |
 | Inverted input | `false` |
 | UART baud | 9,600 bit/s |

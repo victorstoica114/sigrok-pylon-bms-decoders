@@ -19,7 +19,7 @@ python analysis/analyze_capture.py examples/bridge_forward/anenji-seplos-pylon-r
 | Total samples scanned | 2,000,001,191 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 10.000006 s |
-| Analysis runtime | 8.687 s |
+| Analysis runtime | 8.625 s |
 | Channel | `CH0` |
 | Inverted input | `false` |
 | UART baud | 9,600 bit/s |

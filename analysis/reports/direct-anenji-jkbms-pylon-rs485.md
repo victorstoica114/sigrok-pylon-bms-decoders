@@ -19,7 +19,7 @@ python analysis/analyze_capture.py examples/direct/anenji-jkbms-pylon-rs485-raw-
 | Total samples scanned | 5,000,001,513 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 25.000008 s |
-| Analysis runtime | 24.453 s |
+| Analysis runtime | 24.906 s |
 | Channel | `CH0` |
 | Inverted input | `false` |
 | UART baud | 9,600 bit/s |

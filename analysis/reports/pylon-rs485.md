@@ -19,7 +19,7 @@ python analysis/analyze_capture.py examples/bridge/pylon-rs485-raw-capture.sr --
 | Total samples scanned | 10,000,001,055 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 50.000005 s |
-| Analysis runtime | 36.484 s |
+| Analysis runtime | 36.813 s |
 | Channel | `CH0` |
 | Inverted input | `true` |
 | UART baud | 9,600 bit/s |

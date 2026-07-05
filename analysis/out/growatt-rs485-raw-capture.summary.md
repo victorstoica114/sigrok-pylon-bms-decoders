@@ -6,7 +6,7 @@
 - Samplerate: 200000000 Hz
 - Total samples scanned: 2000001405
 - Capture duration: 10.000007 s
-- Analysis runtime: 9.516 s
+- Analysis runtime: 9.265 s
 - Channel: CH0
 - Inverted input: false
 - UART baud: 9600

@@ -474,6 +474,12 @@ class OverviewRecord:
     metrics: dict[str, str]
 
 
+@dataclass(frozen=True)
+class ThreeModeMetric:
+    name: str
+    label: str
+
+
 def load_helper_module(name: str, path: Path):
     spec = importlib.util.spec_from_file_location(name, path)
     if spec is None or spec.loader is None:
@@ -1945,8 +1951,107 @@ def comparison_groups(records: list[OverviewRecord]) -> list[tuple[TopologyCompa
     return groups
 
 
+TOPOLOGY_ORDER = ("Bridge", "Bridge Forward", "Direct cable")
+
+SERIAL_THREE_MODE_METRICS = (
+    ThreeModeMetric("complete_sequences_per_s", "Complete exchanges/s"),
+    ThreeModeMetric("request_to_response_avg_us", "Req->Rsp avg (us)"),
+    ThreeModeMetric("request_to_response_p95_us", "Req->Rsp P95 (us)"),
+    ThreeModeMetric("full_exchange_avg_us", "Full exchange avg (us)"),
+    ThreeModeMetric("full_exchange_p95_us", "Full exchange P95 (us)"),
+)
+
+CAN_THREE_MODE_METRICS = (
+    ThreeModeMetric("frames_per_s", "Frames/s"),
+    ThreeModeMetric("can_cycles_per_s", "Cycles/s"),
+    ThreeModeMetric("cycle_duration_avg_us", "Cycle avg (us)"),
+    ThreeModeMetric("cycle_duration_p95_us", "Cycle P95 (us)"),
+    ThreeModeMetric("inter_cycle_gap_avg_us", "Inter-cycle gap avg (us)"),
+    ThreeModeMetric("inter_cycle_gap_p95_us", "Inter-cycle gap P95 (us)"),
+)
+
+
+def records_by_topology(records: list[OverviewRecord]) -> dict[str, OverviewRecord]:
+    return {comparison_topology_label_for(record.config): record for record in records}
+
+
+def is_three_mode_group(records: list[OverviewRecord]) -> bool:
+    labels = set(records_by_topology(records))
+    return all(label in labels for label in TOPOLOGY_ORDER)
+
+
+def three_mode_groups(
+    groups: list[tuple[TopologyComparisonGroup, list[OverviewRecord]]],
+) -> list[tuple[TopologyComparisonGroup, list[OverviewRecord]]]:
+    return [(group, records) for group, records in groups if is_three_mode_group(records)]
+
+
+def partial_mode_groups(
+    groups: list[tuple[TopologyComparisonGroup, list[OverviewRecord]]],
+) -> list[tuple[TopologyComparisonGroup, list[OverviewRecord]]]:
+    return [(group, records) for group, records in groups if not is_three_mode_group(records)]
+
+
 def report_link_for_record(record: OverviewRecord) -> str:
     return f"[details]({report_name_for(record.config)})"
+
+
+def three_mode_metric_value(records: list[OverviewRecord], topology: str, metric: ThreeModeMetric) -> float | None:
+    record = records_by_topology(records).get(topology)
+    if record is None:
+        return None
+    if metric.name == "frames_per_s":
+        frames = metric_number(record, "frames")
+        duration_s = metric_number(record, "duration_s")
+        return None if frames is None or duration_s is None or duration_s <= 0 else frames / duration_s
+    if metric.name == "complete_sequences_per_s":
+        complete = metric_number(record, "complete_sequences")
+        duration_s = metric_number(record, "duration_s")
+        return None if complete is None or duration_s is None or duration_s <= 0 else complete / duration_s
+    if metric.name == "can_cycles_per_s":
+        cycles = metric_number(record, "can_cycles")
+        duration_s = metric_number(record, "duration_s")
+        return None if cycles is None or duration_s is None or duration_s <= 0 else cycles / duration_s
+    return metric_number(record, metric.name)
+
+
+def format_metric_value(value: float | None) -> str:
+    return "" if value is None else f"{value:.3f}"
+
+
+def format_delta(base: float | None, value: float | None) -> str:
+    if base is None or value is None:
+        return ""
+    diff = value - base
+    if base == 0:
+        return f"{diff:+.3f}"
+    return f"{diff:+.3f} ({(diff / base) * 100.0:+.1f}%)"
+
+
+def three_mode_metric_rows(
+    groups: list[tuple[TopologyComparisonGroup, list[OverviewRecord]]],
+    metrics: tuple[ThreeModeMetric, ...],
+) -> list[dict[str, str]]:
+    rows = []
+    for group, records in groups:
+        for metric in metrics:
+            bridge = three_mode_metric_value(records, "Bridge", metric)
+            forward = three_mode_metric_value(records, "Bridge Forward", metric)
+            direct = three_mode_metric_value(records, "Direct cable", metric)
+            if bridge is None or forward is None or direct is None:
+                continue
+            rows.append({
+                "group": group.name,
+                "kind": comparison_kind_label_for(records[0].config),
+                "metric": metric.label,
+                "bridge": format_metric_value(bridge),
+                "bridge_forward": format_metric_value(forward),
+                "direct_cable": format_metric_value(direct),
+                "forward_vs_bridge": format_delta(bridge, forward),
+                "direct_vs_bridge": format_delta(bridge, direct),
+                "direct_vs_forward": format_delta(forward, direct),
+            })
+    return rows
 
 
 def comparison_csv_row(group: TopologyComparisonGroup, record: OverviewRecord) -> dict[str, str]:
@@ -2011,6 +2116,35 @@ def write_comparison_csv(path: Path, records: list[OverviewRecord]) -> None:
         for group, group_records in comparison_groups(records):
             for record in group_records:
                 writer.writerow(comparison_csv_row(group, record))
+
+
+def write_three_mode_comparison_csv(path: Path, records: list[OverviewRecord]) -> None:
+    groups = three_mode_groups(comparison_groups(records))
+    fieldnames = [
+        "group",
+        "kind",
+        "metric",
+        "bridge",
+        "bridge_forward",
+        "direct_cable",
+        "forward_vs_bridge",
+        "direct_vs_bridge",
+        "direct_vs_forward",
+    ]
+    rows = [
+        *three_mode_metric_rows(
+            [(group, rows) for group, rows in groups if rows[0].config.kind != "can"],
+            SERIAL_THREE_MODE_METRICS,
+        ),
+        *three_mode_metric_rows(
+            [(group, rows) for group, rows in groups if rows[0].config.kind == "can"],
+            CAN_THREE_MODE_METRICS,
+        ),
+    ]
+    with path.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(rows)
 
 
 def comparison_highlight_rows(
@@ -2093,8 +2227,62 @@ def write_can_comparison_group(lines: list[str], group: TopologyComparisonGroup,
         )
 
 
+def write_three_mode_pivot_section(
+    lines: list[str],
+    title: str,
+    groups: list[tuple[TopologyComparisonGroup, list[OverviewRecord]]],
+    metrics: tuple[ThreeModeMetric, ...],
+) -> None:
+    lines.extend([
+        "",
+        title,
+        "",
+        "| Group | Metric | Bridge | Bridge Forward | Direct cable | Forward vs Bridge | Direct vs Bridge | Direct vs Forward |",
+        "| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |",
+    ])
+    rows = three_mode_metric_rows(groups, metrics)
+    if not rows:
+        lines.append("| No complete three-mode groups |  |  |  |  |  |  |  |")
+        return
+    for row in rows:
+        lines.append(
+            f"| {row['group']} "
+            f"| {row['metric']} "
+            f"| {row['bridge']} "
+            f"| {row['bridge_forward']} "
+            f"| {row['direct_cable']} "
+            f"| {row['forward_vs_bridge']} "
+            f"| {row['direct_vs_bridge']} "
+            f"| {row['direct_vs_forward']} |"
+        )
+
+
+def write_partial_mode_coverage(lines: list[str], groups: list[tuple[TopologyComparisonGroup, list[OverviewRecord]]]) -> None:
+    lines.extend([
+        "",
+        "## Partial Topology Coverage",
+        "",
+        "These groups are still useful, but they do not have all three modes captured yet.",
+        "",
+        "| Group | Available modes | Missing modes |",
+        "| --- | --- | --- |",
+    ])
+    if not groups:
+        lines.append("| None |  |  |")
+        return
+    for group, records in groups:
+        labels = set(records_by_topology(records))
+        available = ", ".join(label for label in TOPOLOGY_ORDER if label in labels)
+        missing = ", ".join(label for label in TOPOLOGY_ORDER if label not in labels)
+        lines.append(f"| {group.name} | {available} | {missing} |")
+
+
 def write_comparison_md(path: Path, records: list[OverviewRecord]) -> None:
     grouped = comparison_groups(records)
+    three_groups = three_mode_groups(grouped)
+    partial_groups = partial_mode_groups(grouped)
+    serial_three_groups = [(group, rows) for group, rows in three_groups if rows[0].config.kind != "can"]
+    can_three_groups = [(group, rows) for group, rows in three_groups if rows[0].config.kind == "can"]
     serial_groups = [(group, rows) for group, rows in grouped if rows[0].config.kind != "can"]
     can_groups = [(group, rows) for group, rows in grouped if rows[0].config.kind == "can"]
 
@@ -2115,27 +2303,43 @@ def write_comparison_md(path: Path, records: list[OverviewRecord]) -> None:
         "- Capture durations are not identical; `frames/s`, `complete/s`, and `cycles/s` normalize counts by capture duration.",
         "- RS485/UART latency columns use complete request/response pairs only.",
         "- CAN cycle duration can be dominated by capture length when only one cycle is detected.",
+        "- The first comparison tables include only groups where Bridge, Bridge Forward, and Direct cable all exist.",
     ]
+
+    write_three_mode_pivot_section(
+        lines,
+        "## Three-mode RS485/UART Deltas",
+        serial_three_groups,
+        SERIAL_THREE_MODE_METRICS,
+    )
+    write_three_mode_pivot_section(
+        lines,
+        "## Three-mode CAN Deltas",
+        can_three_groups,
+        CAN_THREE_MODE_METRICS,
+    )
 
     lines.extend([
         "",
-        "## RS485/UART Highlights",
+        "## Three-mode RS485/UART Highlights",
         "",
         "| Group | Lowest Req->Rsp avg topology | Lowest Req->Rsp avg (us) | Highest Req->Rsp avg topology | Highest Req->Rsp avg (us) | Spread (us) |",
         "| --- | --- | ---: | --- | ---: | ---: |",
     ])
-    highlight_rows = comparison_highlight_rows(serial_groups, "request_to_response_avg_us")
+    highlight_rows = comparison_highlight_rows(serial_three_groups, "request_to_response_avg_us")
     lines.extend(highlight_rows or ["| No comparable RS485/UART groups |  |  |  |  |  |"])
 
     lines.extend([
         "",
-        "## CAN Highlights",
+        "## Three-mode CAN Highlights",
         "",
         "| Group | Lowest cycle avg topology | Lowest cycle avg (us) | Highest cycle avg topology | Highest cycle avg (us) | Spread (us) |",
         "| --- | --- | ---: | --- | ---: | ---: |",
     ])
-    highlight_rows = comparison_highlight_rows(can_groups, "cycle_duration_avg_us")
+    highlight_rows = comparison_highlight_rows(can_three_groups, "cycle_duration_avg_us")
     lines.extend(highlight_rows or ["| No comparable CAN groups |  |  |  |  |  |"])
+
+    write_partial_mode_coverage(lines, partial_groups)
 
     lines.extend([
         "",
@@ -2157,19 +2361,22 @@ def write_comparison_md(path: Path, records: list[OverviewRecord]) -> None:
         "",
         "```text",
         "analysis/out/topology-comparison.csv",
+        "analysis/out/topology-three-mode-comparison.csv",
         "```",
     ])
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
-def write_comparison_outputs(records: list[OverviewRecord], out_dir: Path, report_dir: Path) -> tuple[Path, Path]:
+def write_comparison_outputs(records: list[OverviewRecord], out_dir: Path, report_dir: Path) -> tuple[Path, Path, Path]:
     out_dir.mkdir(parents=True, exist_ok=True)
     report_dir.mkdir(parents=True, exist_ok=True)
     csv_path = out_dir / "topology-comparison.csv"
+    three_mode_csv_path = out_dir / "topology-three-mode-comparison.csv"
     md_path = report_dir / "topology-comparison.md"
     write_comparison_csv(csv_path, records)
+    write_three_mode_comparison_csv(three_mode_csv_path, records)
     write_comparison_md(md_path, records)
-    return csv_path, md_path
+    return csv_path, three_mode_csv_path, md_path
 
 
 def shifted_report_text(path: Path) -> list[str]:
@@ -2316,8 +2523,9 @@ def main(argv: list[str] | None = None) -> int:
         if not records:
             print(f"No known targets found in: {overview_csv}", file=sys.stderr)
             return 2
-        comparison_csv_path, comparison_md_path = write_comparison_outputs(records, args.out_dir, args.report_dir)
+        comparison_csv_path, three_mode_csv_path, comparison_md_path = write_comparison_outputs(records, args.out_dir, args.report_dir)
         print(f"comparison_csv: {comparison_csv_path}")
+        print(f"three_mode_comparison_csv: {three_mode_csv_path}")
         print(f"comparison_report: {comparison_md_path}")
         if args.update_readme_reports:
             update_readme_reports(args.readme, args.report_dir)
@@ -2352,12 +2560,13 @@ def main(argv: list[str] | None = None) -> int:
         overview_csv_path, overview_md_path = write_overview_outputs(results, args.out_dir, args.report_dir)
         print(f"overview_csv: {overview_csv_path}")
         print(f"overview_report: {overview_md_path}")
-        comparison_csv_path, comparison_md_path = write_comparison_outputs(
+        comparison_csv_path, three_mode_csv_path, comparison_md_path = write_comparison_outputs(
             [overview_record_from_result(result) for result in results],
             args.out_dir,
             args.report_dir,
         )
         print(f"comparison_csv: {comparison_csv_path}")
+        print(f"three_mode_comparison_csv: {three_mode_csv_path}")
         print(f"comparison_report: {comparison_md_path}")
 
     if args.update_readme_reports:

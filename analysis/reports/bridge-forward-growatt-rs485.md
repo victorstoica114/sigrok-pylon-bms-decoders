@@ -19,7 +19,7 @@ python analysis/analyze_capture.py examples/bridge_forward/growatt-rs485-raw-cap
 | Total samples scanned | 2,000,000,213 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 10.000001 s |
-| Analysis runtime | 9.437 s |
+| Analysis runtime | 9.829 s |
 | Channel | `CH0` |
 | Inverted input | `false` |
 | UART baud | 9,600 bit/s |

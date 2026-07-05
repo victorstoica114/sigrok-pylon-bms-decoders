@@ -19,7 +19,7 @@ python analysis/analyze_capture.py examples/bridge/growatt-seplos-can-raw-captur
 | Total samples scanned | 2,000,000,411 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 10.000002 s |
-| Analysis runtime | 8.047 s |
+| Analysis runtime | 8.093 s |
 | Channel | `CH0` |
 | Inverted input | `true` |
 | CAN bitrate | 500,000 bit/s |

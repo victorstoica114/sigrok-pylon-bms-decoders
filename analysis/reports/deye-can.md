@@ -19,7 +19,7 @@ python analysis/analyze_capture.py examples/bridge/deye-can-raw-capture.sr --pro
 | Total samples scanned | 2,000,000,885 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 10.000004 s |
-| Analysis runtime | 7.750 s |
+| Analysis runtime | 7.937 s |
 | Channel | `CH1` |
 | Inverted input | `true` |
 | CAN bitrate | 500,000 bit/s |

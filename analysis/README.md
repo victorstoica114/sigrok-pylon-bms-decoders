@@ -39,6 +39,8 @@ Outputs are written under `analysis/out/` by default:
   all supported captures in one table.
 - `topology-comparison.csv` compares matching Bridge, Bridge Forward, and Direct
   cable captures by topology.
+- `topology-three-mode-comparison.csv` pivots the complete three-mode groups and
+  shows Forward/Direct deltas against Bridge.
 
 Readable generated reports are written under `analysis/reports/`. The batch run
 also writes [Capture Analysis Overview](reports/bridge-analysis-overview.md) and
@@ -162,7 +164,7 @@ python analysis/analyze_capture.py examples/bridge/anenji-pylon-rs485-raw-captur
 | Total samples scanned | 2,000,000,539 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 10.000003 s |
-| Analysis runtime | 8.781 s |
+| Analysis runtime | 8.891 s |
 | Channel | `CH0` |
 | Inverted input | `false` |
 | UART baud | 9,600 bit/s |
@@ -287,7 +289,7 @@ python analysis/analyze_capture.py examples/bridge_forward/anenji-pylon-rs485-ra
 | Total samples scanned | 2,000,000,887 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 10.000004 s |
-| Analysis runtime | 9.906 s |
+| Analysis runtime | 9.766 s |
 | Channel | `CH0` |
 | Inverted input | `false` |
 | UART baud | 9,600 bit/s |
@@ -362,7 +364,7 @@ python analysis/analyze_capture.py examples/bridge_forward/anenji-seplos-pylon-r
 | Total samples scanned | 2,000,001,191 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 10.000006 s |
-| Analysis runtime | 8.687 s |
+| Analysis runtime | 8.625 s |
 | Channel | `CH0` |
 | Inverted input | `false` |
 | UART baud | 9,600 bit/s |
@@ -437,7 +439,7 @@ python analysis/analyze_capture.py examples/bridge_forward/growatt-can-raw-captu
 | Total samples scanned | 2,000,000,571 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 10.000003 s |
-| Analysis runtime | 13.109 s |
+| Analysis runtime | 13.250 s |
 | Channel | `CH0` |
 | Inverted input | `true` |
 | CAN bitrate | 500,000 bit/s |
@@ -511,7 +513,7 @@ python analysis/analyze_capture.py examples/bridge_forward/growatt-rs485-raw-cap
 | Total samples scanned | 2,000,000,213 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 10.000001 s |
-| Analysis runtime | 9.437 s |
+| Analysis runtime | 9.829 s |
 | Channel | `CH0` |
 | Inverted input | `false` |
 | UART baud | 9,600 bit/s |
@@ -586,7 +588,7 @@ python analysis/analyze_capture.py examples/bridge_forward/growatt-seplos-can-ra
 | Total samples scanned | 2,000,001,019 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 10.000005 s |
-| Analysis runtime | 8.031 s |
+| Analysis runtime | 7.969 s |
 | Channel | `CH0` |
 | Inverted input | `true` |
 | CAN bitrate | 500,000 bit/s |
@@ -662,7 +664,7 @@ python analysis/analyze_capture.py examples/bridge_forward/growatt-seplos-rs485-
 | Total samples scanned | 2,000,000,077 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 10.000000 s |
-| Analysis runtime | 9.031 s |
+| Analysis runtime | 9.344 s |
 | Channel | `CH0` |
 | Inverted input | `false` |
 | UART baud | 9,600 bit/s |
@@ -737,7 +739,7 @@ python analysis/analyze_capture.py examples/bridge/china-tower-modbus-rs485-raw-
 | Total samples scanned | 2,000,000,421 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 10.000002 s |
-| Analysis runtime | 11.078 s |
+| Analysis runtime | 10.625 s |
 | Channel | `CH0` |
 | Inverted input | `true` |
 | UART baud | 9,600 bit/s |
@@ -812,7 +814,7 @@ python analysis/analyze_capture.py examples/bridge/deye-can-raw-capture.sr --pro
 | Total samples scanned | 2,000,000,885 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 10.000004 s |
-| Analysis runtime | 7.750 s |
+| Analysis runtime | 7.937 s |
 | Channel | `CH1` |
 | Inverted input | `true` |
 | CAN bitrate | 500,000 bit/s |
@@ -884,7 +886,7 @@ python analysis/analyze_capture.py examples/direct/anenji-jkbms-pylon-rs485-raw-
 | Total samples scanned | 5,000,001,513 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 25.000008 s |
-| Analysis runtime | 24.453 s |
+| Analysis runtime | 24.906 s |
 | Channel | `CH0` |
 | Inverted input | `false` |
 | UART baud | 9,600 bit/s |
@@ -959,7 +961,7 @@ python analysis/analyze_capture.py examples/direct/anenji-seplos-pylon-rs485-raw
 | Total samples scanned | 5,000,000,307 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 25.000002 s |
-| Analysis runtime | 21.812 s |
+| Analysis runtime | 21.328 s |
 | Channel | `CH0` |
 | Inverted input | `false` |
 | UART baud | 9,600 bit/s |
@@ -1034,7 +1036,7 @@ python analysis/analyze_capture.py examples/direct/growatt-can-raw-capture.sr --
 | Total samples scanned | 1,000,000,191 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 5.000001 s |
-| Analysis runtime | 6.625 s |
+| Analysis runtime | 6.500 s |
 | Channel | `CH0` |
 | Inverted input | `true` |
 | CAN bitrate | 500,000 bit/s |
@@ -1108,7 +1110,7 @@ python analysis/analyze_capture.py examples/direct/growatt-rs485-raw-capture.sr 
 | Total samples scanned | 5,000,000,589 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 25.000003 s |
-| Analysis runtime | 23.156 s |
+| Analysis runtime | 23.406 s |
 | Channel | `CH0` |
 | Inverted input | `false` |
 | UART baud | 9,600 bit/s |
@@ -1259,7 +1261,7 @@ python analysis/analyze_capture.py examples/bridge/easun-daly-rs485-raw-capture.
 | Total samples scanned | 5,000,000,701 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 25.000004 s |
-| Analysis runtime | 45.485 s |
+| Analysis runtime | 45.171 s |
 | Channel | `CH0` |
 | Inverted input | `false` |
 | UART baud | 9,600 bit/s |
@@ -1334,7 +1336,7 @@ python analysis/analyze_capture.py examples/bridge/goodwe-can-raw-capture.sr --p
 | Total samples scanned | 2,000,000,373 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 10.000002 s |
-| Analysis runtime | 7.703 s |
+| Analysis runtime | 7.640 s |
 | Channel | `CH1` |
 | Inverted input | `true` |
 | CAN bitrate | 500,000 bit/s |
@@ -1406,7 +1408,7 @@ python analysis/analyze_capture.py examples/bridge/growatt-can-raw-capture.sr --
 | Total samples scanned | 2,000,000,717 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 10.000004 s |
-| Analysis runtime | 13.172 s |
+| Analysis runtime | 12.922 s |
 | Channel | `CH0` |
 | Inverted input | `true` |
 | CAN bitrate | 500,000 bit/s |
@@ -1480,7 +1482,7 @@ python analysis/analyze_capture.py examples/bridge/growatt-rs485-raw-capture.sr 
 | Total samples scanned | 2,000,001,405 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 10.000007 s |
-| Analysis runtime | 9.516 s |
+| Analysis runtime | 9.265 s |
 | Channel | `CH0` |
 | Inverted input | `false` |
 | UART baud | 9,600 bit/s |
@@ -1555,7 +1557,7 @@ python analysis/analyze_capture.py examples/bridge/growatt-seplos-can-raw-captur
 | Total samples scanned | 2,000,000,411 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 10.000002 s |
-| Analysis runtime | 8.047 s |
+| Analysis runtime | 8.093 s |
 | Channel | `CH0` |
 | Inverted input | `true` |
 | CAN bitrate | 500,000 bit/s |
@@ -1631,7 +1633,7 @@ python analysis/analyze_capture.py examples/bridge/growatt-seplos-rs485-raw-capt
 | Total samples scanned | 2,000,000,991 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 10.000005 s |
-| Analysis runtime | 9.000 s |
+| Analysis runtime | 8.859 s |
 | Channel | `CH0` |
 | Inverted input | `false` |
 | UART baud | 9,600 bit/s |
@@ -1706,7 +1708,7 @@ python analysis/analyze_capture.py examples/bridge/jkbms-can-raw-capture.sr --pr
 | Total samples scanned | 2,000,000,879 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 10.000004 s |
-| Analysis runtime | 8.375 s |
+| Analysis runtime | 8.344 s |
 | Channel | `CH1` |
 | Inverted input | `true` |
 | CAN bitrate | 250,000 bit/s |
@@ -1782,7 +1784,7 @@ python analysis/analyze_capture.py examples/bridge/jkbms-modbus-rs485-raw-captur
 | Total samples scanned | 2,000,000,255 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 10.000001 s |
-| Analysis runtime | 7.609 s |
+| Analysis runtime | 7.953 s |
 | Channel | `CH0` |
 | Inverted input | `true` |
 | UART baud | 115,200 bit/s |
@@ -1857,7 +1859,7 @@ python analysis/analyze_capture.py examples/bridge/pace-modbus-rs485-raw-capture
 | Total samples scanned | 2,000,000,831 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 10.000004 s |
-| Analysis runtime | 12.109 s |
+| Analysis runtime | 11.969 s |
 | Channel | `CH0` |
 | Inverted input | `true` |
 | UART baud | 9,600 bit/s |
@@ -1932,7 +1934,7 @@ python analysis/analyze_capture.py examples/bridge/pylon-can-raw-capture.sr --pr
 | Total samples scanned | 2,000,001,251 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 10.000006 s |
-| Analysis runtime | 7.734 s |
+| Analysis runtime | 7.687 s |
 | Channel | `CH1` |
 | Inverted input | `true` |
 | CAN bitrate | 500,000 bit/s |
@@ -2004,7 +2006,7 @@ python analysis/analyze_capture.py examples/bridge/pylon-rs485-raw-capture.sr --
 | Total samples scanned | 10,000,001,055 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 50.000005 s |
-| Analysis runtime | 36.484 s |
+| Analysis runtime | 36.813 s |
 | Channel | `CH0` |
 | Inverted input | `true` |
 | UART baud | 9,600 bit/s |
@@ -2079,7 +2081,7 @@ python analysis/analyze_capture.py examples/bridge/sma-can-raw-capture.sr --prot
 | Total samples scanned | 2,000,001,373 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 10.000007 s |
-| Analysis runtime | 7.218 s |
+| Analysis runtime | 7.297 s |
 | Channel | `CH0` |
 | Inverted input | `true` |
 | CAN bitrate | 500,000 bit/s |
@@ -2149,7 +2151,7 @@ python analysis/analyze_capture.py examples/bridge/sofar-can-raw-capture.sr --pr
 | Total samples scanned | 5,000,000,351 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 25.000002 s |
-| Analysis runtime | 17.641 s |
+| Analysis runtime | 17.688 s |
 | Channel | `CH0` |
 | Inverted input | `true` |
 | CAN bitrate | 500,000 bit/s |
@@ -2214,22 +2216,60 @@ Notes:
 - Capture durations are not identical; `frames/s`, `complete/s`, and `cycles/s` normalize counts by capture duration.
 - RS485/UART latency columns use complete request/response pairs only.
 - CAN cycle duration can be dominated by capture length when only one cycle is detected.
+- The first comparison tables include only groups where Bridge, Bridge Forward, and Direct cable all exist.
 
-##### RS485/UART Highlights
+##### Three-mode RS485/UART Deltas
+
+| Group | Metric | Bridge | Bridge Forward | Direct cable | Forward vs Bridge | Direct vs Bridge | Direct vs Forward |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Growatt RS485 JKBMS | Complete exchanges/s | 2.500 | 2.500 | 2.000 | +0.000 (+0.0%) | -0.500 (-20.0%) | -0.500 (-20.0%) |
+| Growatt RS485 JKBMS | Req->Rsp avg (us) | 4759.997 | 5008.099 | 5126.758 | +248.102 (+5.2%) | +366.761 (+7.7%) | +118.659 (+2.4%) |
+| Growatt RS485 JKBMS | Req->Rsp P95 (us) | 5294.317 | 5293.782 | 5438.647 | -0.535 (-0.0%) | +144.330 (+2.7%) | +144.865 (+2.7%) |
+| Growatt RS485 JKBMS | Full exchange avg (us) | 49094.793 | 48926.211 | 59337.414 | -168.582 (-0.3%) | +10242.621 (+20.9%) | +10411.203 (+21.3%) |
+| Growatt RS485 JKBMS | Full exchange P95 (us) | 53520.070 | 53484.774 | 75000.908 | -35.296 (-0.1%) | +21480.838 (+40.1%) | +21516.134 (+40.2%) |
+| Anenji Pylon RS485 JKBMS | Complete exchanges/s | 0.800 | 0.800 | 0.800 | -0.000 (-0.0%) | -0.000 (-0.0%) | +0.000 (+0.0%) |
+| Anenji Pylon RS485 JKBMS | Req->Rsp avg (us) | 9706.670 | 5488.619 | 5124.941 | -4218.051 (-43.5%) | -4581.729 (-47.2%) | -363.678 (-6.6%) |
+| Anenji Pylon RS485 JKBMS | Req->Rsp P95 (us) | 9912.793 | 6190.079 | 5692.958 | -3722.714 (-37.6%) | -4219.835 (-42.6%) | -497.121 (-8.0%) |
+| Anenji Pylon RS485 JKBMS | Full exchange avg (us) | 111164.319 | 106950.364 | 102917.894 | -4213.955 (-3.8%) | -8246.425 (-7.4%) | -4032.470 (-3.8%) |
+| Anenji Pylon RS485 JKBMS | Full exchange P95 (us) | 153034.215 | 149320.428 | 145154.533 | -3713.787 (-2.4%) | -7879.682 (-5.1%) | -4165.895 (-2.8%) |
+
+##### Three-mode CAN Deltas
+
+| Group | Metric | Bridge | Bridge Forward | Direct cable | Forward vs Bridge | Direct vs Bridge | Direct vs Forward |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Growatt CAN JKBMS | Frames/s | 51.900 | 52.000 | 52.000 | +0.100 (+0.2%) | +0.100 (+0.2%) | +0.000 (+0.0%) |
+| Growatt CAN JKBMS | Cycles/s | 0.100 | 0.100 | 0.200 | +0.000 (+0.0%) | +0.100 (+100.0%) | +0.100 (+100.0%) |
+| Growatt CAN JKBMS | Cycle avg (us) | 9980699.265 | 9980680.500 | 4980232.085 | -18.765 (-0.0%) | -5000467.180 (-50.1%) | -5000448.415 (-50.1%) |
+| Growatt CAN JKBMS | Cycle P95 (us) | 9980699.265 | 9980680.500 | 4980232.085 | -18.765 (-0.0%) | -5000467.180 (-50.1%) | -5000448.415 (-50.1%) |
+| Growatt CAN SeplosBMS | Frames/s | 13.000 | 12.900 | 13.000 | -0.100 (-0.8%) | +0.000 (+0.0%) | +0.100 (+0.8%) |
+| Growatt CAN SeplosBMS | Cycles/s | 1.000 | 1.100 | 1.200 | +0.100 (+10.0%) | +0.200 (+20.0%) | +0.100 (+9.1%) |
+| Growatt CAN SeplosBMS | Cycle avg (us) | 851373.724 | 755942.000 | 687125.942 | -95431.724 (-11.2%) | -164247.782 (-19.3%) | -68816.058 (-9.1%) |
+| Growatt CAN SeplosBMS | Cycle P95 (us) | 1221318.481 | 861952.157 | 831768.787 | -359366.324 (-29.4%) | -389549.694 (-31.9%) | -30183.370 (-3.5%) |
+| Growatt CAN SeplosBMS | Inter-cycle gap avg (us) | 155493.468 | 160226.810 | 168228.483 | +4733.342 (+3.0%) | +12735.015 (+8.2%) | +8001.673 (+5.0%) |
+| Growatt CAN SeplosBMS | Inter-cycle gap P95 (us) | 165776.235 | 165777.835 | 168229.680 | +1.600 (+0.0%) | +2453.445 (+1.5%) | +2451.845 (+1.5%) |
+
+##### Three-mode RS485/UART Highlights
 
 | Group | Lowest Req->Rsp avg topology | Lowest Req->Rsp avg (us) | Highest Req->Rsp avg topology | Highest Req->Rsp avg (us) | Spread (us) |
 | --- | --- | ---: | --- | ---: | ---: |
 | Growatt RS485 JKBMS | Bridge | 4759.997 | Direct cable | 5126.758 | 366.761 |
-| Growatt RS485 SeplosBMS | Bridge | 49517.093 | Bridge Forward | 49604.182 | 87.089 |
 | Anenji Pylon RS485 JKBMS | Direct cable | 5124.941 | Bridge | 9706.670 | 4581.729 |
-| Anenji Pylon RS485 SeplosBMS | Bridge Forward | 9469.731 | Direct cable | 9887.208 | 417.477 |
 
-##### CAN Highlights
+##### Three-mode CAN Highlights
 
 | Group | Lowest cycle avg topology | Lowest cycle avg (us) | Highest cycle avg topology | Highest cycle avg (us) | Spread (us) |
 | --- | --- | ---: | --- | ---: | ---: |
 | Growatt CAN JKBMS | Direct cable | 4980232.085 | Bridge | 9980699.265 | 5000467.180 |
 | Growatt CAN SeplosBMS | Direct cable | 687125.942 | Bridge | 851373.724 | 164247.782 |
+
+##### Partial Topology Coverage
+
+These groups are still useful, but they do not have all three modes captured yet.
+
+| Group | Available modes | Missing modes |
+| --- | --- | --- |
+| Growatt RS485 SeplosBMS | Bridge, Bridge Forward | Direct cable |
+| Anenji Pylon RS485 SeplosBMS | Bridge Forward, Direct cable | Bridge |
 
 ##### RS485/UART Comparisons
 
@@ -2285,6 +2325,7 @@ Notes:
 
 ```text
 analysis/out/topology-comparison.csv
+analysis/out/topology-three-mode-comparison.csv
 ```
 
 ### [victron-can](reports/victron-can.md)
@@ -2310,7 +2351,7 @@ python analysis/analyze_capture.py examples/bridge/victron-can-raw-capture.sr --
 | Total samples scanned | 2,000,000,241 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 10.000001 s |
-| Analysis runtime | 9.656 s |
+| Analysis runtime | 9.625 s |
 | Channel | `CH1` |
 | Inverted input | `true` |
 | CAN bitrate | 500,000 bit/s |
@@ -2393,7 +2434,7 @@ python analysis/analyze_capture.py examples/bridge/voltronic-modbus-rs485-raw-ca
 | Total samples scanned | 2,000,000,877 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 10.000004 s |
-| Analysis runtime | 8.953 s |
+| Analysis runtime | 8.875 s |
 | Channel | `CH1` |
 | Inverted input | `false` |
 | UART baud | 9,600 bit/s |
@@ -2468,7 +2509,7 @@ python analysis/analyze_capture.py examples/bridge/wow-modbus-rs485-raw-capture.
 | Total samples scanned | 2,000,000,515 |
 | Samplerate | 200,000,000 Hz |
 | Capture duration | 10.000003 s |
-| Analysis runtime | 11.843 s |
+| Analysis runtime | 12.156 s |
 | Channel | `CH0` |
 | Inverted input | `false` |
 | UART baud | 9,600 bit/s |
