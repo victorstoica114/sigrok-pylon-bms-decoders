@@ -37,13 +37,19 @@ Notes:
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | Growatt CAN JKBMS | Frames/s | 51.900 | 52.000 | 52.000 | +0.100 (+0.2%) | +0.100 (+0.2%) | +0.000 (+0.0%) |
 | Growatt CAN JKBMS | Cycles/s | 0.100 | 0.100 | 0.200 | +0.000 (+0.0%) | +0.100 (+100.0%) | +0.100 (+100.0%) |
+| Growatt CAN JKBMS | Cycle min (us) | 9980699.265 | 9980680.500 | 4980232.085 | -18.765 (-0.0%) | -5000467.180 (-50.1%) | -5000448.415 (-50.1%) |
 | Growatt CAN JKBMS | Cycle avg (us) | 9980699.265 | 9980680.500 | 4980232.085 | -18.765 (-0.0%) | -5000467.180 (-50.1%) | -5000448.415 (-50.1%) |
+| Growatt CAN JKBMS | Cycle max (us) | 9980699.265 | 9980680.500 | 4980232.085 | -18.765 (-0.0%) | -5000467.180 (-50.1%) | -5000448.415 (-50.1%) |
 | Growatt CAN JKBMS | Cycle P95 (us) | 9980699.265 | 9980680.500 | 4980232.085 | -18.765 (-0.0%) | -5000467.180 (-50.1%) | -5000448.415 (-50.1%) |
 | Growatt CAN SeplosBMS | Frames/s | 13.000 | 12.900 | 13.000 | -0.100 (-0.8%) | +0.000 (+0.0%) | +0.100 (+0.8%) |
 | Growatt CAN SeplosBMS | Cycles/s | 1.000 | 1.100 | 1.200 | +0.100 (+10.0%) | +0.200 (+20.0%) | +0.100 (+9.1%) |
+| Growatt CAN SeplosBMS | Cycle min (us) | 251234.865 | 85691.125 | 129932.965 | -165543.740 (-65.9%) | -121301.900 (-48.3%) | +44241.840 (+51.6%) |
 | Growatt CAN SeplosBMS | Cycle avg (us) | 851373.724 | 755942.000 | 687125.942 | -95431.724 (-11.2%) | -164247.782 (-19.3%) | -68816.058 (-9.1%) |
+| Growatt CAN SeplosBMS | Cycle max (us) | 1496223.985 | 871814.905 | 831769.225 | -624409.080 (-41.7%) | -664454.760 (-44.4%) | -40045.680 (-4.6%) |
 | Growatt CAN SeplosBMS | Cycle P95 (us) | 1221318.481 | 861952.157 | 831768.787 | -359366.324 (-29.4%) | -389549.694 (-31.9%) | -30183.370 (-3.5%) |
+| Growatt CAN SeplosBMS | Inter-cycle gap min (us) | 114668.755 | 128174.720 | 168225.685 | +13505.965 (+11.8%) | +53556.930 (+46.7%) | +40050.965 (+31.2%) |
 | Growatt CAN SeplosBMS | Inter-cycle gap avg (us) | 155493.468 | 160226.810 | 168228.483 | +4733.342 (+3.0%) | +12735.015 (+8.2%) | +8001.673 (+5.0%) |
+| Growatt CAN SeplosBMS | Inter-cycle gap max (us) | 165777.835 | 165777.835 | 168229.680 | +0.000 (+0.0%) | +2451.845 (+1.5%) | +2451.845 (+1.5%) |
 | Growatt CAN SeplosBMS | Inter-cycle gap P95 (us) | 165776.235 | 165777.835 | 168229.680 | +1.600 (+0.0%) | +2453.445 (+1.5%) | +2451.845 (+1.5%) |
 
 ## Three-mode RS485/UART Highlights
@@ -105,19 +111,19 @@ These groups are still useful, but they do not have all three modes captured yet
 
 ### Growatt CAN JKBMS
 
-| Topology | Report | Duration (s) | Frames | Frames/s | CAN IDs | Cycles | Cycles/s | Decode errors | Cycle avg (us) | Cycle P95 (us) | Gap avg (us) | Gap P95 (us) |
-| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| Bridge | [details](growatt-can.md) | 10.000 | 519 | 51.900 | 10 | 1 | 0.100 | 0 | 9980699.265 | 9980699.265 |  |  |
-| Bridge Forward | [details](bridge-forward-growatt-can.md) | 10.000 | 520 | 52.000 | 10 | 1 | 0.100 | 0 | 9980680.500 | 9980680.500 |  |  |
-| Direct cable | [details](direct-growatt-can.md) | 5.000 | 260 | 52.000 | 10 | 1 | 0.200 | 0 | 4980232.085 | 4980232.085 |  |  |
+| Topology | Report | Duration (s) | Frames | Frames/s | CAN IDs | Cycles | Cycles/s | Decode errors | Cycle min (us) | Cycle avg (us) | Cycle max (us) | Cycle P95 (us) | Gap min (us) | Gap avg (us) | Gap max (us) | Gap P95 (us) |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Bridge | [details](growatt-can.md) | 10.000 | 519 | 51.900 | 10 | 1 | 0.100 | 0 | 9980699.265 | 9980699.265 | 9980699.265 | 9980699.265 |  |  |  |  |
+| Bridge Forward | [details](bridge-forward-growatt-can.md) | 10.000 | 520 | 52.000 | 10 | 1 | 0.100 | 0 | 9980680.500 | 9980680.500 | 9980680.500 | 9980680.500 |  |  |  |  |
+| Direct cable | [details](direct-growatt-can.md) | 5.000 | 260 | 52.000 | 10 | 1 | 0.200 | 0 | 4980232.085 | 4980232.085 | 4980232.085 | 4980232.085 |  |  |  |  |
 
 ### Growatt CAN SeplosBMS
 
-| Topology | Report | Duration (s) | Frames | Frames/s | CAN IDs | Cycles | Cycles/s | Decode errors | Cycle avg (us) | Cycle P95 (us) | Gap avg (us) | Gap P95 (us) |
-| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| Bridge | [details](growatt-seplos-can.md) | 10.000 | 130 | 13.000 | 12 | 10 | 1.000 | 0 | 851373.724 | 1221318.481 | 155493.468 | 165776.235 |
-| Bridge Forward | [details](bridge-forward-growatt-seplos-can.md) | 10.000 | 129 | 12.900 | 12 | 11 | 1.100 | 0 | 755942.000 | 861952.157 | 160226.810 | 165777.835 |
-| Direct cable | [details](direct-growatt-seplos-can.md) | 5.000 | 65 | 13.000 | 12 | 6 | 1.200 | 0 | 687125.942 | 831768.787 | 168228.483 | 168229.680 |
+| Topology | Report | Duration (s) | Frames | Frames/s | CAN IDs | Cycles | Cycles/s | Decode errors | Cycle min (us) | Cycle avg (us) | Cycle max (us) | Cycle P95 (us) | Gap min (us) | Gap avg (us) | Gap max (us) | Gap P95 (us) |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Bridge | [details](growatt-seplos-can.md) | 10.000 | 130 | 13.000 | 12 | 10 | 1.000 | 0 | 251234.865 | 851373.724 | 1496223.985 | 1221318.481 | 114668.755 | 155493.468 | 165777.835 | 165776.235 |
+| Bridge Forward | [details](bridge-forward-growatt-seplos-can.md) | 10.000 | 129 | 12.900 | 12 | 11 | 1.100 | 0 | 85691.125 | 755942.000 | 871814.905 | 861952.157 | 128174.720 | 160226.810 | 165777.835 | 165777.835 |
+| Direct cable | [details](direct-growatt-seplos-can.md) | 5.000 | 65 | 13.000 | 12 | 6 | 1.200 | 0 | 129932.965 | 687125.942 | 831769.225 | 831768.787 | 168225.685 | 168228.483 | 168229.680 | 168229.680 |
 
 ## Generated Tables
 

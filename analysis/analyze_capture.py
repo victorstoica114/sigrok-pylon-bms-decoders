@@ -1599,6 +1599,10 @@ def overview_stat(values: list[float], mode: str) -> str:
         return ""
     if mode == "avg":
         value = statistics.fmean(values)
+    elif mode == "min":
+        value = min(values)
+    elif mode == "max":
+        value = max(values)
     elif mode == "p95":
         value = percentile(values, 0.95)
     else:
@@ -1782,7 +1786,11 @@ def overview_csv_row(result: AnalysisResult) -> dict[str, str | int]:
         "full_exchange_avg_us": overview_stat(full_exchange, "avg"),
         "full_exchange_p95_us": overview_stat(full_exchange, "p95"),
         "cycle_duration_avg_us": overview_stat(cycle_duration, "avg"),
+        "cycle_duration_min_us": overview_stat(cycle_duration, "min"),
+        "cycle_duration_max_us": overview_stat(cycle_duration, "max"),
         "cycle_duration_p95_us": overview_stat(cycle_duration, "p95"),
+        "inter_cycle_gap_min_us": overview_stat(inter_cycle_gap, "min"),
+        "inter_cycle_gap_max_us": overview_stat(inter_cycle_gap, "max"),
         "inter_cycle_gap_avg_us": overview_stat(inter_cycle_gap, "avg"),
         "inter_cycle_gap_p95_us": overview_stat(inter_cycle_gap, "p95"),
     }
@@ -1810,7 +1818,11 @@ def write_overview_csv(path: Path, results: list[AnalysisResult]) -> None:
         "full_exchange_avg_us",
         "full_exchange_p95_us",
         "cycle_duration_avg_us",
+        "cycle_duration_min_us",
+        "cycle_duration_max_us",
         "cycle_duration_p95_us",
+        "inter_cycle_gap_min_us",
+        "inter_cycle_gap_max_us",
         "inter_cycle_gap_avg_us",
         "inter_cycle_gap_p95_us",
     ]
@@ -1858,8 +1870,8 @@ def write_overview_md(path: Path, results: list[AnalysisResult]) -> None:
         "",
         "## CAN Captures",
         "",
-        "| Target | Frames | CAN IDs | Cycles | Cycle avg (us) | Cycle P95 (us) | Gap avg (us) | Gap P95 (us) | Decode errors |",
-        "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
+        "| Target | Frames | CAN IDs | Cycles | Cycle min (us) | Cycle avg (us) | Cycle max (us) | Cycle P95 (us) | Gap min (us) | Gap avg (us) | Gap max (us) | Gap P95 (us) | Decode errors |",
+        "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
     ])
     for result in can_results:
         cycle_duration = can_cycle_values(result, "duration")
@@ -1872,9 +1884,13 @@ def write_overview_md(path: Path, results: list[AnalysisResult]) -> None:
             f"| {len(result.frames)} "
             f"| {len(can_ids)} "
             f"| {len(result.cycles)} "
+            f"| {overview_stat(cycle_duration, 'min')} "
             f"| {overview_stat(cycle_duration, 'avg')} "
+            f"| {overview_stat(cycle_duration, 'max')} "
             f"| {overview_stat(cycle_duration, 'p95')} "
+            f"| {overview_stat(inter_cycle_gap, 'min')} "
             f"| {overview_stat(inter_cycle_gap, 'avg')} "
+            f"| {overview_stat(inter_cycle_gap, 'max')} "
             f"| {overview_stat(inter_cycle_gap, 'p95')} "
             f"| {decode_errors} |"
         )
@@ -1964,9 +1980,13 @@ SERIAL_THREE_MODE_METRICS = (
 CAN_THREE_MODE_METRICS = (
     ThreeModeMetric("frames_per_s", "Frames/s"),
     ThreeModeMetric("can_cycles_per_s", "Cycles/s"),
+    ThreeModeMetric("cycle_duration_min_us", "Cycle min (us)"),
     ThreeModeMetric("cycle_duration_avg_us", "Cycle avg (us)"),
+    ThreeModeMetric("cycle_duration_max_us", "Cycle max (us)"),
     ThreeModeMetric("cycle_duration_p95_us", "Cycle P95 (us)"),
+    ThreeModeMetric("inter_cycle_gap_min_us", "Inter-cycle gap min (us)"),
     ThreeModeMetric("inter_cycle_gap_avg_us", "Inter-cycle gap avg (us)"),
+    ThreeModeMetric("inter_cycle_gap_max_us", "Inter-cycle gap max (us)"),
     ThreeModeMetric("inter_cycle_gap_p95_us", "Inter-cycle gap P95 (us)"),
 )
 
@@ -2077,7 +2097,11 @@ def comparison_csv_row(group: TopologyComparisonGroup, record: OverviewRecord) -
         "full_exchange_avg_us": metric_text(record, "full_exchange_avg_us"),
         "full_exchange_p95_us": metric_text(record, "full_exchange_p95_us"),
         "cycle_duration_avg_us": metric_text(record, "cycle_duration_avg_us"),
+        "cycle_duration_min_us": metric_text(record, "cycle_duration_min_us"),
+        "cycle_duration_max_us": metric_text(record, "cycle_duration_max_us"),
         "cycle_duration_p95_us": metric_text(record, "cycle_duration_p95_us"),
+        "inter_cycle_gap_min_us": metric_text(record, "inter_cycle_gap_min_us"),
+        "inter_cycle_gap_max_us": metric_text(record, "inter_cycle_gap_max_us"),
         "inter_cycle_gap_avg_us": metric_text(record, "inter_cycle_gap_avg_us"),
         "inter_cycle_gap_p95_us": metric_text(record, "inter_cycle_gap_p95_us"),
     }
@@ -2106,7 +2130,11 @@ def write_comparison_csv(path: Path, records: list[OverviewRecord]) -> None:
         "full_exchange_avg_us",
         "full_exchange_p95_us",
         "cycle_duration_avg_us",
+        "cycle_duration_min_us",
+        "cycle_duration_max_us",
         "cycle_duration_p95_us",
+        "inter_cycle_gap_min_us",
+        "inter_cycle_gap_max_us",
         "inter_cycle_gap_avg_us",
         "inter_cycle_gap_p95_us",
     ]
@@ -2206,8 +2234,8 @@ def write_can_comparison_group(lines: list[str], group: TopologyComparisonGroup,
         "",
         f"### {group.name}",
         "",
-        "| Topology | Report | Duration (s) | Frames | Frames/s | CAN IDs | Cycles | Cycles/s | Decode errors | Cycle avg (us) | Cycle P95 (us) | Gap avg (us) | Gap P95 (us) |",
-        "| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
+        "| Topology | Report | Duration (s) | Frames | Frames/s | CAN IDs | Cycles | Cycles/s | Decode errors | Cycle min (us) | Cycle avg (us) | Cycle max (us) | Cycle P95 (us) | Gap min (us) | Gap avg (us) | Gap max (us) | Gap P95 (us) |",
+        "| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
     ])
     for record in records:
         lines.append(
@@ -2220,9 +2248,13 @@ def write_can_comparison_group(lines: list[str], group: TopologyComparisonGroup,
             f"| {metric_text(record, 'can_cycles')} "
             f"| {rate_metric(record, 'can_cycles')} "
             f"| {metric_text(record, 'decode_errors')} "
+            f"| {metric_text(record, 'cycle_duration_min_us')} "
             f"| {metric_text(record, 'cycle_duration_avg_us')} "
+            f"| {metric_text(record, 'cycle_duration_max_us')} "
             f"| {metric_text(record, 'cycle_duration_p95_us')} "
+            f"| {metric_text(record, 'inter_cycle_gap_min_us')} "
             f"| {metric_text(record, 'inter_cycle_gap_avg_us')} "
+            f"| {metric_text(record, 'inter_cycle_gap_max_us')} "
             f"| {metric_text(record, 'inter_cycle_gap_p95_us')} |"
         )
 

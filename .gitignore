@@ -6,3 +6,11 @@ __pycache__/
 examples/Session *
 examples/new.*
 examples/*.sr.*
+analysis/latex/build/
+analysis/latex/*.aux
+analysis/latex/*.fdb_latexmk
+analysis/latex/*.fls
+analysis/latex/*.log
+analysis/latex/*.out
+analysis/latex/*.pdf
+analysis/latex/*.synctex.gz

@@ -13,6 +13,7 @@ frames from the selected logic channel, reuses the protocol helper modules from
 python analysis/analyze_capture.py --list-targets
 python analysis/analyze_capture.py --all-captures --quiet
 python analysis/analyze_capture.py --comparison-only --update-readme-reports
+python analysis/generate_latex_report.py
 ```
 
 Single-capture analysis can usually infer the protocol from the capture name:
@@ -45,6 +46,10 @@ Outputs are written under `analysis/out/` by default:
 Readable generated reports are written under `analysis/reports/`. The batch run
 also writes [Capture Analysis Overview](reports/bridge-analysis-overview.md) and
 [Topology Comparison Report](reports/topology-comparison.md).
+
+An Overleaf-ready visual report is generated at [latex/main.tex](latex/main.tex).
+It is self-contained, while local PDF/build artifacts under `analysis/latex/build/`
+are ignored by git.
 
 ## Supported Targets
 
@@ -250,21 +255,21 @@ python analysis/analyze_capture.py --all-captures --quiet
 
 ##### CAN Captures
 
-| Target | Frames | CAN IDs | Cycles | Cycle avg (us) | Cycle P95 (us) | Gap avg (us) | Gap P95 (us) | Decode errors |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| [Deye CAN Bridge](deye-can.md) | 100 | 8 | 9 | 1011013.334 | 1599871.234 | 100194.479 | 100202.133 | 0 |
-| [GoodWe CAN Bridge](goodwe-can.md) | 100 | 8 | 4 | 2399973.046 | 6275024.243 | 100265.227 | 100269.021 | 0 |
-| [Growatt CAN Bridge](growatt-can.md) | 519 | 10 | 1 | 9980699.265 | 9980699.265 |  |  | 0 |
-| [Growatt CAN Seplos Bridge](growatt-seplos-can.md) | 130 | 12 | 10 | 851373.724 | 1221318.481 | 155493.468 | 165776.235 | 0 |
-| [Growatt CAN JKBMS Direct](direct-growatt-can.md) | 260 | 10 | 1 | 4980232.085 | 4980232.085 |  |  | 0 |
-| [Growatt CAN Seplos Direct](direct-growatt-seplos-can.md) | 65 | 12 | 6 | 687125.942 | 831768.787 | 168228.483 | 168229.680 | 0 |
-| [Growatt CAN JKBMS Bridge Forward](bridge-forward-growatt-can.md) | 520 | 10 | 1 | 9980680.500 | 9980680.500 |  |  | 0 |
-| [Growatt CAN Seplos Bridge Forward](bridge-forward-growatt-seplos-can.md) | 129 | 12 | 11 | 755942.000 | 861952.157 | 160226.810 | 165777.835 | 0 |
-| [JKBMS CAN Bridge](jkbms-can.md) | 344 | 12 | 1 | 9907992.715 | 9907992.715 |  |  | 0 |
-| [Pylon CAN Bridge](pylon-can.md) | 100 | 8 | 5 | 1900011.264 | 2299945.203 | 100172.068 | 100176.970 | 0 |
-| [SMA CAN Bridge](sma-can.md) | 60 | 6 | 60 | 230.733 | 237.400 | 166404.548 | 168235.921 | 0 |
-| [Sofar CAN Bridge](sofar-can.md) | 148 | 6 | 148 | 228.765 | 237.400 | 168953.744 | 377763.690 | 0 |
-| [Victron CAN Bridge](victron-can.md) | 250 | 19 | 1 | 9960725.835 | 9960725.835 |  |  | 0 |
+| Target | Frames | CAN IDs | Cycles | Cycle min (us) | Cycle avg (us) | Cycle max (us) | Cycle P95 (us) | Gap min (us) | Gap avg (us) | Gap max (us) | Gap P95 (us) | Decode errors |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| [Deye CAN Bridge](deye-can.md) | 100 | 8 | 9 | 599848.765 | 1011013.334 | 1599872.420 | 1599871.234 | 100185.535 | 100194.479 | 100203.535 | 100202.133 | 0 |
+| [GoodWe CAN Bridge](goodwe-can.md) | 100 | 8 | 4 | 300245.895 | 2399973.046 | 7100062.150 | 6275024.243 | 100259.230 | 100265.227 | 100269.220 | 100269.021 | 0 |
+| [Growatt CAN Bridge](growatt-can.md) | 519 | 10 | 1 | 9980699.265 | 9980699.265 | 9980699.265 | 9980699.265 |  |  |  |  | 0 |
+| [Growatt CAN Seplos Bridge](growatt-seplos-can.md) | 130 | 12 | 10 | 251234.865 | 851373.724 | 1496223.985 | 1221318.481 | 114668.755 | 155493.468 | 165777.835 | 165776.235 | 0 |
+| [Growatt CAN JKBMS Direct](direct-growatt-can.md) | 260 | 10 | 1 | 4980232.085 | 4980232.085 | 4980232.085 | 4980232.085 |  |  |  |  | 0 |
+| [Growatt CAN Seplos Direct](direct-growatt-seplos-can.md) | 65 | 12 | 6 | 129932.965 | 687125.942 | 831769.225 | 831768.787 | 168225.685 | 168228.483 | 168229.680 | 168229.680 | 0 |
+| [Growatt CAN JKBMS Bridge Forward](bridge-forward-growatt-can.md) | 520 | 10 | 1 | 9980680.500 | 9980680.500 | 9980680.500 | 9980680.500 |  |  |  |  | 0 |
+| [Growatt CAN Seplos Bridge Forward](bridge-forward-growatt-seplos-can.md) | 129 | 12 | 11 | 85691.125 | 755942.000 | 871814.905 | 861952.157 | 128174.720 | 160226.810 | 165777.835 | 165777.835 | 0 |
+| [JKBMS CAN Bridge](jkbms-can.md) | 344 | 12 | 1 | 9907992.715 | 9907992.715 | 9907992.715 | 9907992.715 |  |  |  |  | 0 |
+| [Pylon CAN Bridge](pylon-can.md) | 100 | 8 | 5 | 900275.935 | 1900011.264 | 2299947.265 | 2299945.203 | 100163.545 | 100172.068 | 100177.565 | 100176.970 | 0 |
+| [SMA CAN Bridge](sma-can.md) | 60 | 6 | 60 | 219.400 | 230.733 | 237.400 | 237.400 | 165307.740 | 166404.548 | 168241.725 | 168235.921 | 0 |
+| [Sofar CAN Bridge](sofar-can.md) | 148 | 6 | 148 | 219.400 | 228.765 | 237.400 | 237.400 | 124888.000 | 168953.744 | 382072.265 | 377763.690 | 0 |
+| [Victron CAN Bridge](victron-can.md) | 250 | 19 | 1 | 9960725.835 | 9960725.835 | 9960725.835 | 9960725.835 |  |  |  |  | 0 |
 
 ### [bridge-forward-anenji-pylon-rs485](reports/bridge-forward-anenji-pylon-rs485.md)
 
@@ -2239,13 +2244,19 @@ Notes:
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | Growatt CAN JKBMS | Frames/s | 51.900 | 52.000 | 52.000 | +0.100 (+0.2%) | +0.100 (+0.2%) | +0.000 (+0.0%) |
 | Growatt CAN JKBMS | Cycles/s | 0.100 | 0.100 | 0.200 | +0.000 (+0.0%) | +0.100 (+100.0%) | +0.100 (+100.0%) |
+| Growatt CAN JKBMS | Cycle min (us) | 9980699.265 | 9980680.500 | 4980232.085 | -18.765 (-0.0%) | -5000467.180 (-50.1%) | -5000448.415 (-50.1%) |
 | Growatt CAN JKBMS | Cycle avg (us) | 9980699.265 | 9980680.500 | 4980232.085 | -18.765 (-0.0%) | -5000467.180 (-50.1%) | -5000448.415 (-50.1%) |
+| Growatt CAN JKBMS | Cycle max (us) | 9980699.265 | 9980680.500 | 4980232.085 | -18.765 (-0.0%) | -5000467.180 (-50.1%) | -5000448.415 (-50.1%) |
 | Growatt CAN JKBMS | Cycle P95 (us) | 9980699.265 | 9980680.500 | 4980232.085 | -18.765 (-0.0%) | -5000467.180 (-50.1%) | -5000448.415 (-50.1%) |
 | Growatt CAN SeplosBMS | Frames/s | 13.000 | 12.900 | 13.000 | -0.100 (-0.8%) | +0.000 (+0.0%) | +0.100 (+0.8%) |
 | Growatt CAN SeplosBMS | Cycles/s | 1.000 | 1.100 | 1.200 | +0.100 (+10.0%) | +0.200 (+20.0%) | +0.100 (+9.1%) |
+| Growatt CAN SeplosBMS | Cycle min (us) | 251234.865 | 85691.125 | 129932.965 | -165543.740 (-65.9%) | -121301.900 (-48.3%) | +44241.840 (+51.6%) |
 | Growatt CAN SeplosBMS | Cycle avg (us) | 851373.724 | 755942.000 | 687125.942 | -95431.724 (-11.2%) | -164247.782 (-19.3%) | -68816.058 (-9.1%) |
+| Growatt CAN SeplosBMS | Cycle max (us) | 1496223.985 | 871814.905 | 831769.225 | -624409.080 (-41.7%) | -664454.760 (-44.4%) | -40045.680 (-4.6%) |
 | Growatt CAN SeplosBMS | Cycle P95 (us) | 1221318.481 | 861952.157 | 831768.787 | -359366.324 (-29.4%) | -389549.694 (-31.9%) | -30183.370 (-3.5%) |
+| Growatt CAN SeplosBMS | Inter-cycle gap min (us) | 114668.755 | 128174.720 | 168225.685 | +13505.965 (+11.8%) | +53556.930 (+46.7%) | +40050.965 (+31.2%) |
 | Growatt CAN SeplosBMS | Inter-cycle gap avg (us) | 155493.468 | 160226.810 | 168228.483 | +4733.342 (+3.0%) | +12735.015 (+8.2%) | +8001.673 (+5.0%) |
+| Growatt CAN SeplosBMS | Inter-cycle gap max (us) | 165777.835 | 165777.835 | 168229.680 | +0.000 (+0.0%) | +2451.845 (+1.5%) | +2451.845 (+1.5%) |
 | Growatt CAN SeplosBMS | Inter-cycle gap P95 (us) | 165776.235 | 165777.835 | 168229.680 | +1.600 (+0.0%) | +2453.445 (+1.5%) | +2451.845 (+1.5%) |
 
 ##### Three-mode RS485/UART Highlights
@@ -2307,19 +2318,19 @@ These groups are still useful, but they do not have all three modes captured yet
 
 ###### Growatt CAN JKBMS
 
-| Topology | Report | Duration (s) | Frames | Frames/s | CAN IDs | Cycles | Cycles/s | Decode errors | Cycle avg (us) | Cycle P95 (us) | Gap avg (us) | Gap P95 (us) |
-| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| Bridge | [details](growatt-can.md) | 10.000 | 519 | 51.900 | 10 | 1 | 0.100 | 0 | 9980699.265 | 9980699.265 |  |  |
-| Bridge Forward | [details](bridge-forward-growatt-can.md) | 10.000 | 520 | 52.000 | 10 | 1 | 0.100 | 0 | 9980680.500 | 9980680.500 |  |  |
-| Direct cable | [details](direct-growatt-can.md) | 5.000 | 260 | 52.000 | 10 | 1 | 0.200 | 0 | 4980232.085 | 4980232.085 |  |  |
+| Topology | Report | Duration (s) | Frames | Frames/s | CAN IDs | Cycles | Cycles/s | Decode errors | Cycle min (us) | Cycle avg (us) | Cycle max (us) | Cycle P95 (us) | Gap min (us) | Gap avg (us) | Gap max (us) | Gap P95 (us) |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Bridge | [details](growatt-can.md) | 10.000 | 519 | 51.900 | 10 | 1 | 0.100 | 0 | 9980699.265 | 9980699.265 | 9980699.265 | 9980699.265 |  |  |  |  |
+| Bridge Forward | [details](bridge-forward-growatt-can.md) | 10.000 | 520 | 52.000 | 10 | 1 | 0.100 | 0 | 9980680.500 | 9980680.500 | 9980680.500 | 9980680.500 |  |  |  |  |
+| Direct cable | [details](direct-growatt-can.md) | 5.000 | 260 | 52.000 | 10 | 1 | 0.200 | 0 | 4980232.085 | 4980232.085 | 4980232.085 | 4980232.085 |  |  |  |  |
 
 ###### Growatt CAN SeplosBMS
 
-| Topology | Report | Duration (s) | Frames | Frames/s | CAN IDs | Cycles | Cycles/s | Decode errors | Cycle avg (us) | Cycle P95 (us) | Gap avg (us) | Gap P95 (us) |
-| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| Bridge | [details](growatt-seplos-can.md) | 10.000 | 130 | 13.000 | 12 | 10 | 1.000 | 0 | 851373.724 | 1221318.481 | 155493.468 | 165776.235 |
-| Bridge Forward | [details](bridge-forward-growatt-seplos-can.md) | 10.000 | 129 | 12.900 | 12 | 11 | 1.100 | 0 | 755942.000 | 861952.157 | 160226.810 | 165777.835 |
-| Direct cable | [details](direct-growatt-seplos-can.md) | 5.000 | 65 | 13.000 | 12 | 6 | 1.200 | 0 | 687125.942 | 831768.787 | 168228.483 | 168229.680 |
+| Topology | Report | Duration (s) | Frames | Frames/s | CAN IDs | Cycles | Cycles/s | Decode errors | Cycle min (us) | Cycle avg (us) | Cycle max (us) | Cycle P95 (us) | Gap min (us) | Gap avg (us) | Gap max (us) | Gap P95 (us) |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Bridge | [details](growatt-seplos-can.md) | 10.000 | 130 | 13.000 | 12 | 10 | 1.000 | 0 | 251234.865 | 851373.724 | 1496223.985 | 1221318.481 | 114668.755 | 155493.468 | 165777.835 | 165776.235 |
+| Bridge Forward | [details](bridge-forward-growatt-seplos-can.md) | 10.000 | 129 | 12.900 | 12 | 11 | 1.100 | 0 | 85691.125 | 755942.000 | 871814.905 | 861952.157 | 128174.720 | 160226.810 | 165777.835 | 165777.835 |
+| Direct cable | [details](direct-growatt-seplos-can.md) | 5.000 | 65 | 13.000 | 12 | 6 | 1.200 | 0 | 129932.965 | 687125.942 | 831769.225 | 831768.787 | 168225.685 | 168228.483 | 168229.680 | 168229.680 |
 
 ##### Generated Tables
 
