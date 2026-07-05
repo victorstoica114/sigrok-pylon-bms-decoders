@@ -1,7 +1,14 @@
 # Example Captures
 
-This directory separates field captures by communication topology and translator
-mode.
+This directory separates validated field captures by communication topology and
+translator mode.
+
+## Translator Device
+
+Bridge and Forward captures use the protocol translator documented in
+[victorstoica114/Invertor_board](https://github.com/victorstoica114/Invertor_board).
+In these tables, `Bridge` and `Forward` are modes of that translator; `Direct
+cable` means the inverter and BMS were connected without the translator.
 
 ## Test Setup
 

@@ -1,6 +1,7 @@
-# sigrok-pylon-bms-decoders
+# Sigrok BMS Protocol Decoders
 
-PulseView/libsigrokdecode protocol decoders for validated BMS/inverter captures.
+PulseView/libsigrokdecode protocol decoders, protocol maps, screenshots, and
+validated field captures for BMS/inverter communication.
 
 Active decoders:
 
