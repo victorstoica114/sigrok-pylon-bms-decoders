@@ -17,10 +17,13 @@ cable` means the inverter and BMS were connected without the translator.
 
 ## Translator Power Use
 
-| Translator mode | Runtime | Energy |
-| --- | --- | --- |
-| Bridge | 2 h 38 min | 3640 mWh |
-| Forward | 1 h 43 min | 1744 mWh |
+| Translator mode | Runtime | Energy | Average power | Energy / day |
+| --- | --- | --- | --- | --- |
+| Bridge | 2 h 38 min | 3640 mWh | 1382 mW | 33.17 Wh/day |
+| Forward | 1 h 43 min | 1744 mWh | 1016 mW | 24.38 Wh/day |
+| Standby | 2 h 14 min | 1219 mWh | 546 mW | 13.10 Wh/day |
+
+Daily values are linear extrapolations from each measured runtime/energy pair.
 
 ## Raw Data
 
