@@ -164,10 +164,33 @@ def tex_delta(text: str, value_scale: float = 1.0) -> str:
     return escaped
 
 
-def display_metric_and_scale(metric: str) -> tuple[str, float]:
+def display_metric_details(metric: str) -> tuple[str, float, str]:
     if metric.endswith("(us)"):
-        return metric[:-4].rstrip() + " (ms)", 0.001
-    return metric, 1.0
+        return metric[:-4].rstrip() + " (ms)", 0.001, "ms"
+    units = {
+        "Complete exchanges/s": "exchanges/s",
+        "Cycles/s": "cycles/s",
+        "Frames/s": "frames/s",
+    }
+    return metric, 1.0, units.get(metric, "")
+
+
+def display_metric_and_scale(metric: str) -> tuple[str, float]:
+    display_metric, value_scale, _unit = display_metric_details(metric)
+    return display_metric, value_scale
+
+
+def format_metric_delta_text(text: str, metric: str) -> str:
+    _display_metric, value_scale, unit = display_metric_details(metric)
+    parsed = parse_delta(text)
+    if parsed is None:
+        return text
+    delta, percent = parsed
+    unit_text = f" {unit}" if unit else ""
+    return (
+        f"{format_number(delta * value_scale, signed=True)}{unit_text} "
+        f"({format_number(percent, signed=True)}%)"
+    )
 
 
 def topology_for_capture(capture: str) -> str:
@@ -281,35 +304,40 @@ def percent_from_delta(text: str) -> float | None:
 
 def make_observations(three_mode: list[dict[str, str]]) -> list[str]:
     observations = []
-    row = find_row(three_mode, "Anenji Pylon RS485 JKBMS", "Req->Rsp avg (us)")
+    metric = "Req->Rsp avg (us)"
+    row = find_row(three_mode, "Anenji Pylon RS485 JKBMS", metric)
     if row:
         observations.append(
             "Anenji Pylon RS485 JKBMS shows the clearest RS485 latency change: "
-            f"Direct cable is {format_delta_text(row['direct_vs_bridge'])} "
-            "versus Bridge for request-to-response average."
+            f"Direct cable is {format_metric_delta_text(row['direct_vs_bridge'], metric)} "
+            "versus Bridge for average request-to-response latency."
         )
 
-    row = find_row(three_mode, "Growatt RS485 JKBMS", "Full exchange P95 (us)")
+    metric = "Full exchange P95 (us)"
+    row = find_row(three_mode, "Growatt RS485 JKBMS", metric)
     if row:
         observations.append(
             "Growatt RS485 JKBMS has a much longer Direct cable tail latency: "
-            f"Direct cable is {format_delta_text(row['direct_vs_bridge'])} "
-            "versus Bridge for full-exchange P95."
+            f"Direct cable is {format_metric_delta_text(row['direct_vs_bridge'], metric)} "
+            "versus Bridge for full-exchange P95 latency."
         )
 
-    row = find_row(three_mode, "Growatt CAN SeplosBMS", "Cycle avg (us)")
+    metric = "Cycle avg (us)"
+    row = find_row(three_mode, "Growatt CAN SeplosBMS", metric)
     if row:
         observations.append(
             "Growatt CAN SeplosBMS cycles are shorter in Direct cable mode: "
-            f"Direct cable is {format_delta_text(row['direct_vs_bridge'])} "
-            "versus Bridge for cycle average."
+            f"Direct cable is {format_metric_delta_text(row['direct_vs_bridge'], metric)} "
+            "versus Bridge for average CAN cycle duration."
         )
 
-    row = find_row(three_mode, "Growatt CAN JKBMS", "Frames/s")
+    metric = "Frames/s"
+    row = find_row(three_mode, "Growatt CAN JKBMS", metric)
     if row:
         observations.append(
             "Growatt CAN JKBMS frame rate stays effectively flat across modes: "
-            f"Direct cable is {format_delta_text(row['direct_vs_bridge'])} versus Bridge."
+            f"Direct cable is {format_metric_delta_text(row['direct_vs_bridge'], metric)} "
+            "versus Bridge."
         )
     return observations
 
