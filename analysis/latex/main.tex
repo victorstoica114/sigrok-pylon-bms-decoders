@@ -422,7 +422,9 @@ The following tables focus only on groups where all three modes are available: B
 
 \subsection{RS485/UART Three-mode Deltas}
 \scriptsize
-\begin{longtable}{p{3.2cm}p{3.0cm}rrrp{2.6cm}p{2.6cm}p{2.6cm}}
+\begingroup
+\setlength{\tabcolsep}{3pt}
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{5.0cm}>{\raggedright\arraybackslash}p{3.2cm}rrr>{\raggedright\arraybackslash}p{2.8cm}>{\raggedright\arraybackslash}p{2.8cm}>{\raggedright\arraybackslash}p{2.8cm}@{}}
 \toprule
 Group & Metric & Bridge & Forward & Direct & Forward vs Bridge & Direct vs Bridge & Direct vs Forward \\
 \midrule
@@ -439,6 +441,7 @@ Anenji Pylon RS485 JKBMS & Full exchange avg (ms) & 111.16 & 106.95 & 102.92 & \
 Anenji Pylon RS485 JKBMS & Full exchange P95 (ms) & 153.03 & 149.32 & 145.15 & \decrease{-3.71 (-2.4\%)} & \decrease{-7.88 (-5.1\%)} & \decrease{-4.17 (-2.8\%)} \\
 \bottomrule
 \end{longtable}
+\endgroup
 \end{landscape}
 
 
@@ -448,7 +451,9 @@ Anenji Pylon RS485 JKBMS & Full exchange P95 (ms) & 153.03 & 149.32 & 145.15 & \
 
 \subsection{CAN Three-mode Deltas}
 \scriptsize
-\begin{longtable}{p{3.2cm}p{3.0cm}rrrp{2.6cm}p{2.6cm}p{2.6cm}}
+\begingroup
+\setlength{\tabcolsep}{3pt}
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{5.0cm}>{\raggedright\arraybackslash}p{3.2cm}rrr>{\raggedright\arraybackslash}p{2.8cm}>{\raggedright\arraybackslash}p{2.8cm}>{\raggedright\arraybackslash}p{2.8cm}@{}}
 \toprule
 Group & Metric & Bridge & Forward & Direct & Forward vs Bridge & Direct vs Bridge & Direct vs Forward \\
 \midrule
@@ -471,6 +476,7 @@ Growatt CAN SeplosBMS & Inter-cycle gap max (ms) & 165.78 & 165.78 & 168.23 & 0 
 Growatt CAN SeplosBMS & Inter-cycle gap P95 (ms) & 165.78 & 165.78 & 168.23 & 0 (0\%) & \increase{+2.45 (+1.5\%)} & \increase{+2.45 (+1.5\%)} \\
 \bottomrule
 \end{longtable}
+\endgroup
 \end{landscape}
 
 

@@ -574,7 +574,9 @@ def three_mode_table(
 
 \subsection{{{tex_escape(title)}}}
 \scriptsize
-\begin{{longtable}}{{p{{3.2cm}}p{{3.0cm}}rrrp{{2.6cm}}p{{2.6cm}}p{{2.6cm}}}}
+\begingroup
+\setlength{{\tabcolsep}}{{3pt}}
+\begin{{longtable}}{{@{{}}>{{\raggedright\arraybackslash}}p{{5.0cm}}>{{\raggedright\arraybackslash}}p{{3.2cm}}rrr>{{\raggedright\arraybackslash}}p{{2.8cm}}>{{\raggedright\arraybackslash}}p{{2.8cm}}>{{\raggedright\arraybackslash}}p{{2.8cm}}@{{}}}}
 \toprule
 Group & Metric & Bridge & Forward & Direct & Forward vs Bridge & Direct vs Bridge & Direct vs Forward \\
 \midrule
@@ -582,6 +584,7 @@ Group & Metric & Bridge & Forward & Direct & Forward vs Bridge & Direct vs Bridg
 {chr(10).join(body)}
 \bottomrule
 \end{{longtable}}
+\endgroup
 \end{{landscape}}
 """
 
