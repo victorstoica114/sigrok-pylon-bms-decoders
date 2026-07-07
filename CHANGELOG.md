@@ -72,6 +72,7 @@
 - README project title now uses the broader `Sigrok BMS Protocol Decoders` name.
 - `examples/README.md` now links the Bridge and Forward capture modes to the protocol translator hardware repository.
 - `examples/README.md` now includes the Forward-mode translator power-use measurement.
+- LaTeX analysis report now uses the broader project title, a wider Direct-vs-Bridge column, and compact numeric formatting.
 - Active decoder set is currently limited to validated decoders: `China Tower Modbus`, `Daly RS485`, `Deye CAN`, `GoodWe CAN`, `Growatt CAN`, `Growatt RS485`, `JKBMS CAN`, `JKBMS Modbus`, `PACE Modbus`, `Pylon CAN`, `Pylon RS485`, `SMA CAN`, `Sofar CAN`, `Victron CAN`, `Voltronic Modbus`, and `WOW Modbus`.
 - Updated bridge-mode example capture and PulseView session for Growatt CAN traffic with a JKBMS test topology.
 - Updated bridge-mode example capture and PulseView session for Growatt CAN traffic with a SeplosBMS test topology.

@@ -38,10 +38,10 @@
   colorlinks=true,
   linkcolor=accent,
   urlcolor=bridge,
-  pdftitle={sigrok Pylon BMS Decoder Capture Analysis},
+  pdftitle={Sigrok BMS Protocol Decoder Capture Analysis},
 }
 
-\title{sigrok Pylon BMS Decoder Capture Analysis}
+\title{Sigrok BMS Protocol Decoder Capture Analysis}
 \author{Generated from offline sigrok/PulseView analysis outputs}
 \date{}
 
@@ -59,10 +59,10 @@
 
 \begin{tcolorbox}[colback=panel,colframe=accent,title=Key observations]
 \begin{itemize}[leftmargin=*]
-\item Anenji Pylon RS485 JKBMS shows the clearest RS485 latency change: Direct cable is -4581.729 (-47.2\%) versus Bridge for request-to-response average.
-\item Growatt RS485 JKBMS has a much longer Direct cable tail latency: Direct cable is +21480.838 (+40.1\%) versus Bridge for full-exchange P95.
-\item Growatt CAN SeplosBMS cycles are shorter in Direct cable mode: Direct cable is -164247.782 (-19.3\%) versus Bridge for cycle average.
-\item Growatt CAN JKBMS frame rate stays effectively flat across modes: Direct cable is +0.100 (+0.2\%) versus Bridge.
+\item Anenji Pylon RS485 JKBMS shows the clearest RS485 latency change: Direct cable is -4581.73 (-47.2\%) versus Bridge for request-to-response average.
+\item Growatt RS485 JKBMS has a much longer Direct cable tail latency: Direct cable is +21480.84 (+40.1\%) versus Bridge for full-exchange P95.
+\item Growatt CAN SeplosBMS cycles are shorter in Direct cable mode: Direct cable is -164247.78 (-19.3\%) versus Bridge for cycle average.
+\item Growatt CAN JKBMS frame rate stays effectively flat across modes: Direct cable is +0.1 (+0.2\%) versus Bridge.
 \end{itemize}
 \end{tcolorbox}
 
@@ -70,18 +70,18 @@
 \begin{table}[htbp]
 \centering
 \caption{Largest Direct cable versus Bridge changes by absolute percentage.}
-\begin{tabular}{p{4.4cm}p{4.1cm}p{3.2cm}r}
+\begin{tabularx}{\textwidth}{p{3.8cm}p{3.2cm}>{\raggedright\arraybackslash}Xr}
 \toprule
 Group & Metric & Direct vs Bridge & Abs. change \\
 \midrule
-Growatt CAN JKBMS & Cycles/s & \increase{+0.100 (+100.0\%)} & 100.0\% \\
-Growatt CAN JKBMS & Cycle min (us) & \decrease{-5000467.180 (-50.1\%)} & 50.1\% \\
-Growatt CAN JKBMS & Cycle avg (us) & \decrease{-5000467.180 (-50.1\%)} & 50.1\% \\
-Growatt CAN JKBMS & Cycle max (us) & \decrease{-5000467.180 (-50.1\%)} & 50.1\% \\
-Growatt CAN JKBMS & Cycle P95 (us) & \decrease{-5000467.180 (-50.1\%)} & 50.1\% \\
-Growatt CAN SeplosBMS & Cycle min (us) & \decrease{-121301.900 (-48.3\%)} & 48.3\% \\
+Growatt CAN JKBMS & Cycles/s & \increase{+0.1 (+100\%)} & 100\% \\
+Growatt CAN JKBMS & Cycle min (us) & \decrease{-5000467.18 (-50.1\%)} & 50.1\% \\
+Growatt CAN JKBMS & Cycle avg (us) & \decrease{-5000467.18 (-50.1\%)} & 50.1\% \\
+Growatt CAN JKBMS & Cycle max (us) & \decrease{-5000467.18 (-50.1\%)} & 50.1\% \\
+Growatt CAN JKBMS & Cycle P95 (us) & \decrease{-5000467.18 (-50.1\%)} & 50.1\% \\
+Growatt CAN SeplosBMS & Cycle min (us) & \decrease{-121301.9 (-48.3\%)} & 48.3\% \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 
@@ -419,16 +419,16 @@ The following tables focus only on groups where all three modes are available: B
 Group & Metric & Bridge & Forward & Direct & Forward vs Bridge & Direct vs Bridge & Direct vs Forward \\
 \midrule
 \endhead
-Growatt RS485 JKBMS & Complete exchanges/s & 2.500 & 2.500 & 2.000 & \increase{+0.000 (+0.0\%)} & \decrease{-0.500 (-20.0\%)} & \decrease{-0.500 (-20.0\%)} \\
-Growatt RS485 JKBMS & Req->Rsp avg (us) & 4759.997 & 5008.099 & 5126.758 & \increase{+248.102 (+5.2\%)} & \increase{+366.761 (+7.7\%)} & \increase{+118.659 (+2.4\%)} \\
-Growatt RS485 JKBMS & Req->Rsp P95 (us) & 5294.317 & 5293.782 & 5438.647 & \decrease{-0.535 (-0.0\%)} & \increase{+144.330 (+2.7\%)} & \increase{+144.865 (+2.7\%)} \\
-Growatt RS485 JKBMS & Full exchange avg (us) & 49094.793 & 48926.211 & 59337.414 & \decrease{-168.582 (-0.3\%)} & \increase{+10242.621 (+20.9\%)} & \increase{+10411.203 (+21.3\%)} \\
-Growatt RS485 JKBMS & Full exchange P95 (us) & 53520.070 & 53484.774 & 75000.908 & \decrease{-35.296 (-0.1\%)} & \increase{+21480.838 (+40.1\%)} & \increase{+21516.134 (+40.2\%)} \\
-Anenji Pylon RS485 JKBMS & Complete exchanges/s & 0.800 & 0.800 & 0.800 & \decrease{-0.000 (-0.0\%)} & \decrease{-0.000 (-0.0\%)} & \increase{+0.000 (+0.0\%)} \\
-Anenji Pylon RS485 JKBMS & Req->Rsp avg (us) & 9706.670 & 5488.619 & 5124.941 & \decrease{-4218.051 (-43.5\%)} & \decrease{-4581.729 (-47.2\%)} & \decrease{-363.678 (-6.6\%)} \\
-Anenji Pylon RS485 JKBMS & Req->Rsp P95 (us) & 9912.793 & 6190.079 & 5692.958 & \decrease{-3722.714 (-37.6\%)} & \decrease{-4219.835 (-42.6\%)} & \decrease{-497.121 (-8.0\%)} \\
-Anenji Pylon RS485 JKBMS & Full exchange avg (us) & 111164.319 & 106950.364 & 102917.894 & \decrease{-4213.955 (-3.8\%)} & \decrease{-8246.425 (-7.4\%)} & \decrease{-4032.470 (-3.8\%)} \\
-Anenji Pylon RS485 JKBMS & Full exchange P95 (us) & 153034.215 & 149320.428 & 145154.533 & \decrease{-3713.787 (-2.4\%)} & \decrease{-7879.682 (-5.1\%)} & \decrease{-4165.895 (-2.8\%)} \\
+Growatt RS485 JKBMS & Complete exchanges/s & 2.5 & 2.5 & 2 & 0 (0\%) & \decrease{-0.5 (-20\%)} & \decrease{-0.5 (-20\%)} \\
+Growatt RS485 JKBMS & Req->Rsp avg (us) & 4760 & 5008.1 & 5126.76 & \increase{+248.1 (+5.2\%)} & \increase{+366.76 (+7.7\%)} & \increase{+118.66 (+2.4\%)} \\
+Growatt RS485 JKBMS & Req->Rsp P95 (us) & 5294.32 & 5293.78 & 5438.65 & \decrease{-0.54 (0\%)} & \increase{+144.33 (+2.7\%)} & \increase{+144.87 (+2.7\%)} \\
+Growatt RS485 JKBMS & Full exchange avg (us) & 49094.79 & 48926.21 & 59337.41 & \decrease{-168.58 (-0.3\%)} & \increase{+10242.62 (+20.9\%)} & \increase{+10411.2 (+21.3\%)} \\
+Growatt RS485 JKBMS & Full exchange P95 (us) & 53520.07 & 53484.77 & 75000.91 & \decrease{-35.3 (-0.1\%)} & \increase{+21480.84 (+40.1\%)} & \increase{+21516.13 (+40.2\%)} \\
+Anenji Pylon RS485 JKBMS & Complete exchanges/s & 0.8 & 0.8 & 0.8 & 0 (0\%) & 0 (0\%) & 0 (0\%) \\
+Anenji Pylon RS485 JKBMS & Req->Rsp avg (us) & 9706.67 & 5488.62 & 5124.94 & \decrease{-4218.05 (-43.5\%)} & \decrease{-4581.73 (-47.2\%)} & \decrease{-363.68 (-6.6\%)} \\
+Anenji Pylon RS485 JKBMS & Req->Rsp P95 (us) & 9912.79 & 6190.08 & 5692.96 & \decrease{-3722.71 (-37.6\%)} & \decrease{-4219.84 (-42.6\%)} & \decrease{-497.12 (-8\%)} \\
+Anenji Pylon RS485 JKBMS & Full exchange avg (us) & 111164.32 & 106950.36 & 102917.89 & \decrease{-4213.95 (-3.8\%)} & \decrease{-8246.42 (-7.4\%)} & \decrease{-4032.47 (-3.8\%)} \\
+Anenji Pylon RS485 JKBMS & Full exchange P95 (us) & 153034.21 & 149320.43 & 145154.53 & \decrease{-3713.79 (-2.4\%)} & \decrease{-7879.68 (-5.1\%)} & \decrease{-4165.9 (-2.8\%)} \\
 \bottomrule
 \end{longtable}
 \end{landscape}
@@ -445,22 +445,22 @@ Anenji Pylon RS485 JKBMS & Full exchange P95 (us) & 153034.215 & 149320.428 & 14
 Group & Metric & Bridge & Forward & Direct & Forward vs Bridge & Direct vs Bridge & Direct vs Forward \\
 \midrule
 \endhead
-Growatt CAN JKBMS & Frames/s & 51.900 & 52.000 & 52.000 & \increase{+0.100 (+0.2\%)} & \increase{+0.100 (+0.2\%)} & \increase{+0.000 (+0.0\%)} \\
-Growatt CAN JKBMS & Cycles/s & 0.100 & 0.100 & 0.200 & \increase{+0.000 (+0.0\%)} & \increase{+0.100 (+100.0\%)} & \increase{+0.100 (+100.0\%)} \\
-Growatt CAN JKBMS & Cycle min (us) & 9980699.265 & 9980680.500 & 4980232.085 & \decrease{-18.765 (-0.0\%)} & \decrease{-5000467.180 (-50.1\%)} & \decrease{-5000448.415 (-50.1\%)} \\
-Growatt CAN JKBMS & Cycle avg (us) & 9980699.265 & 9980680.500 & 4980232.085 & \decrease{-18.765 (-0.0\%)} & \decrease{-5000467.180 (-50.1\%)} & \decrease{-5000448.415 (-50.1\%)} \\
-Growatt CAN JKBMS & Cycle max (us) & 9980699.265 & 9980680.500 & 4980232.085 & \decrease{-18.765 (-0.0\%)} & \decrease{-5000467.180 (-50.1\%)} & \decrease{-5000448.415 (-50.1\%)} \\
-Growatt CAN JKBMS & Cycle P95 (us) & 9980699.265 & 9980680.500 & 4980232.085 & \decrease{-18.765 (-0.0\%)} & \decrease{-5000467.180 (-50.1\%)} & \decrease{-5000448.415 (-50.1\%)} \\
-Growatt CAN SeplosBMS & Frames/s & 13.000 & 12.900 & 13.000 & \decrease{-0.100 (-0.8\%)} & \increase{+0.000 (+0.0\%)} & \increase{+0.100 (+0.8\%)} \\
-Growatt CAN SeplosBMS & Cycles/s & 1.000 & 1.100 & 1.200 & \increase{+0.100 (+10.0\%)} & \increase{+0.200 (+20.0\%)} & \increase{+0.100 (+9.1\%)} \\
-Growatt CAN SeplosBMS & Cycle min (us) & 251234.865 & 85691.125 & 129932.965 & \decrease{-165543.740 (-65.9\%)} & \decrease{-121301.900 (-48.3\%)} & \increase{+44241.840 (+51.6\%)} \\
-Growatt CAN SeplosBMS & Cycle avg (us) & 851373.724 & 755942.000 & 687125.942 & \decrease{-95431.724 (-11.2\%)} & \decrease{-164247.782 (-19.3\%)} & \decrease{-68816.058 (-9.1\%)} \\
-Growatt CAN SeplosBMS & Cycle max (us) & 1496223.985 & 871814.905 & 831769.225 & \decrease{-624409.080 (-41.7\%)} & \decrease{-664454.760 (-44.4\%)} & \decrease{-40045.680 (-4.6\%)} \\
-Growatt CAN SeplosBMS & Cycle P95 (us) & 1221318.481 & 861952.157 & 831768.787 & \decrease{-359366.324 (-29.4\%)} & \decrease{-389549.694 (-31.9\%)} & \decrease{-30183.370 (-3.5\%)} \\
-Growatt CAN SeplosBMS & Inter-cycle gap min (us) & 114668.755 & 128174.720 & 168225.685 & \increase{+13505.965 (+11.8\%)} & \increase{+53556.930 (+46.7\%)} & \increase{+40050.965 (+31.2\%)} \\
-Growatt CAN SeplosBMS & Inter-cycle gap avg (us) & 155493.468 & 160226.810 & 168228.483 & \increase{+4733.342 (+3.0\%)} & \increase{+12735.015 (+8.2\%)} & \increase{+8001.673 (+5.0\%)} \\
-Growatt CAN SeplosBMS & Inter-cycle gap max (us) & 165777.835 & 165777.835 & 168229.680 & \increase{+0.000 (+0.0\%)} & \increase{+2451.845 (+1.5\%)} & \increase{+2451.845 (+1.5\%)} \\
-Growatt CAN SeplosBMS & Inter-cycle gap P95 (us) & 165776.235 & 165777.835 & 168229.680 & \increase{+1.600 (+0.0\%)} & \increase{+2453.445 (+1.5\%)} & \increase{+2451.845 (+1.5\%)} \\
+Growatt CAN JKBMS & Frames/s & 51.9 & 52 & 52 & \increase{+0.1 (+0.2\%)} & \increase{+0.1 (+0.2\%)} & 0 (0\%) \\
+Growatt CAN JKBMS & Cycles/s & 0.1 & 0.1 & 0.2 & 0 (0\%) & \increase{+0.1 (+100\%)} & \increase{+0.1 (+100\%)} \\
+Growatt CAN JKBMS & Cycle min (us) & 9980699.27 & 9980680.5 & 4980232.08 & \decrease{-18.77 (0\%)} & \decrease{-5000467.18 (-50.1\%)} & \decrease{-5000448.42 (-50.1\%)} \\
+Growatt CAN JKBMS & Cycle avg (us) & 9980699.27 & 9980680.5 & 4980232.08 & \decrease{-18.77 (0\%)} & \decrease{-5000467.18 (-50.1\%)} & \decrease{-5000448.42 (-50.1\%)} \\
+Growatt CAN JKBMS & Cycle max (us) & 9980699.27 & 9980680.5 & 4980232.08 & \decrease{-18.77 (0\%)} & \decrease{-5000467.18 (-50.1\%)} & \decrease{-5000448.42 (-50.1\%)} \\
+Growatt CAN JKBMS & Cycle P95 (us) & 9980699.27 & 9980680.5 & 4980232.08 & \decrease{-18.77 (0\%)} & \decrease{-5000467.18 (-50.1\%)} & \decrease{-5000448.42 (-50.1\%)} \\
+Growatt CAN SeplosBMS & Frames/s & 13 & 12.9 & 13 & \decrease{-0.1 (-0.8\%)} & 0 (0\%) & \increase{+0.1 (+0.8\%)} \\
+Growatt CAN SeplosBMS & Cycles/s & 1 & 1.1 & 1.2 & \increase{+0.1 (+10\%)} & \increase{+0.2 (+20\%)} & \increase{+0.1 (+9.1\%)} \\
+Growatt CAN SeplosBMS & Cycle min (us) & 251234.86 & 85691.12 & 129932.96 & \decrease{-165543.74 (-65.9\%)} & \decrease{-121301.9 (-48.3\%)} & \increase{+44241.84 (+51.6\%)} \\
+Growatt CAN SeplosBMS & Cycle avg (us) & 851373.72 & 755942 & 687125.94 & \decrease{-95431.72 (-11.2\%)} & \decrease{-164247.78 (-19.3\%)} & \decrease{-68816.06 (-9.1\%)} \\
+Growatt CAN SeplosBMS & Cycle max (us) & 1496223.99 & 871814.91 & 831769.22 & \decrease{-624409.08 (-41.7\%)} & \decrease{-664454.76 (-44.4\%)} & \decrease{-40045.68 (-4.6\%)} \\
+Growatt CAN SeplosBMS & Cycle P95 (us) & 1221318.48 & 861952.16 & 831768.79 & \decrease{-359366.32 (-29.4\%)} & \decrease{-389549.69 (-31.9\%)} & \decrease{-30183.37 (-3.5\%)} \\
+Growatt CAN SeplosBMS & Inter-cycle gap min (us) & 114668.76 & 128174.72 & 168225.68 & \increase{+13505.97 (+11.8\%)} & \increase{+53556.93 (+46.7\%)} & \increase{+40050.96 (+31.2\%)} \\
+Growatt CAN SeplosBMS & Inter-cycle gap avg (us) & 155493.47 & 160226.81 & 168228.48 & \increase{+4733.34 (+3\%)} & \increase{+12735.01 (+8.2\%)} & \increase{+8001.67 (+5\%)} \\
+Growatt CAN SeplosBMS & Inter-cycle gap max (us) & 165777.83 & 165777.83 & 168229.68 & 0 (0\%) & \increase{+2451.84 (+1.5\%)} & \increase{+2451.84 (+1.5\%)} \\
+Growatt CAN SeplosBMS & Inter-cycle gap P95 (us) & 165776.23 & 165777.83 & 168229.68 & \increase{+1.6 (0\%)} & \increase{+2453.45 (+1.5\%)} & \increase{+2451.84 (+1.5\%)} \\
 \bottomrule
 \end{longtable}
 \end{landscape}
@@ -479,23 +479,23 @@ Growatt CAN SeplosBMS & Inter-cycle gap P95 (us) & 165776.235 & 165777.835 & 168
 Target & Topology & Frames & Complete & Incomplete & Req->Rsp avg (us) & Req->Rsp P95 (us) & Full P95 (us) \\
 \midrule
 \endhead
-china tower modbus & Bridge & 79 & 39 & 1 & 5015.035 & 5337.927 & 53525.724 \\
-daly rs485 & Bridge & 88 & 44 & 0 & 14458.976 & 18060.297 & 297646.802 \\
-growatt rs485 & Bridge & 50 & 25 & 0 & 4759.997 & 5294.317 & 53520.070 \\
-growatt seplos rs485 & Bridge & 49 & 24 & 1 & 49517.093 & 49863.536 & 97806.109 \\
-direct growatt rs485 & Direct cable & 100 & 50 & 0 & 5126.758 & 5438.647 & 75000.908 \\
-forward growatt rs485 & Bridge Forward & 50 & 25 & 0 & 5008.099 & 5293.782 & 53484.774 \\
-forward growatt seplos rs485 & Bridge Forward & 49 & 24 & 1 & 49604.182 & 50490.317 & 97846.399 \\
-jkbms modbus & Bridge & 78 & 39 & 0 & 4903.504 & 5191.553 & 13115.590 \\
-pace modbus & Bridge & 79 & 39 & 1 & 4987.736 & 5260.878 & 66064.784 \\
-pylon rs485 & Bridge & 49 & 18 & 5 & 4817.499 & 5537.460 & 148667.742 \\
-anenji pylon rs485 & Bridge & 20 & 8 & 4 & 9706.670 & 9912.793 & 153034.215 \\
-direct anenji jkbms pylon rs485 & Direct cable & 61 & 20 & 21 & 5124.941 & 5692.958 & 145154.533 \\
-direct anenji seplos pylon rs485 & Direct cable & 50 & 20 & 10 & 9887.208 & 12043.433 & 151498.699 \\
-forward anenji pylon rs485 & Bridge Forward & 24 & 8 & 8 & 5488.619 & 6190.079 & 149320.428 \\
-forward anenji seplos pylon rs485 & Bridge Forward & 20 & 8 & 4 & 9469.731 & 9877.579 & 153001.644 \\
-voltronic modbus & Bridge & 78 & 39 & 0 & 99796.750 & 101837.191 & 119962.102 \\
-wow modbus & Bridge & 78 & 39 & 0 & 4799.126 & 5093.604 & 65808.754 \\
+china tower modbus & Bridge & 79 & 39 & 1 & 5015.03 & 5337.93 & 53525.72 \\
+daly rs485 & Bridge & 88 & 44 & 0 & 14458.98 & 18060.3 & 297646.8 \\
+growatt rs485 & Bridge & 50 & 25 & 0 & 4760 & 5294.32 & 53520.07 \\
+growatt seplos rs485 & Bridge & 49 & 24 & 1 & 49517.09 & 49863.54 & 97806.11 \\
+direct growatt rs485 & Direct cable & 100 & 50 & 0 & 5126.76 & 5438.65 & 75000.91 \\
+forward growatt rs485 & Bridge Forward & 50 & 25 & 0 & 5008.1 & 5293.78 & 53484.77 \\
+forward growatt seplos rs485 & Bridge Forward & 49 & 24 & 1 & 49604.18 & 50490.32 & 97846.4 \\
+jkbms modbus & Bridge & 78 & 39 & 0 & 4903.5 & 5191.55 & 13115.59 \\
+pace modbus & Bridge & 79 & 39 & 1 & 4987.74 & 5260.88 & 66064.78 \\
+pylon rs485 & Bridge & 49 & 18 & 5 & 4817.5 & 5537.46 & 148667.74 \\
+anenji pylon rs485 & Bridge & 20 & 8 & 4 & 9706.67 & 9912.79 & 153034.21 \\
+direct anenji jkbms pylon rs485 & Direct cable & 61 & 20 & 21 & 5124.94 & 5692.96 & 145154.53 \\
+direct anenji seplos pylon rs485 & Direct cable & 50 & 20 & 10 & 9887.21 & 12043.43 & 151498.7 \\
+forward anenji pylon rs485 & Bridge Forward & 24 & 8 & 8 & 5488.62 & 6190.08 & 149320.43 \\
+forward anenji seplos pylon rs485 & Bridge Forward & 20 & 8 & 4 & 9469.73 & 9877.58 & 153001.64 \\
+voltronic modbus & Bridge & 78 & 39 & 0 & 99796.75 & 101837.19 & 119962.1 \\
+wow modbus & Bridge & 78 & 39 & 0 & 4799.13 & 5093.6 & 65808.75 \\
 \bottomrule
 \end{longtable}
 \normalsize
@@ -513,19 +513,19 @@ wow modbus & Bridge & 78 & 39 & 0 & 4799.126 & 5093.604 & 65808.754 \\
 Target & Topology & Frames & IDs & Cycles & Cycle min (us) & Cycle avg (us) & Cycle max (us) & Cycle P95 (us) & Errors \\
 \midrule
 \endhead
-deye can & Bridge & 100 & 8 & 9 & 599848.765 & 1011013.334 & 1599872.420 & 1599871.234 & 0 \\
-goodwe can & Bridge & 100 & 8 & 4 & 300245.895 & 2399973.046 & 7100062.150 & 6275024.243 & 0 \\
-growatt can & Bridge & 519 & 10 & 1 & 9980699.265 & 9980699.265 & 9980699.265 & 9980699.265 & 0 \\
-growatt seplos can & Bridge & 130 & 12 & 10 & 251234.865 & 851373.724 & 1496223.985 & 1221318.481 & 0 \\
-direct growatt can & Direct cable & 260 & 10 & 1 & 4980232.085 & 4980232.085 & 4980232.085 & 4980232.085 & 0 \\
-direct growatt seplos can & Direct cable & 65 & 12 & 6 & 129932.965 & 687125.942 & 831769.225 & 831768.787 & 0 \\
-forward growatt can & Bridge Forward & 520 & 10 & 1 & 9980680.500 & 9980680.500 & 9980680.500 & 9980680.500 & 0 \\
-forward growatt seplos can & Bridge Forward & 129 & 12 & 11 & 85691.125 & 755942.000 & 871814.905 & 861952.157 & 0 \\
-jkbms can & Bridge & 344 & 12 & 1 & 9907992.715 & 9907992.715 & 9907992.715 & 9907992.715 & 0 \\
-pylon can & Bridge & 100 & 8 & 5 & 900275.935 & 1900011.264 & 2299947.265 & 2299945.203 & 0 \\
-sma can & Bridge & 60 & 6 & 60 & 219.400 & 230.733 & 237.400 & 237.400 & 0 \\
-sofar can & Bridge & 148 & 6 & 148 & 219.400 & 228.765 & 237.400 & 237.400 & 0 \\
-victron can & Bridge & 250 & 19 & 1 & 9960725.835 & 9960725.835 & 9960725.835 & 9960725.835 & 0 \\
+deye can & Bridge & 100 & 8 & 9 & 599848.77 & 1011013.33 & 1599872.42 & 1599871.23 & 0 \\
+goodwe can & Bridge & 100 & 8 & 4 & 300245.9 & 2399973.05 & 7100062.15 & 6275024.24 & 0 \\
+growatt can & Bridge & 519 & 10 & 1 & 9980699.27 & 9980699.27 & 9980699.27 & 9980699.27 & 0 \\
+growatt seplos can & Bridge & 130 & 12 & 10 & 251234.86 & 851373.72 & 1496223.99 & 1221318.48 & 0 \\
+direct growatt can & Direct cable & 260 & 10 & 1 & 4980232.08 & 4980232.08 & 4980232.08 & 4980232.08 & 0 \\
+direct growatt seplos can & Direct cable & 65 & 12 & 6 & 129932.96 & 687125.94 & 831769.22 & 831768.79 & 0 \\
+forward growatt can & Bridge Forward & 520 & 10 & 1 & 9980680.5 & 9980680.5 & 9980680.5 & 9980680.5 & 0 \\
+forward growatt seplos can & Bridge Forward & 129 & 12 & 11 & 85691.12 & 755942 & 871814.91 & 861952.16 & 0 \\
+jkbms can & Bridge & 344 & 12 & 1 & 9907992.71 & 9907992.71 & 9907992.71 & 9907992.71 & 0 \\
+pylon can & Bridge & 100 & 8 & 5 & 900275.94 & 1900011.26 & 2299947.27 & 2299945.2 & 0 \\
+sma can & Bridge & 60 & 6 & 60 & 219.4 & 230.73 & 237.4 & 237.4 & 0 \\
+sofar can & Bridge & 148 & 6 & 148 & 219.4 & 228.76 & 237.4 & 237.4 & 0 \\
+victron can & Bridge & 250 & 19 & 1 & 9960725.84 & 9960725.84 & 9960725.84 & 9960725.84 & 0 \\
 \bottomrule
 \end{longtable}
 \normalsize

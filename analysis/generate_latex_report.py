@@ -62,6 +62,9 @@ GROUP_LABELS = {
     "victron_can": "Victron CAN",
 }
 
+REPORT_TITLE = "Sigrok BMS Protocol Decoder Capture Analysis"
+
+DELTA_RE = re.compile(r"^\s*([-+]?\d+(?:\.\d+)?)\s+\(([-+]?\d+(?:\.\d+)?)%\)\s*$")
 DELTA_PERCENT_RE = re.compile(r"\(([-+]\d+(?:\.\d+)?)%\)")
 
 
@@ -87,11 +90,53 @@ def tex_escape(text: object) -> str:
     return "".join(replacements.get(char, char) for char in value)
 
 
-def tex_num(text: str, decimals: int = 3) -> str:
+def format_number(value: float, max_decimals: int = 2, signed: bool = False) -> str:
+    rounded = round(float(value), max_decimals)
+    if rounded == 0:
+        return "0"
+
+    magnitude = abs(rounded) if signed else rounded
+    text = f"{magnitude:.{max_decimals}f}".rstrip("0").rstrip(".")
+    if signed:
+        return ("+" if rounded > 0 else "-") + text
+    return text
+
+
+def parse_delta(text: str) -> tuple[float, float] | None:
+    match = DELTA_RE.match(text)
+    if not match:
+        return None
+    return float(match.group(1)), float(match.group(2))
+
+
+def format_delta_text(text: str) -> str:
+    parsed = parse_delta(text)
+    if parsed is None:
+        return text
+    delta, percent = parsed
+    return (
+        f"{format_number(delta, signed=True)} "
+        f"({format_number(percent, signed=True)}%)"
+    )
+
+
+def delta_direction(text: str) -> int:
+    parsed = parse_delta(text)
+    if parsed is None:
+        return 0
+    rounded_delta = round(parsed[0], 2)
+    if rounded_delta > 0:
+        return 1
+    if rounded_delta < 0:
+        return -1
+    return 0
+
+
+def tex_num(text: str, decimals: int = 2) -> str:
     if text == "":
         return "--"
     try:
-        return f"{float(text):.{decimals}f}"
+        return format_number(float(text), decimals)
     except ValueError:
         return tex_escape(text)
 
@@ -108,10 +153,12 @@ def tex_int(text: str) -> str:
 def tex_delta(text: str) -> str:
     if not text:
         return "--"
-    escaped = tex_escape(text)
-    if text.startswith("+"):
+    formatted = format_delta_text(text)
+    escaped = tex_escape(formatted)
+    direction = delta_direction(text)
+    if direction > 0:
         return rf"\increase{{{escaped}}}"
-    if text.startswith("-"):
+    if direction < 0:
         return rf"\decrease{{{escaped}}}"
     return escaped
 
@@ -231,28 +278,31 @@ def make_observations(three_mode: list[dict[str, str]]) -> list[str]:
     if row:
         observations.append(
             "Anenji Pylon RS485 JKBMS shows the clearest RS485 latency change: "
-            f"Direct cable is {row['direct_vs_bridge']} versus Bridge for request-to-response average."
+            f"Direct cable is {format_delta_text(row['direct_vs_bridge'])} "
+            "versus Bridge for request-to-response average."
         )
 
     row = find_row(three_mode, "Growatt RS485 JKBMS", "Full exchange P95 (us)")
     if row:
         observations.append(
             "Growatt RS485 JKBMS has a much longer Direct cable tail latency: "
-            f"Direct cable is {row['direct_vs_bridge']} versus Bridge for full-exchange P95."
+            f"Direct cable is {format_delta_text(row['direct_vs_bridge'])} "
+            "versus Bridge for full-exchange P95."
         )
 
     row = find_row(three_mode, "Growatt CAN SeplosBMS", "Cycle avg (us)")
     if row:
         observations.append(
             "Growatt CAN SeplosBMS cycles are shorter in Direct cable mode: "
-            f"Direct cable is {row['direct_vs_bridge']} versus Bridge for cycle average."
+            f"Direct cable is {format_delta_text(row['direct_vs_bridge'])} "
+            "versus Bridge for cycle average."
         )
 
     row = find_row(three_mode, "Growatt CAN JKBMS", "Frames/s")
     if row:
         observations.append(
             "Growatt CAN JKBMS frame rate stays effectively flat across modes: "
-            f"Direct cable is {row['direct_vs_bridge']} versus Bridge."
+            f"Direct cable is {format_delta_text(row['direct_vs_bridge'])} versus Bridge."
         )
     return observations
 
@@ -264,9 +314,10 @@ def top_direct_deltas(three_mode: list[dict[str, str]], limit: int = 6) -> list[
         if pct is None:
             continue
         item = dict(row)
-        item["abs_pct"] = f"{abs(pct):.1f}"
+        item["abs_pct_sort"] = abs(pct)
+        item["abs_pct"] = format_number(abs(pct))
         candidates.append(item)
-    candidates.sort(key=lambda item: float(item["abs_pct"]), reverse=True)
+    candidates.sort(key=lambda item: item["abs_pct_sort"], reverse=True)
     return candidates[:limit]
 
 
@@ -564,13 +615,13 @@ def direct_delta_table(rows: list[dict[str, str]]) -> str:
 \begin{{table}}[htbp]
 \centering
 \caption{{Largest Direct cable versus Bridge changes by absolute percentage.}}
-\begin{{tabular}}{{p{{4.4cm}}p{{4.1cm}}p{{3.2cm}}r}}
+\begin{{tabularx}}{{\textwidth}}{{p{{3.8cm}}p{{3.2cm}}>{{\raggedright\arraybackslash}}Xr}}
 \toprule
 Group & Metric & Direct vs Bridge & Abs. change \\
 \midrule
 {chr(10).join(body)}
 \bottomrule
-\end{{tabular}}
+\end{{tabularx}}
 \end{{table}}
 """
 
@@ -669,10 +720,10 @@ def document(overview: list[dict[str, str]], three_mode: list[dict[str, str]]) -
   colorlinks=true,
   linkcolor=accent,
   urlcolor=bridge,
-  pdftitle={{sigrok Pylon BMS Decoder Capture Analysis}},
+  pdftitle={{{tex_escape(REPORT_TITLE)}}},
 }}
 
-\title{{sigrok Pylon BMS Decoder Capture Analysis}}
+\title{{{tex_escape(REPORT_TITLE)}}}
 \author{{Generated from offline sigrok/PulseView analysis outputs}}
 \date{{}}
 
