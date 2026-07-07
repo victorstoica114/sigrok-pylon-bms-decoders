@@ -317,7 +317,7 @@ def make_observations(three_mode: list[dict[str, str]]) -> list[str]:
     row = find_row(three_mode, "Growatt RS485 JKBMS", metric)
     if row:
         observations.append(
-            "Growatt RS485 JKBMS has a much longer Direct cable tail latency: "
+            "Growatt RS485 JKBMS has slower worst-case exchange timing: "
             f"Direct cable is {format_metric_delta_text(row['direct_vs_bridge'], metric)} "
             "versus Bridge for full-exchange P95 latency."
         )
