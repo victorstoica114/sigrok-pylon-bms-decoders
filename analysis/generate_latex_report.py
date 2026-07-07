@@ -63,6 +63,7 @@ GROUP_LABELS = {
 }
 
 REPORT_TITLE = "Sigrok BMS Protocol Decoder Capture Analysis"
+DIRECT_DELTA_THRESHOLD_PERCENT = 40.0
 
 DELTA_RE = re.compile(r"^\s*([-+]?\d+(?:\.\d+)?)\s+\(([-+]?\d+(?:\.\d+)?)%\)\s*$")
 DELTA_PERCENT_RE = re.compile(r"\(([-+]\d+(?:\.\d+)?)%\)")
@@ -342,18 +343,24 @@ def make_observations(three_mode: list[dict[str, str]]) -> list[str]:
     return observations
 
 
-def top_direct_deltas(three_mode: list[dict[str, str]], limit: int = 6) -> list[dict[str, str]]:
+def significant_direct_deltas(
+    three_mode: list[dict[str, str]],
+    min_abs_pct: float = DIRECT_DELTA_THRESHOLD_PERCENT,
+) -> list[dict[str, str]]:
     candidates = []
     for row in three_mode:
         pct = percent_from_delta(row.get("direct_vs_bridge", ""))
         if pct is None:
             continue
+        abs_pct = abs(pct)
+        if abs_pct < min_abs_pct:
+            continue
         item = dict(row)
-        item["abs_pct_sort"] = abs(pct)
-        item["abs_pct"] = format_number(abs(pct))
+        item["abs_pct_sort"] = abs_pct
+        item["abs_pct"] = format_number(abs_pct)
         candidates.append(item)
     candidates.sort(key=lambda item: item["abs_pct_sort"], reverse=True)
-    return candidates[:limit]
+    return candidates
 
 
 def chart_group_order(rows: list[dict[str, str]]) -> list[str]:
@@ -636,7 +643,7 @@ def overview_table(
 
 def direct_delta_table(rows: list[dict[str, str]]) -> str:
     body = []
-    for row in top_direct_deltas(rows):
+    for row in significant_direct_deltas(rows):
         metric, value_scale = display_metric_and_scale(row["metric"])
         body.append(
             " & ".join([
@@ -647,10 +654,11 @@ def direct_delta_table(rows: list[dict[str, str]]) -> str:
             ])
             + r" \\"
         )
+    threshold_label = format_number(DIRECT_DELTA_THRESHOLD_PERCENT)
     return rf"""
 \begin{{table}}[htbp]
 \centering
-\caption{{Largest Direct cable versus Bridge changes by absolute percentage.}}
+\caption{{Direct cable versus Bridge changes with at least {threshold_label}\% absolute difference.}}
 \begin{{tabular}}{{@{{}}>{{\raggedright\arraybackslash}}p{{5.0cm}}>{{\raggedright\arraybackslash}}p{{2.7cm}}>{{\raggedright\arraybackslash}}p{{3.2cm}}@{{\hspace{{0.25cm}}}}>{{\raggedright\arraybackslash}}p{{2.0cm}}@{{}}}}
 \toprule
 Group & Metric & Direct vs Bridge & Abs. change \\

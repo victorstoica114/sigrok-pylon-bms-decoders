@@ -69,7 +69,7 @@
 
 \begin{table}[htbp]
 \centering
-\caption{Largest Direct cable versus Bridge changes by absolute percentage.}
+\caption{Direct cable versus Bridge changes with at least 40\% absolute difference.}
 \begin{tabular}{@{}>{\raggedright\arraybackslash}p{5.0cm}>{\raggedright\arraybackslash}p{2.7cm}>{\raggedright\arraybackslash}p{3.2cm}@{\hspace{0.25cm}}>{\raggedright\arraybackslash}p{2.0cm}@{}}
 \toprule
 Group & Metric & Direct vs Bridge & Abs. change \\
@@ -80,6 +80,11 @@ Growatt CAN JKBMS & Cycle avg (ms) & \decrease{-5000.47 (-50.1\%)} & 50.1\% \\
 Growatt CAN JKBMS & Cycle max (ms) & \decrease{-5000.47 (-50.1\%)} & 50.1\% \\
 Growatt CAN JKBMS & Cycle P95 (ms) & \decrease{-5000.47 (-50.1\%)} & 50.1\% \\
 Growatt CAN SeplosBMS & Cycle min (ms) & \decrease{-121.3 (-48.3\%)} & 48.3\% \\
+Anenji Pylon RS485 JKBMS & Req->Rsp avg (ms) & \decrease{-4.58 (-47.2\%)} & 47.2\% \\
+Growatt CAN SeplosBMS & Inter-cycle gap min (ms) & \increase{+53.56 (+46.7\%)} & 46.7\% \\
+Growatt CAN SeplosBMS & Cycle max (ms) & \decrease{-664.45 (-44.4\%)} & 44.4\% \\
+Anenji Pylon RS485 JKBMS & Req->Rsp P95 (ms) & \decrease{-4.22 (-42.6\%)} & 42.6\% \\
+Growatt RS485 JKBMS & Full exchange P95 (ms) & \increase{+21.48 (+40.1\%)} & 40.1\% \\
 \bottomrule
 \end{tabular}
 \end{table}
