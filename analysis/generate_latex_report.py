@@ -659,13 +659,16 @@ def direct_delta_table(rows: list[dict[str, str]]) -> str:
 \begin{{table}}[htbp]
 \centering
 \caption{{Direct cable versus Bridge changes with at least {threshold_label}\% absolute difference.}}
-\begin{{tabular}}{{@{{}}>{{\raggedright\arraybackslash}}p{{5.0cm}}>{{\raggedright\arraybackslash}}p{{2.7cm}}>{{\raggedright\arraybackslash}}p{{3.2cm}}@{{\hspace{{0.25cm}}}}>{{\raggedright\arraybackslash}}p{{2.0cm}}@{{}}}}
+\begingroup
+\setlength{{\tabcolsep}}{{3pt}}
+\begin{{tabular}}{{@{{}}>{{\raggedright\arraybackslash}}p{{5.0cm}}>{{\raggedright\arraybackslash}}p{{4.2cm}}>{{\raggedright\arraybackslash}}p{{3.2cm}}@{{\hspace{{0.15cm}}}}>{{\raggedright\arraybackslash}}p{{2.2cm}}@{{}}}}
 \toprule
 Group & Metric & Direct vs Bridge & Abs. change \\
 \midrule
 {chr(10).join(body)}
 \bottomrule
 \end{{tabular}}
+\endgroup
 \end{{table}}
 """
 

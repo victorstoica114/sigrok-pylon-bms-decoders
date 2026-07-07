@@ -70,7 +70,9 @@
 \begin{table}[htbp]
 \centering
 \caption{Direct cable versus Bridge changes with at least 40\% absolute difference.}
-\begin{tabular}{@{}>{\raggedright\arraybackslash}p{5.0cm}>{\raggedright\arraybackslash}p{2.7cm}>{\raggedright\arraybackslash}p{3.2cm}@{\hspace{0.25cm}}>{\raggedright\arraybackslash}p{2.0cm}@{}}
+\begingroup
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{5.0cm}>{\raggedright\arraybackslash}p{4.2cm}>{\raggedright\arraybackslash}p{3.2cm}@{\hspace{0.15cm}}>{\raggedright\arraybackslash}p{2.2cm}@{}}
 \toprule
 Group & Metric & Direct vs Bridge & Abs. change \\
 \midrule
@@ -87,6 +89,7 @@ Anenji Pylon RS485 JKBMS & Req->Rsp P95 (ms) & \decrease{-4.22 (-42.6\%)} & 42.6
 Growatt RS485 JKBMS & Full exchange P95 (ms) & \increase{+21.48 (+40.1\%)} & 40.1\% \\
 \bottomrule
 \end{tabular}
+\endgroup
 \end{table}
 
 
