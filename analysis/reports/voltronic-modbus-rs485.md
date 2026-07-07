@@ -51,6 +51,7 @@ python analysis/analyze_capture.py examples/bridge/voltronic-modbus-rs485-raw-ca
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | `request_to_response_us` | 39 | 99,796.750 | 99,374.265 | 104,836.495 | 99,490.160 | 101,837.191 |
 | `full_exchange_us` | 39 | 117,921.656 | 117,499.170 | 122,961.420 | 117,615.085 | 119,962.102 |
+| `inter_cycle_gap_us` | 38 | 139,569.416 | 130,076.185 | 140,471.735 | 140,370.397 | 140,444.956 |
 
 Definitions:
 
@@ -62,6 +63,7 @@ request start ---- request end    response start ---- response end
 
 - `request_to_response_us`: response start minus request end.
 - `full_exchange_us`: response end minus request start.
+- `inter_cycle_gap_us`: time between the response end of one complete exchange and the request start of the next complete exchange.
 
 ## Generated Tables
 

@@ -28,6 +28,8 @@
 
 \newcommand{\increase}[1]{\textcolor{increasecolor}{#1}}
 \newcommand{\decrease}[1]{\textcolor{decreasecolor}{#1}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
 \newcommand{\statbox}[2]{%
   \begin{tcolorbox}[colback=panel,colframe=accent,boxrule=0.4pt,arc=1mm,left=1mm,right=1mm,top=1mm,bottom=1mm]
   \centering{\Large\bfseries #1}\\[-1mm]{\scriptsize #2}
@@ -50,7 +52,7 @@
 
 \section*{Executive Summary}
 
-\begin{tabularx}{\textwidth}{XXXX}
+\begin{tabularx}{\textwidth}{YYYY}
 \statbox{30}{total captures} &
 \statbox{17}{RS485/UART captures} &
 \statbox{13}{CAN captures} &
@@ -67,30 +69,119 @@
 \end{tcolorbox}
 
 
-\begin{table}[htbp]
-\centering
-\caption{Direct cable versus Bridge changes with at least 40\% absolute difference.}
+\begin{landscape}
+\section*{Capture Context Metadata}
+
+\small
+This table separates the decoded bus from the physical devices used during the
+test. Inverter protocol values may come from the captured bus or from fixed
+test metadata for inverter models with a single tested protocol. \texttt{not
+captured} means the opposite-side protocol is not proven by that capture or by
+test metadata; it is not inferred from the comparison group name.
+
+\begingroup
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\setlength{\LTpre}{0.45em}
+\setlength{\LTpost}{0.65em}
+\begin{longtable}{@{}L{1.6cm}L{3.6cm}L{2.2cm}L{3.0cm}L{2.0cm}L{2.8cm}L{2.0cm}L{3.0cm}@{}}
+\caption{Capture context metadata.}\\
+\toprule
+Mode & Capture & Captured side & Captured protocol & Inverter device & Inverter protocol & BMS device & BMS protocol \\
+\midrule
+\endfirsthead
+\caption[]{Capture context metadata, continued.}\\
+\toprule
+Mode & Capture & Captured side & Captured protocol & Inverter device & Inverter protocol & BMS device & BMS protocol \\
+\midrule
+\endhead
+Bridge & bridge/china-tower-modbus-rs485 & BMS side & China Tower Modbus RS485 & Growatt & Pylon CAN & JKBMS & China Tower Modbus RS485 \\
+Bridge & bridge/easun-daly-rs485 & BMS side & Daly RS485 & Easun & Pylon CAN & Daly BMS & Daly RS485 \\
+Bridge & bridge/growatt-rs485 & Inverter side & Growatt RS485 & Growatt & Growatt RS485 & JKBMS & not captured \\
+Bridge & bridge/growatt-seplos-rs485 & Inverter side & Growatt RS485 & Growatt & Growatt RS485 & SeplosBMS & not captured \\
+Direct cable & direct/growatt-rs485 & Shared bus & Growatt RS485 & Growatt & Growatt RS485 & JKBMS & Growatt RS485 \\
+Bridge Forward & bridge\_forward/growatt-rs485 & Shared bus & Growatt RS485 & Growatt & Growatt RS485 & JKBMS & Growatt RS485 \\
+Bridge Forward & bridge\_forward/growatt-seplos-rs485 & Shared bus & Growatt RS485 & Growatt & Growatt RS485 & SeplosBMS & Growatt RS485 \\
+Bridge & bridge/jkbms-modbus-rs485 & BMS side & JKBMS Modbus RS485 & Growatt & not captured & JKBMS & JKBMS Modbus RS485 \\
+Bridge & bridge/pace-modbus-rs485 & BMS side & PACE Modbus RS485 & Growatt & not captured & JKBMS & PACE Modbus RS485 \\
+Bridge & bridge/pylon-rs485 & Inverter side & Pylon RS485 & Growatt & Pylon RS485 & JKBMS & not captured \\
+Bridge & bridge/anenji-pylon-rs485 & Inverter side & Pylon RS485 & Anenji & Pylon RS485 & JKBMS & not captured \\
+Direct cable & direct/anenji-jkbms-pylon-rs485 & Shared bus & Pylon RS485 & Anenji & Pylon RS485 & JKBMS & Pylon RS485 \\
+Direct cable & direct/anenji-seplos-pylon-rs485 & Shared bus & Pylon RS485 & Anenji & Pylon RS485 & SeplosBMS & Pylon RS485 \\
+Bridge Forward & bridge\_forward/anenji-pylon-rs485 & Shared bus & Pylon RS485 & Anenji & Pylon RS485 & JKBMS & Pylon RS485 \\
+Bridge Forward & bridge\_forward/anenji-seplos-pylon-rs485 & Shared bus & Pylon RS485 & Anenji & Pylon RS485 & SeplosBMS & Pylon RS485 \\
+Bridge & bridge/voltronic-modbus-rs485 & BMS side & Voltronic Modbus RS485 & Growatt & Pylon RS485 & SeplosBMS & Voltronic Modbus RS485 \\
+Bridge & bridge/wow-modbus-rs485 & BMS side & WOW Modbus RS485 & Growatt & Pylon RS485 & JKBMS & WOW Modbus RS485 \\
+Bridge & bridge/deye-can & Inverter side & Deye CAN & Growatt & Deye CAN & JKBMS & not captured \\
+Bridge & bridge/goodwe-can & Inverter side & GoodWe CAN & Growatt & GoodWe CAN & SeplosBMS & not captured \\
+Bridge & bridge/growatt-can & Inverter side & Growatt CAN & Growatt & Growatt CAN & JKBMS & not captured \\
+Bridge & bridge/growatt-seplos-can & Inverter side & Growatt CAN & Growatt & Growatt CAN & SeplosBMS & not captured \\
+Direct cable & direct/growatt-can & Shared bus & Growatt CAN & Growatt & Growatt CAN & JKBMS & Growatt CAN \\
+Direct cable & direct/growatt-seplos-can & Shared bus & Growatt CAN & Growatt & Growatt CAN & SeplosBMS & Growatt CAN \\
+Bridge Forward & bridge\_forward/growatt-can & Shared bus & Growatt CAN & Growatt & Growatt CAN & JKBMS & Growatt CAN \\
+Bridge Forward & bridge\_forward/growatt-seplos-can & Shared bus & Growatt CAN & Growatt & Growatt CAN & SeplosBMS & Growatt CAN \\
+Bridge & bridge/jkbms-can & BMS side & JKBMS CAN & Growatt & Growatt CAN & JKBMS & JKBMS CAN \\
+Bridge & bridge/pylon-can & BMS side & Pylon CAN & Growatt & Growatt CAN & JKBMS & Pylon CAN \\
+Bridge & bridge/sma-can & BMS side & SMA CAN & Growatt & Growatt CAN & SeplosBMS & SMA CAN \\
+Bridge & bridge/sofar-can & BMS side & Sofar CAN & Growatt & Growatt CAN & SeplosBMS & Sofar CAN \\
+Bridge & bridge/victron-can & BMS side & Victron CAN & Growatt & Growatt CAN & SeplosBMS & Victron CAN \\
+\bottomrule
+\end{longtable}
+\endgroup
+\end{landscape}
+
+
+
+\begin{landscape}
 \begingroup
 \setlength{\tabcolsep}{3pt}
-\begin{tabular}{@{}>{\raggedright\arraybackslash}p{5.0cm}>{\raggedright\arraybackslash}p{4.2cm}>{\raggedright\arraybackslash}p{3.2cm}@{\hspace{0.15cm}}>{\raggedright\arraybackslash}p{2.2cm}@{}}
+\setlength{\LTleft}{\fill}
+\setlength{\LTright}{\fill}
+\setlength{\LTpre}{0.45em}
+\setlength{\LTpost}{0.65em}
+\small Abbreviations: GW=Growatt, JK=JKBMS, Sep=SeplosBMS, Anj=Anenji, Py=Pylon, IC=inter-cycle.
+
+\begin{longtable}{@{}L{1.6cm}L{2.2cm}L{1.5cm}L{2.2cm}L{5.0cm}L{1.4cm}L{1.4cm}L{3.7cm}@{}}
+\caption{Direct cable versus Bridge values, sorted by absolute percentage difference.}\\
 \toprule
-Group & Metric & Direct vs Bridge & Abs. change \\
+Inv. dev. & Inv. proto. & BMS dev. & BMS proto. & Metric & Direct & Bridge & Diff \\
 \midrule
-Growatt CAN JKBMS & Cycles/s & \increase{+0.1 (+100\%)} & 100\% \\
-Growatt CAN JKBMS & Cycle min (ms) & \decrease{-5000.47 (-50.1\%)} & 50.1\% \\
-Growatt CAN JKBMS & Cycle avg (ms) & \decrease{-5000.47 (-50.1\%)} & 50.1\% \\
-Growatt CAN JKBMS & Cycle max (ms) & \decrease{-5000.47 (-50.1\%)} & 50.1\% \\
-Growatt CAN JKBMS & Cycle P95 (ms) & \decrease{-5000.47 (-50.1\%)} & 50.1\% \\
-Growatt CAN SeplosBMS & Cycle min (ms) & \decrease{-121.3 (-48.3\%)} & 48.3\% \\
-Anenji Pylon RS485 JKBMS & Req->Rsp avg (ms) & \decrease{-4.58 (-47.2\%)} & 47.2\% \\
-Growatt CAN SeplosBMS & Inter-cycle gap min (ms) & \increase{+53.56 (+46.7\%)} & 46.7\% \\
-Growatt CAN SeplosBMS & Cycle max (ms) & \decrease{-664.45 (-44.4\%)} & 44.4\% \\
-Anenji Pylon RS485 JKBMS & Req->Rsp P95 (ms) & \decrease{-4.22 (-42.6\%)} & 42.6\% \\
-Growatt RS485 JKBMS & Full exchange P95 (ms) & \increase{+21.48 (+40.1\%)} & 40.1\% \\
+\endfirsthead
+\caption[]{Direct cable versus Bridge values, continued.}\\
+\toprule
+Inv. dev. & Inv. proto. & BMS dev. & BMS proto. & Metric & Direct & Bridge & Diff \\
+\midrule
+\endhead
+GW & GW CAN & JK & GW CAN & Cycles/s & 0.2 & 0.1 & \increase{+0.1 (+100\%)} \\
+GW & GW CAN & JK & GW CAN & Cycle min (ms) & 4980.23 & 9980.7 & \decrease{-5000.47 (-50.1\%)} \\
+GW & GW CAN & JK & GW CAN & Cycle avg (ms) & 4980.23 & 9980.7 & \decrease{-5000.47 (-50.1\%)} \\
+GW & GW CAN & JK & GW CAN & Cycle max (ms) & 4980.23 & 9980.7 & \decrease{-5000.47 (-50.1\%)} \\
+GW & GW CAN & JK & GW CAN & Cycle P95 (ms) & 4980.23 & 9980.7 & \decrease{-5000.47 (-50.1\%)} \\
+GW & GW CAN & Sep & GW CAN & Cycle min (ms) & 129.93 & 251.23 & \decrease{-121.3 (-48.3\%)} \\
+Anj & Py 485 & JK & Py 485 & Req->Rsp avg (ms) & 5.12 & 9.71 & \decrease{-4.58 (-47.2\%)} \\
+GW & GW CAN & Sep & GW CAN & IC gap min (ms) & 168.23 & 114.67 & \increase{+53.56 (+46.7\%)} \\
+GW & GW CAN & Sep & GW CAN & Cycle max (ms) & 831.77 & 1496.22 & \decrease{-664.45 (-44.4\%)} \\
+Anj & Py 485 & JK & Py 485 & Req->Rsp P95 (ms) & 5.69 & 9.91 & \decrease{-4.22 (-42.6\%)} \\
+GW & GW 485 & JK & GW 485 & Full exchange P95 (ms) & 75 & 53.52 & \increase{+21.48 (+40.1\%)} \\
+GW & GW CAN & Sep & GW CAN & Cycle P95 (ms) & 831.77 & 1221.32 & \decrease{-389.55 (-31.9\%)} \\
+GW & GW 485 & JK & GW 485 & Full exchange avg (ms) & 59.34 & 49.09 & \increase{+10.24 (+20.9\%)} \\
+GW & GW 485 & JK & GW 485 & Complete exchanges/s & 2 & 2.5 & \decrease{-0.5 (-20\%)} \\
+GW & GW CAN & Sep & GW CAN & Cycles/s & 1.2 & 1 & \increase{+0.2 (+20\%)} \\
+GW & GW CAN & Sep & GW CAN & Cycle avg (ms) & 687.13 & 851.37 & \decrease{-164.25 (-19.3\%)} \\
+GW & GW CAN & Sep & GW CAN & IC gap avg (ms) & 168.23 & 155.49 & \increase{+12.74 (+8.2\%)} \\
+GW & GW 485 & JK & GW 485 & Req->Rsp avg (ms) & 5.13 & 4.76 & \increase{+0.37 (+7.7\%)} \\
+Anj & Py 485 & JK & Py 485 & Full exchange avg (ms) & 102.92 & 111.16 & \decrease{-8.25 (-7.4\%)} \\
+Anj & Py 485 & JK & Py 485 & Full exchange P95 (ms) & 145.15 & 153.03 & \decrease{-7.88 (-5.1\%)} \\
+GW & GW 485 & JK & GW 485 & Req->Rsp P95 (ms) & 5.44 & 5.29 & \increase{+0.14 (+2.7\%)} \\
+GW & GW CAN & Sep & GW CAN & IC gap max (ms) & 168.23 & 165.78 & \increase{+2.45 (+1.5\%)} \\
+GW & GW CAN & Sep & GW CAN & IC gap P95 (ms) & 168.23 & 165.78 & \increase{+2.45 (+1.5\%)} \\
+GW & GW CAN & JK & GW CAN & Frames/s & 52 & 51.9 & \increase{+0.1 (+0.2\%)} \\
+Anj & Py 485 & JK & Py 485 & Complete exchanges/s & 0.8 & 0.8 & 0 (0\%) \\
+GW & GW CAN & Sep & GW CAN & Frames/s & 13 & 13 & 0 (0\%) \\
 \bottomrule
-\end{tabular}
+\end{longtable}
 \endgroup
-\end{table}
+\end{landscape}
 
 
 \section{Protocol Overview Charts}
@@ -99,9 +190,26 @@ These charts include every protocol group available in the overview CSV. Missing
 topology modes are intentionally left blank, so a group can have one, two, or three
 bars depending on the captures currently available.
 
-CAN cycle duration charts use a logarithmic y-axis because values span multiple
-orders of magnitude, from sub-millisecond single-frame cycles to multi-second
-capture-length cycles.
+For RS485/UART charts, the timing terms are:
+
+\begin{itemize}[leftmargin=*]
+\item Request-to-response latency: response start minus request end for a
+complete paired exchange.
+\item Full exchange duration: response end minus request start for a complete
+paired exchange. This includes request transmission, turnaround/processing gap,
+and response transmission.
+\item Inter-exchange gap: response end of one complete exchange to request start
+of the next complete exchange.
+\item 95th percentile: the value below which 95\% of the measured complete
+request/response pairs fall.
+\end{itemize}
+
+For CAN charts, cycle duration is the time from the first frame in a detected
+CAN burst to the last frame in that burst. CAN cycle duration charts use a
+logarithmic y-axis because values span multiple orders of magnitude, from
+sub-millisecond single-frame cycles to multi-second capture-length cycles. CAN
+cycle P95 is the closest counterpart to RS485/UART full-exchange P95 in this
+report.
 
 
 \begin{figure}[p]
@@ -115,12 +223,18 @@ capture-length cycles.
     ybar,
     width=\textwidth,
     height=4.8cm,
-    bar width=3.5pt,
+    bar width=7pt,
     ymin=0,
+    point meta=explicit symbolic,
+    nodes near coords={\pgfplotspointmeta},
+    every node near coord/.append style={font=\tiny, rotate=90, anchor=west, inner sep=1pt},
+    enlarge y limits={upper,value=0.35},
+    clip=false,
+    scaled y ticks=false,
     xmin=0.5,
     xmax=11.5,
     enlarge x limits=false,
-    ylabel={Req->Rsp avg (ms)},
+    ylabel={Request-to-response avg (ms)},
     ylabel style={font=\small},
     xtick={1,2,3,4,5,6,7,8,9,10,11},
     xticklabels={China Tower Modbus RS485,Daly RS485,Growatt RS485 JKBMS,Growatt RS485 SeplosBMS,JKBMS Modbus RS485,PACE Modbus RS485,Pylon RS485,Anenji Pylon RS485 JKBMS,Anenji Pylon RS485 SeplosBMS,Voltronic Modbus RS485,WOW Modbus RS485},
@@ -130,9 +244,9 @@ capture-length cycles.
     grid=both,
     major grid style={draw=gridline},
 ]
-\addplot+[fill=bridge, draw=bridge] coordinates {(1,5.015) (2,14.459) (3,4.760) (4,49.517) (5,4.904) (6,4.988) (7,4.817) (8,9.707) (10,99.797) (11,4.799)};
-\addplot+[fill=forward, draw=forward] coordinates {(3,5.008) (4,49.604) (8,5.489) (9,9.470)};
-\addplot+[fill=direct, draw=direct] coordinates {(3,5.127) (8,5.125) (9,9.887)};
+\addplot+[fill=bridge, draw=bridge] coordinates {(1,5.015) [5.0] (2,14.459) [14.5] (3,4.760) [4.8] (4,49.517) [49.5] (5,4.904) [4.9] (6,4.988) [5.0] (7,4.817) [4.8] (8,9.707) [9.7] (10,99.797) [99.8] (11,4.799) [4.8]};
+\addplot+[fill=forward, draw=forward] coordinates {(3,5.008) [5.0] (4,49.604) [49.6] (8,5.489) [5.5] (9,9.470) [9.5]};
+\addplot+[fill=direct, draw=direct] coordinates {(3,5.127) [5.1] (8,5.125) [5.1] (9,9.887) [9.9]};
 \legend{Bridge, Bridge Forward, Direct cable}
 \end{axis}
 \end{tikzpicture}
@@ -149,12 +263,18 @@ capture-length cycles.
     ybar,
     width=\textwidth,
     height=4.8cm,
-    bar width=3.5pt,
+    bar width=7pt,
     ymin=0,
+    point meta=explicit symbolic,
+    nodes near coords={\pgfplotspointmeta},
+    every node near coord/.append style={font=\tiny, rotate=90, anchor=west, inner sep=1pt},
+    enlarge y limits={upper,value=0.35},
+    clip=false,
+    scaled y ticks=false,
     xmin=0.5,
     xmax=11.5,
     enlarge x limits=false,
-    ylabel={Full exchange P95 (ms)},
+    ylabel={Full exchange 95th percentile (ms)},
     ylabel style={font=\small},
     xtick={1,2,3,4,5,6,7,8,9,10,11},
     xticklabels={China Tower Modbus RS485,Daly RS485,Growatt RS485 JKBMS,Growatt RS485 SeplosBMS,JKBMS Modbus RS485,PACE Modbus RS485,Pylon RS485,Anenji Pylon RS485 JKBMS,Anenji Pylon RS485 SeplosBMS,Voltronic Modbus RS485,WOW Modbus RS485},
@@ -164,9 +284,9 @@ capture-length cycles.
     grid=both,
     major grid style={draw=gridline},
 ]
-\addplot+[fill=bridge, draw=bridge] coordinates {(1,53.526) (2,297.647) (3,53.520) (4,97.806) (5,13.116) (6,66.065) (7,148.668) (8,153.034) (10,119.962) (11,65.809)};
-\addplot+[fill=forward, draw=forward] coordinates {(3,53.485) (4,97.846) (8,149.320) (9,153.002)};
-\addplot+[fill=direct, draw=direct] coordinates {(3,75.001) (8,145.155) (9,151.499)};
+\addplot+[fill=bridge, draw=bridge] coordinates {(1,53.526) [53.5] (2,297.647) [297.6] (3,53.520) [53.5] (4,97.806) [97.8] (5,13.116) [13.1] (6,66.065) [66.1] (7,148.668) [148.7] (8,153.034) [153.0] (10,119.962) [120.0] (11,65.809) [65.8]};
+\addplot+[fill=forward, draw=forward] coordinates {(3,53.485) [53.5] (4,97.846) [97.8] (8,149.320) [149.3] (9,153.002) [153.0]};
+\addplot+[fill=direct, draw=direct] coordinates {(3,75.001) [75.0] (8,145.155) [145.2] (9,151.499) [151.5]};
 \legend{Bridge, Bridge Forward, Direct cable}
 \end{axis}
 \end{tikzpicture}
@@ -188,50 +308,21 @@ capture-length cycles.
 \begin{tikzpicture}
 \begin{axis}[
     ybar,
-    width=\textwidth,
-    height=4.8cm,
-    bar width=3.5pt,
+    width=0.99\textwidth,
+    height=5.8cm,
+    bar width=7pt,
     ymode=log,
     log basis y=10,
     log origin y=infty,
+    ytick={0.1,1,10,100,1000,10000},
+    yticklabels={\mbox{10\raisebox{0.55ex}{-1}},\mbox{10\raisebox{0.55ex}{0}},\mbox{10\raisebox{0.55ex}{1}},\mbox{10\raisebox{0.55ex}{2}},\mbox{10\raisebox{0.55ex}{3}},\mbox{10\raisebox{0.55ex}{4}}},
     ymin=0.1,
-    xmin=0.5,
-    xmax=9.5,
-    enlarge x limits=false,
-    ylabel={Cycle min (ms)},
-    ylabel style={font=\small},
-    xtick={1,2,3,4,5,6,7,8,9},
-    xticklabels={Deye CAN,GoodWe CAN,Growatt CAN JKBMS,Growatt CAN SeplosBMS,JKBMS CAN,Pylon CAN,SMA CAN,Sofar CAN,Victron CAN},
-    x tick label style={text width=1.3cm, align=center, font=\tiny},
-    y tick label style={font=\scriptsize},
-    legend style={at={(0.5,1.04)}, anchor=south, legend columns=3, font=\scriptsize},
-    grid=both,
-    major grid style={draw=gridline},
-]
-\addplot+[fill=bridge, draw=bridge] coordinates {(1,599.849) (2,300.246) (3,9980.699) (4,251.235) (5,9907.993) (6,900.276) (7,0.219) (8,0.219) (9,9960.726)};
-\addplot+[fill=forward, draw=forward] coordinates {(3,9980.681) (4,85.691)};
-\addplot+[fill=direct, draw=direct] coordinates {(3,4980.232) (4,129.933)};
-\legend{Bridge, Bridge Forward, Direct cable}
-\end{axis}
-\end{tikzpicture}
-
-\caption{Minimum CAN cycle duration, log scale, for all available CAN protocol groups.}
-\end{subfigure}
-
-
-\begin{subfigure}{\textwidth}
-\centering
-
-\begin{tikzpicture}
-\begin{axis}[
-    ybar,
-    width=\textwidth,
-    height=4.8cm,
-    bar width=3.5pt,
-    ymode=log,
-    log basis y=10,
-    log origin y=infty,
-    ymin=0.1,
+    ymax=119768,
+    point meta=explicit symbolic,
+    nodes near coords={\pgfplotspointmeta},
+    every node near coord/.append style={font=\tiny, rotate=90, anchor=west, inner sep=1pt},
+    clip=false,
+    scaled y ticks=false,
     xmin=0.5,
     xmax=9.5,
     enlarge x limits=false,
@@ -245,23 +336,16 @@ capture-length cycles.
     grid=both,
     major grid style={draw=gridline},
 ]
-\addplot+[fill=bridge, draw=bridge] coordinates {(1,1011.013) (2,2399.973) (3,9980.699) (4,851.374) (5,9907.993) (6,1900.011) (7,0.231) (8,0.229) (9,9960.726)};
-\addplot+[fill=forward, draw=forward] coordinates {(3,9980.681) (4,755.942)};
-\addplot+[fill=direct, draw=direct] coordinates {(3,4980.232) (4,687.126)};
+\addplot+[fill=bridge, draw=bridge] coordinates {(1,1011.013) [1011.0] (2,2399.973) [2400.0] (3,9980.699) [9980.7] (4,851.374) [851.4] (5,9907.993) [9908.0] (6,1900.011) [1900.0] (7,0.231) [0.2] (8,0.229) [0.2] (9,9960.726) [9960.7]};
+\addplot+[fill=forward, draw=forward] coordinates {(3,9980.681) [9980.7] (4,755.942) [755.9]};
+\addplot+[fill=direct, draw=direct] coordinates {(3,4980.232) [4980.2] (4,687.126) [687.1]};
 \legend{Bridge, Bridge Forward, Direct cable}
 \end{axis}
 \end{tikzpicture}
 
-\caption{Average CAN cycle duration, log scale, for all available CAN protocol groups.}
+\caption{Average CAN cycle duration, log scale.}
 \end{subfigure}
 
-\caption{CAN cycle duration overview charts.}
-\end{figure}
-
-
-
-\begin{figure}[p]
-\centering
 
 \begin{subfigure}{\textwidth}
 \centering
@@ -269,17 +353,25 @@ capture-length cycles.
 \begin{tikzpicture}
 \begin{axis}[
     ybar,
-    width=\textwidth,
-    height=4.8cm,
-    bar width=3.5pt,
+    width=0.99\textwidth,
+    height=5.8cm,
+    bar width=7pt,
     ymode=log,
     log basis y=10,
     log origin y=infty,
+    ytick={0.1,1,10,100,1000,10000},
+    yticklabels={\mbox{10\raisebox{0.55ex}{-1}},\mbox{10\raisebox{0.55ex}{0}},\mbox{10\raisebox{0.55ex}{1}},\mbox{10\raisebox{0.55ex}{2}},\mbox{10\raisebox{0.55ex}{3}},\mbox{10\raisebox{0.55ex}{4}}},
     ymin=0.1,
+    ymax=119768,
+    point meta=explicit symbolic,
+    nodes near coords={\pgfplotspointmeta},
+    every node near coord/.append style={font=\tiny, rotate=90, anchor=west, inner sep=1pt},
+    clip=false,
+    scaled y ticks=false,
     xmin=0.5,
     xmax=9.5,
     enlarge x limits=false,
-    ylabel={Cycle max (ms)},
+    ylabel={Cycle P95 (ms)},
     ylabel style={font=\small},
     xtick={1,2,3,4,5,6,7,8,9},
     xticklabels={Deye CAN,GoodWe CAN,Growatt CAN JKBMS,Growatt CAN SeplosBMS,JKBMS CAN,Pylon CAN,SMA CAN,Sofar CAN,Victron CAN},
@@ -289,51 +381,17 @@ capture-length cycles.
     grid=both,
     major grid style={draw=gridline},
 ]
-\addplot+[fill=bridge, draw=bridge] coordinates {(1,1599.872) (2,7100.062) (3,9980.699) (4,1496.224) (5,9907.993) (6,2299.947) (7,0.237) (8,0.237) (9,9960.726)};
-\addplot+[fill=forward, draw=forward] coordinates {(3,9980.681) (4,871.815)};
-\addplot+[fill=direct, draw=direct] coordinates {(3,4980.232) (4,831.769)};
+\addplot+[fill=bridge, draw=bridge] coordinates {(1,1599.871) [1599.9] (2,6275.024) [6275.0] (3,9980.699) [9980.7] (4,1221.318) [1221.3] (5,9907.993) [9908.0] (6,2299.945) [2299.9] (7,0.237) [0.2] (8,0.237) [0.2] (9,9960.726) [9960.7]};
+\addplot+[fill=forward, draw=forward] coordinates {(3,9980.681) [9980.7] (4,861.952) [862.0]};
+\addplot+[fill=direct, draw=direct] coordinates {(3,4980.232) [4980.2] (4,831.769) [831.8]};
 \legend{Bridge, Bridge Forward, Direct cable}
 \end{axis}
 \end{tikzpicture}
 
-\caption{Maximum CAN cycle duration, log scale, for all available CAN protocol groups.}
+\caption{95th-percentile CAN cycle duration, log scale.}
 \end{subfigure}
 
-
-\begin{subfigure}{\textwidth}
-\centering
-
-\begin{tikzpicture}
-\begin{axis}[
-    ybar,
-    width=\textwidth,
-    height=4.8cm,
-    bar width=3.5pt,
-    ymin=0,
-    xmin=0.5,
-    xmax=9.5,
-    enlarge x limits=false,
-    ylabel={Cycles/s},
-    ylabel style={font=\small},
-    xtick={1,2,3,4,5,6,7,8,9},
-    xticklabels={Deye CAN,GoodWe CAN,Growatt CAN JKBMS,Growatt CAN SeplosBMS,JKBMS CAN,Pylon CAN,SMA CAN,Sofar CAN,Victron CAN},
-    x tick label style={text width=1.3cm, align=center, font=\tiny},
-    y tick label style={font=\scriptsize},
-    legend style={at={(0.5,1.04)}, anchor=south, legend columns=3, font=\scriptsize},
-    grid=both,
-    major grid style={draw=gridline},
-]
-\addplot+[fill=bridge, draw=bridge] coordinates {(1,0.900) (2,0.400) (3,0.100) (4,1.000) (5,0.100) (6,0.500) (7,6.000) (8,5.920) (9,0.100)};
-\addplot+[fill=forward, draw=forward] coordinates {(3,0.100) (4,1.100)};
-\addplot+[fill=direct, draw=direct] coordinates {(3,0.200) (4,1.200)};
-\legend{Bridge, Bridge Forward, Direct cable}
-\end{axis}
-\end{tikzpicture}
-
-\caption{CAN cycle rate normalized by capture duration for all available CAN protocol groups.}
-\end{subfigure}
-
-\caption{CAN maximum cycle duration and throughput charts.}
+\caption{CAN protocol overview charts.}
 \end{figure}
 
 
@@ -349,8 +407,141 @@ capture-length cycles.
     ybar,
     width=\textwidth,
     height=4.8cm,
-    bar width=3.5pt,
+    bar width=7pt,
     ymin=0,
+    point meta=explicit symbolic,
+    nodes near coords={\pgfplotspointmeta},
+    every node near coord/.append style={font=\tiny, rotate=90, anchor=west, inner sep=1pt},
+    enlarge y limits={upper,value=0.35},
+    clip=false,
+    scaled y ticks=false,
+    xmin=0.5,
+    xmax=11.5,
+    enlarge x limits=false,
+    ylabel={Gap min (ms)},
+    ylabel style={font=\small},
+    xtick={1,2,3,4,5,6,7,8,9,10,11},
+    xticklabels={China Tower Modbus RS485,Daly RS485,Growatt RS485 JKBMS,Growatt RS485 SeplosBMS,JKBMS Modbus RS485,PACE Modbus RS485,Pylon RS485,Anenji Pylon RS485 JKBMS,Anenji Pylon RS485 SeplosBMS,Voltronic Modbus RS485,WOW Modbus RS485},
+    x tick label style={text width=1.05cm, align=center, font=\tiny},
+    y tick label style={font=\scriptsize},
+    legend style={at={(0.5,1.04)}, anchor=south, legend columns=3, font=\scriptsize},
+    grid=both,
+    major grid style={draw=gridline},
+]
+\addplot+[fill=bridge, draw=bridge] coordinates {(1,196.256) [196.3] (2,269.414) [269.4] (3,349.429) [349.4] (4,309.189) [309.2] (5,245.181) [245.2] (6,183.842) [183.8] (7,1959.025) [1959.0] (8,647.998) [648.0] (10,130.076) [130.1] (11,189.372) [189.4]};
+\addplot+[fill=forward, draw=forward] coordinates {(3,349.433) [349.4] (4,310.158) [310.2] (8,734.886) [734.9] (9,646.656) [646.7]};
+\addplot+[fill=direct, draw=direct] coordinates {(3,424.874) [424.9] (8,738.413) [738.4] (9,650.604) [650.6]};
+\legend{Bridge, Bridge Forward, Direct cable}
+\end{axis}
+\end{tikzpicture}
+
+\caption{Minimum gap between complete RS485/UART exchanges.}
+\end{subfigure}
+
+
+\begin{subfigure}{\textwidth}
+\centering
+
+\begin{tikzpicture}
+\begin{axis}[
+    ybar,
+    width=\textwidth,
+    height=4.8cm,
+    bar width=7pt,
+    ymin=0,
+    point meta=explicit symbolic,
+    nodes near coords={\pgfplotspointmeta},
+    every node near coord/.append style={font=\tiny, rotate=90, anchor=west, inner sep=1pt},
+    enlarge y limits={upper,value=0.35},
+    clip=false,
+    scaled y ticks=false,
+    xmin=0.5,
+    xmax=11.5,
+    enlarge x limits=false,
+    ylabel={Gap avg (ms)},
+    ylabel style={font=\small},
+    xtick={1,2,3,4,5,6,7,8,9,10,11},
+    xticklabels={China Tower Modbus RS485,Daly RS485,Growatt RS485 JKBMS,Growatt RS485 SeplosBMS,JKBMS Modbus RS485,PACE Modbus RS485,Pylon RS485,Anenji Pylon RS485 JKBMS,Anenji Pylon RS485 SeplosBMS,Voltronic Modbus RS485,WOW Modbus RS485},
+    x tick label style={text width=1.05cm, align=center, font=\tiny},
+    y tick label style={font=\scriptsize},
+    legend style={at={(0.5,1.04)}, anchor=south, legend columns=3, font=\scriptsize},
+    grid=both,
+    major grid style={draw=gridline},
+]
+\addplot+[fill=bridge, draw=bridge] coordinates {(1,210.162) [210.2] (2,271.066) [271.1] (3,353.400) [353.4] (4,319.015) [319.0] (5,245.979) [246.0] (6,194.824) [194.8] (7,2693.760) [2693.8] (8,1059.939) [1059.9] (10,139.569) [139.6] (11,199.957) [200.0]};
+\addplot+[fill=forward, draw=forward] coordinates {(3,353.211) [353.2] (4,320.460) [320.5] (8,1059.074) [1059.1] (9,1072.162) [1072.2]};
+\addplot+[fill=direct, draw=direct] coordinates {(3,440.574) [440.6] (8,1097.088) [1097.1] (9,1106.893) [1106.9]};
+\legend{Bridge, Bridge Forward, Direct cable}
+\end{axis}
+\end{tikzpicture}
+
+\caption{Average gap between complete RS485/UART exchanges.}
+\end{subfigure}
+
+
+\begin{subfigure}{\textwidth}
+\centering
+
+\begin{tikzpicture}
+\begin{axis}[
+    ybar,
+    width=\textwidth,
+    height=4.8cm,
+    bar width=7pt,
+    ymin=0,
+    point meta=explicit symbolic,
+    nodes near coords={\pgfplotspointmeta},
+    every node near coord/.append style={font=\tiny, rotate=90, anchor=west, inner sep=1pt},
+    enlarge y limits={upper,value=0.35},
+    clip=false,
+    scaled y ticks=false,
+    xmin=0.5,
+    xmax=11.5,
+    enlarge x limits=false,
+    ylabel={Gap max (ms)},
+    ylabel style={font=\small},
+    xtick={1,2,3,4,5,6,7,8,9,10,11},
+    xticklabels={China Tower Modbus RS485,Daly RS485,Growatt RS485 JKBMS,Growatt RS485 SeplosBMS,JKBMS Modbus RS485,PACE Modbus RS485,Pylon RS485,Anenji Pylon RS485 JKBMS,Anenji Pylon RS485 SeplosBMS,Voltronic Modbus RS485,WOW Modbus RS485},
+    x tick label style={text width=1.05cm, align=center, font=\tiny},
+    y tick label style={font=\scriptsize},
+    legend style={at={(0.5,1.04)}, anchor=south, legend columns=3, font=\scriptsize},
+    grid=both,
+    major grid style={draw=gridline},
+]
+\addplot+[fill=bridge, draw=bridge] coordinates {(1,233.716) [233.7] (2,272.681) [272.7] (3,360.509) [360.5] (4,339.692) [339.7] (5,247.000) [247.0] (6,213.041) [213.0] (7,4702.110) [4702.1] (8,1527.191) [1527.2] (10,140.472) [140.5] (11,210.403) [210.4]};
+\addplot+[fill=forward, draw=forward] coordinates {(3,360.241) [360.2] (4,339.621) [339.6] (8,1491.398) [1491.4] (9,1611.294) [1611.3]};
+\addplot+[fill=direct, draw=direct] coordinates {(3,450.343) [450.3] (8,1495.621) [1495.6] (9,1614.699) [1614.7]};
+\legend{Bridge, Bridge Forward, Direct cable}
+\end{axis}
+\end{tikzpicture}
+
+\caption{Maximum gap between complete RS485/UART exchanges.}
+\end{subfigure}
+
+\caption{RS485/UART inter-exchange gap overview charts.}
+\end{figure}
+
+
+
+\begin{figure}[p]
+\centering
+
+\begin{subfigure}{\textwidth}
+\centering
+
+\begin{tikzpicture}
+\begin{axis}[
+    ybar,
+    width=\textwidth,
+    height=4.8cm,
+    bar width=7pt,
+    ymin=0,
+    point meta=explicit symbolic,
+    nodes near coords={\pgfplotspointmeta},
+    every node near coord/.append style={font=\tiny, rotate=90, anchor=west, inner sep=1pt},
+    enlarge y limits={upper,value=0.35},
+    clip=false,
+    scaled y ticks=false,
     xmin=0.5,
     xmax=6.5,
     enlarge x limits=false,
@@ -364,9 +555,9 @@ capture-length cycles.
     grid=both,
     major grid style={draw=gridline},
 ]
-\addplot+[fill=bridge, draw=bridge] coordinates {(1,100.186) (2,100.259) (3,114.669) (4,100.164) (5,165.308) (6,124.888)};
-\addplot+[fill=forward, draw=forward] coordinates {(3,128.175)};
-\addplot+[fill=direct, draw=direct] coordinates {(3,168.226)};
+\addplot+[fill=bridge, draw=bridge] coordinates {(1,100.186) [100.2] (2,100.259) [100.3] (3,114.669) [114.7] (4,100.164) [100.2] (5,165.308) [165.3] (6,124.888) [124.9]};
+\addplot+[fill=forward, draw=forward] coordinates {(3,128.175) [128.2]};
+\addplot+[fill=direct, draw=direct] coordinates {(3,168.226) [168.2]};
 \legend{Bridge, Bridge Forward, Direct cable}
 \end{axis}
 \end{tikzpicture}
@@ -383,8 +574,54 @@ capture-length cycles.
     ybar,
     width=\textwidth,
     height=4.8cm,
-    bar width=3.5pt,
+    bar width=7pt,
     ymin=0,
+    point meta=explicit symbolic,
+    nodes near coords={\pgfplotspointmeta},
+    every node near coord/.append style={font=\tiny, rotate=90, anchor=west, inner sep=1pt},
+    enlarge y limits={upper,value=0.35},
+    clip=false,
+    scaled y ticks=false,
+    xmin=0.5,
+    xmax=6.5,
+    enlarge x limits=false,
+    ylabel={Gap avg (ms)},
+    ylabel style={font=\small},
+    xtick={1,2,3,4,5,6},
+    xticklabels={Deye CAN,GoodWe CAN,Growatt CAN SeplosBMS,Pylon CAN,SMA CAN,Sofar CAN},
+    x tick label style={text width=1.55cm, align=center, font=\tiny},
+    y tick label style={font=\scriptsize},
+    legend style={at={(0.5,1.04)}, anchor=south, legend columns=3, font=\scriptsize},
+    grid=both,
+    major grid style={draw=gridline},
+]
+\addplot+[fill=bridge, draw=bridge] coordinates {(1,100.194) [100.2] (2,100.265) [100.3] (3,155.493) [155.5] (4,100.172) [100.2] (5,166.405) [166.4] (6,168.954) [169.0]};
+\addplot+[fill=forward, draw=forward] coordinates {(3,160.227) [160.2]};
+\addplot+[fill=direct, draw=direct] coordinates {(3,168.228) [168.2]};
+\legend{Bridge, Bridge Forward, Direct cable}
+\end{axis}
+\end{tikzpicture}
+
+\caption{Average inter-cycle gap for CAN protocol groups with at least two detected cycles.}
+\end{subfigure}
+
+
+\begin{subfigure}{\textwidth}
+\centering
+
+\begin{tikzpicture}
+\begin{axis}[
+    ybar,
+    width=\textwidth,
+    height=4.8cm,
+    bar width=7pt,
+    ymin=0,
+    point meta=explicit symbolic,
+    nodes near coords={\pgfplotspointmeta},
+    every node near coord/.append style={font=\tiny, rotate=90, anchor=west, inner sep=1pt},
+    enlarge y limits={upper,value=0.35},
+    clip=false,
+    scaled y ticks=false,
     xmin=0.5,
     xmax=6.5,
     enlarge x limits=false,
@@ -398,9 +635,9 @@ capture-length cycles.
     grid=both,
     major grid style={draw=gridline},
 ]
-\addplot+[fill=bridge, draw=bridge] coordinates {(1,100.204) (2,100.269) (3,165.778) (4,100.178) (5,168.242) (6,382.072)};
-\addplot+[fill=forward, draw=forward] coordinates {(3,165.778)};
-\addplot+[fill=direct, draw=direct] coordinates {(3,168.230)};
+\addplot+[fill=bridge, draw=bridge] coordinates {(1,100.204) [100.2] (2,100.269) [100.3] (3,165.778) [165.8] (4,100.178) [100.2] (5,168.242) [168.2] (6,382.072) [382.1]};
+\addplot+[fill=forward, draw=forward] coordinates {(3,165.778) [165.8]};
+\addplot+[fill=direct, draw=direct] coordinates {(3,168.230) [168.2]};
 \legend{Bridge, Bridge Forward, Direct cable}
 \end{axis}
 \end{tikzpicture}
@@ -409,6 +646,277 @@ capture-length cycles.
 \end{subfigure}
 
 \caption{CAN inter-cycle gap overview charts.}
+\end{figure}
+
+
+
+\begin{figure}[p]
+\centering
+
+\begin{subfigure}{\textwidth}
+\centering
+
+\begin{tikzpicture}
+\begin{axis}[
+    ybar,
+    width=\textwidth,
+    height=4.8cm,
+    bar width=7pt,
+    ymin=0,
+    point meta=explicit symbolic,
+    nodes near coords={\pgfplotspointmeta},
+    every node near coord/.append style={font=\tiny, rotate=90, anchor=west, inner sep=1pt},
+    enlarge y limits={upper,value=0.35},
+    clip=false,
+    scaled y ticks=false,
+    xmin=0.5,
+    xmax=11.5,
+    enlarge x limits=false,
+    ylabel={Full exchange min (ms)},
+    ylabel style={font=\small},
+    xtick={1,2,3,4,5,6,7,8,9,10,11},
+    xticklabels={China Tower Modbus RS485,Daly RS485,Growatt RS485 JKBMS,Growatt RS485 SeplosBMS,JKBMS Modbus RS485,PACE Modbus RS485,Pylon RS485,Anenji Pylon RS485 JKBMS,Anenji Pylon RS485 SeplosBMS,Voltronic Modbus RS485,WOW Modbus RS485},
+    x tick label style={text width=1.05cm, align=center, font=\tiny},
+    y tick label style={font=\scriptsize},
+    legend style={at={(0.5,1.04)}, anchor=south, legend columns=3, font=\scriptsize},
+    grid=both,
+    major grid style={draw=gridline},
+]
+\addplot+[fill=bridge, draw=bridge] coordinates {(1,25.537) [25.5] (2,291.574) [291.6] (3,42.256) [42.3] (4,64.023) [64.0] (5,6.283) [6.3] (6,46.481) [46.5] (7,53.582) [53.6] (8,69.060) [69.1] (10,117.499) [117.5] (11,46.519) [46.5]};
+\addplot+[fill=forward, draw=forward] coordinates {(3,42.171) [42.2] (4,64.375) [64.4] (8,64.878) [64.9] (9,68.932) [68.9]};
+\addplot+[fill=direct, draw=direct] coordinates {(3,49.672) [49.7] (8,60.415) [60.4] (9,65.192) [65.2]};
+\legend{Bridge, Bridge Forward, Direct cable}
+\end{axis}
+\end{tikzpicture}
+
+\caption{Minimum full-exchange duration for all available RS485/UART protocol groups.}
+\end{subfigure}
+
+
+\begin{subfigure}{\textwidth}
+\centering
+
+\begin{tikzpicture}
+\begin{axis}[
+    ybar,
+    width=\textwidth,
+    height=4.8cm,
+    bar width=7pt,
+    ymin=0,
+    point meta=explicit symbolic,
+    nodes near coords={\pgfplotspointmeta},
+    every node near coord/.append style={font=\tiny, rotate=90, anchor=west, inner sep=1pt},
+    enlarge y limits={upper,value=0.35},
+    clip=false,
+    scaled y ticks=false,
+    xmin=0.5,
+    xmax=11.5,
+    enlarge x limits=false,
+    ylabel={Full exchange max (ms)},
+    ylabel style={font=\small},
+    xtick={1,2,3,4,5,6,7,8,9,10,11},
+    xticklabels={China Tower Modbus RS485,Daly RS485,Growatt RS485 JKBMS,Growatt RS485 SeplosBMS,JKBMS Modbus RS485,PACE Modbus RS485,Pylon RS485,Anenji Pylon RS485 JKBMS,Anenji Pylon RS485 SeplosBMS,Voltronic Modbus RS485,WOW Modbus RS485},
+    x tick label style={text width=1.05cm, align=center, font=\tiny},
+    y tick label style={font=\scriptsize},
+    legend style={at={(0.5,1.04)}, anchor=south, legend columns=3, font=\scriptsize},
+    grid=both,
+    major grid style={draw=gridline},
+]
+\addplot+[fill=bridge, draw=bridge] coordinates {(1,53.654) [53.7] (2,297.682) [297.7] (3,53.555) [53.6] (4,97.823) [97.8] (5,13.269) [13.3] (6,66.222) [66.2] (7,148.836) [148.8] (8,153.046) [153.0] (10,122.961) [123.0] (11,65.825) [65.8]};
+\addplot+[fill=forward, draw=forward] coordinates {(3,53.590) [53.6] (4,98.206) [98.2] (8,149.493) [149.5] (9,153.103) [153.1]};
+\addplot+[fill=direct, draw=direct] coordinates {(3,75.141) [75.1] (8,145.355) [145.4] (9,151.609) [151.6]};
+\legend{Bridge, Bridge Forward, Direct cable}
+\end{axis}
+\end{tikzpicture}
+
+\caption{Maximum full-exchange duration for all available RS485/UART protocol groups.}
+\end{subfigure}
+
+\caption{RS485/UART full-exchange range overview charts.}
+\end{figure}
+
+
+
+\begin{figure}[p]
+\centering
+
+\begin{subfigure}{\textwidth}
+\centering
+
+\begin{tikzpicture}
+\begin{axis}[
+    ybar,
+    width=0.99\textwidth,
+    height=5.8cm,
+    bar width=7pt,
+    ymode=log,
+    log basis y=10,
+    log origin y=infty,
+    ytick={0.1,1,10,100,1000,10000},
+    yticklabels={\mbox{10\raisebox{0.55ex}{-1}},\mbox{10\raisebox{0.55ex}{0}},\mbox{10\raisebox{0.55ex}{1}},\mbox{10\raisebox{0.55ex}{2}},\mbox{10\raisebox{0.55ex}{3}},\mbox{10\raisebox{0.55ex}{4}}},
+    ymin=0.1,
+    ymax=119768,
+    point meta=explicit symbolic,
+    nodes near coords={\pgfplotspointmeta},
+    every node near coord/.append style={font=\tiny, rotate=90, anchor=west, inner sep=1pt},
+    clip=false,
+    scaled y ticks=false,
+    xmin=0.5,
+    xmax=9.5,
+    enlarge x limits=false,
+    ylabel={Cycle min (ms)},
+    ylabel style={font=\small},
+    xtick={1,2,3,4,5,6,7,8,9},
+    xticklabels={Deye CAN,GoodWe CAN,Growatt CAN JKBMS,Growatt CAN SeplosBMS,JKBMS CAN,Pylon CAN,SMA CAN,Sofar CAN,Victron CAN},
+    x tick label style={text width=1.3cm, align=center, font=\tiny},
+    y tick label style={font=\scriptsize},
+    legend style={at={(0.5,1.04)}, anchor=south, legend columns=3, font=\scriptsize},
+    grid=both,
+    major grid style={draw=gridline},
+]
+\addplot+[fill=bridge, draw=bridge] coordinates {(1,599.849) [599.8] (2,300.246) [300.2] (3,9980.699) [9980.7] (4,251.235) [251.2] (5,9907.993) [9908.0] (6,900.276) [900.3] (7,0.219) [0.2] (8,0.219) [0.2] (9,9960.726) [9960.7]};
+\addplot+[fill=forward, draw=forward] coordinates {(3,9980.681) [9980.7] (4,85.691) [85.7]};
+\addplot+[fill=direct, draw=direct] coordinates {(3,4980.232) [4980.2] (4,129.933) [129.9]};
+\legend{Bridge, Bridge Forward, Direct cable}
+\end{axis}
+\end{tikzpicture}
+
+\caption{Minimum CAN cycle duration, log scale.}
+\end{subfigure}
+
+
+\begin{subfigure}{\textwidth}
+\centering
+
+\begin{tikzpicture}
+\begin{axis}[
+    ybar,
+    width=0.99\textwidth,
+    height=5.8cm,
+    bar width=7pt,
+    ymode=log,
+    log basis y=10,
+    log origin y=infty,
+    ytick={0.1,1,10,100,1000,10000},
+    yticklabels={\mbox{10\raisebox{0.55ex}{-1}},\mbox{10\raisebox{0.55ex}{0}},\mbox{10\raisebox{0.55ex}{1}},\mbox{10\raisebox{0.55ex}{2}},\mbox{10\raisebox{0.55ex}{3}},\mbox{10\raisebox{0.55ex}{4}}},
+    ymin=0.1,
+    ymax=119768,
+    point meta=explicit symbolic,
+    nodes near coords={\pgfplotspointmeta},
+    every node near coord/.append style={font=\tiny, rotate=90, anchor=west, inner sep=1pt},
+    clip=false,
+    scaled y ticks=false,
+    xmin=0.5,
+    xmax=9.5,
+    enlarge x limits=false,
+    ylabel={Cycle max (ms)},
+    ylabel style={font=\small},
+    xtick={1,2,3,4,5,6,7,8,9},
+    xticklabels={Deye CAN,GoodWe CAN,Growatt CAN JKBMS,Growatt CAN SeplosBMS,JKBMS CAN,Pylon CAN,SMA CAN,Sofar CAN,Victron CAN},
+    x tick label style={text width=1.3cm, align=center, font=\tiny},
+    y tick label style={font=\scriptsize},
+    legend style={at={(0.5,1.04)}, anchor=south, legend columns=3, font=\scriptsize},
+    grid=both,
+    major grid style={draw=gridline},
+]
+\addplot+[fill=bridge, draw=bridge] coordinates {(1,1599.872) [1599.9] (2,7100.062) [7100.1] (3,9980.699) [9980.7] (4,1496.224) [1496.2] (5,9907.993) [9908.0] (6,2299.947) [2299.9] (7,0.237) [0.2] (8,0.237) [0.2] (9,9960.726) [9960.7]};
+\addplot+[fill=forward, draw=forward] coordinates {(3,9980.681) [9980.7] (4,871.815) [871.8]};
+\addplot+[fill=direct, draw=direct] coordinates {(3,4980.232) [4980.2] (4,831.769) [831.8]};
+\legend{Bridge, Bridge Forward, Direct cable}
+\end{axis}
+\end{tikzpicture}
+
+\caption{Maximum CAN cycle duration, log scale.}
+\end{subfigure}
+
+\caption{CAN cycle range overview charts.}
+\end{figure}
+
+
+
+\begin{figure}[p]
+\centering
+
+\begin{minipage}{\textwidth}
+\centering
+
+\begin{tikzpicture}
+\begin{axis}[
+    ybar,
+    width=\textwidth,
+    height=4.4cm,
+    bar width=7pt,
+    ymin=0,
+    point meta=explicit symbolic,
+    nodes near coords={\pgfplotspointmeta},
+    every node near coord/.append style={font=\tiny, rotate=90, anchor=west, inner sep=1pt},
+    enlarge y limits={upper,value=0.35},
+    clip=false,
+    scaled y ticks=false,
+    xmin=0.5,
+    xmax=11.5,
+    enlarge x limits=false,
+    ylabel={Complete exchanges/s},
+    ylabel style={font=\small},
+    xtick={1,2,3,4,5,6,7,8,9,10,11},
+    xticklabels={China Tower Modbus RS485,Daly RS485,Growatt RS485 JKBMS,Growatt RS485 SeplosBMS,JKBMS Modbus RS485,PACE Modbus RS485,Pylon RS485,Anenji Pylon RS485 JKBMS,Anenji Pylon RS485 SeplosBMS,Voltronic Modbus RS485,WOW Modbus RS485},
+    x tick label style={text width=1.05cm, align=center, font=\tiny},
+    y tick label style={font=\scriptsize},
+    legend style={at={(0.5,1.04)}, anchor=south, legend columns=3, font=\scriptsize},
+    grid=both,
+    major grid style={draw=gridline},
+]
+\addplot+[fill=bridge, draw=bridge] coordinates {(1,3.900) [3.9] (2,1.760) [1.8] (3,2.500) [2.5] (4,2.400) [2.4] (5,3.900) [3.9] (6,3.900) [3.9] (7,0.360) [0.4] (8,0.800) [0.8] (10,3.900) [3.9] (11,3.900) [3.9]};
+\addplot+[fill=forward, draw=forward] coordinates {(3,2.500) [2.5] (4,2.400) [2.4] (8,0.800) [0.8] (9,0.800) [0.8]};
+\addplot+[fill=direct, draw=direct] coordinates {(3,2.000) [2.0] (8,0.800) [0.8] (9,0.800) [0.8]};
+\legend{Bridge, Bridge Forward, Direct cable}
+\end{axis}
+\end{tikzpicture}
+
+\caption{RS485/UART exchange rate overview chart.}
+\end{minipage}
+
+\vspace{0.65cm}
+
+\begin{minipage}{\textwidth}
+\centering
+
+\begin{tikzpicture}
+\begin{axis}[
+    ybar,
+    width=\textwidth,
+    height=4.4cm,
+    bar width=7pt,
+    ymin=0,
+    point meta=explicit symbolic,
+    nodes near coords={\pgfplotspointmeta},
+    every node near coord/.append style={font=\tiny, rotate=90, anchor=west, inner sep=1pt},
+    enlarge y limits={upper,value=0.35},
+    clip=false,
+    scaled y ticks=false,
+    xmin=0.5,
+    xmax=9.5,
+    enlarge x limits=false,
+    ylabel={Cycles/s},
+    ylabel style={font=\small},
+    xtick={1,2,3,4,5,6,7,8,9},
+    xticklabels={Deye CAN,GoodWe CAN,Growatt CAN JKBMS,Growatt CAN SeplosBMS,JKBMS CAN,Pylon CAN,SMA CAN,Sofar CAN,Victron CAN},
+    x tick label style={text width=1.3cm, align=center, font=\tiny},
+    y tick label style={font=\scriptsize},
+    legend style={at={(0.5,1.04)}, anchor=south, legend columns=3, font=\scriptsize},
+    grid=both,
+    major grid style={draw=gridline},
+]
+\addplot+[fill=bridge, draw=bridge] coordinates {(1,0.900) [0.9] (2,0.400) [0.4] (3,0.100) [0.1] (4,1.000) [1.0] (5,0.100) [0.1] (6,0.500) [0.5] (7,6.000) [6.0] (8,5.920) [5.9] (9,0.100) [0.1]};
+\addplot+[fill=forward, draw=forward] coordinates {(3,0.100) [0.1] (4,1.100) [1.1]};
+\addplot+[fill=direct, draw=direct] coordinates {(3,0.200) [0.2] (4,1.200) [1.2]};
+\legend{Bridge, Bridge Forward, Direct cable}
+\end{axis}
+\end{tikzpicture}
+
+\caption{CAN cycle rate overview chart.}
+\end{minipage}
+
 \end{figure}
 
 
@@ -427,9 +935,9 @@ The following tables focus only on groups where all three modes are available: B
 \setlength{\tabcolsep}{3pt}
 \setlength{\LTpre}{0.35em}
 \setlength{\LTpost}{0.45em}
-\begin{longtable}{@{}>{\raggedright\arraybackslash}p{5.0cm}>{\raggedright\arraybackslash}p{4.0cm}rrr>{\raggedright\arraybackslash}p{2.8cm}>{\raggedright\arraybackslash}p{2.8cm}>{\raggedright\arraybackslash}p{2.8cm}@{}}
+\begin{longtable}{@{}L{5.0cm}L{4.0cm}L{1.65cm}L{1.65cm}L{1.65cm}L{2.8cm}L{2.8cm}L{2.8cm}@{}}
 \toprule
-Group & Metric & Bridge & Forward & Direct & Forward vs Bridge & Direct vs Bridge & Direct vs Forward \\
+Comparison group & Metric & Bridge & Forward & Direct & Forward vs Bridge & Direct vs Bridge & Direct vs Forward \\
 \midrule
 \endhead
 Growatt RS485 JKBMS & Complete exchanges/s & 2.5 & 2.5 & 2 & 0 (0\%) & \decrease{-0.5 (-20\%)} & \decrease{-0.5 (-20\%)} \\
@@ -456,9 +964,9 @@ Anenji Pylon RS485 JKBMS & Full exchange P95 (ms) & 153.03 & 149.32 & 145.15 & \
 \setlength{\tabcolsep}{3pt}
 \setlength{\LTpre}{0.35em}
 \setlength{\LTpost}{0.45em}
-\begin{longtable}{@{}>{\raggedright\arraybackslash}p{5.0cm}>{\raggedright\arraybackslash}p{4.0cm}rrr>{\raggedright\arraybackslash}p{2.8cm}>{\raggedright\arraybackslash}p{2.8cm}>{\raggedright\arraybackslash}p{2.8cm}@{}}
+\begin{longtable}{@{}L{5.0cm}L{4.0cm}L{1.65cm}L{1.65cm}L{1.65cm}L{2.8cm}L{2.8cm}L{2.8cm}@{}}
 \toprule
-Group & Metric & Bridge & Forward & Direct & Forward vs Bridge & Direct vs Bridge & Direct vs Forward \\
+Comparison group & Metric & Bridge & Forward & Direct & Forward vs Bridge & Direct vs Bridge & Direct vs Forward \\
 \midrule
 \endhead
 Growatt CAN JKBMS & Frames/s & 51.9 & 52 & 52 & \increase{+0.1 (+0.2\%)} & \increase{+0.1 (+0.2\%)} & 0 (0\%) \\
@@ -497,28 +1005,28 @@ Growatt CAN SeplosBMS & Inter-cycle gap P95 (ms) & 165.78 & 165.78 & 168.23 & 0 
 \setlength{\tabcolsep}{3pt}
 \setlength{\LTpre}{0.35em}
 \setlength{\LTpost}{0.45em}
-\begin{longtable}{@{}>{\raggedright\arraybackslash}p{4.8cm}>{\raggedright\arraybackslash}p{2.35cm}rrrrrr@{}}
+\begin{longtable}{@{}L{4.8cm}L{2.35cm}L{1.4cm}L{1.5cm}L{2.25cm}L{2.25cm}L{2.1cm}@{}}
 \toprule
-Target & Topology & Frames & Complete & Incomplete & Req->Rsp avg (ms) & Req->Rsp P95 (ms) & Full P95 (ms) \\
+Captured protocol & Topology & Frames & Loss rate & Req->Rsp avg (ms) & Req->Rsp P95 (ms) & Full P95 (ms) \\
 \midrule
 \endhead
-China Tower Modbus RS485 & Bridge & 79 & 39 & 1 & 5.02 & 5.34 & 53.53 \\
-Daly RS485 & Bridge & 88 & 44 & 0 & 14.46 & 18.06 & 297.65 \\
-Growatt RS485 JKBMS & Bridge & 50 & 25 & 0 & 4.76 & 5.29 & 53.52 \\
-Growatt RS485 SeplosBMS & Bridge & 49 & 24 & 1 & 49.52 & 49.86 & 97.81 \\
-Growatt RS485 JKBMS & Direct cable & 100 & 50 & 0 & 5.13 & 5.44 & 75 \\
-Growatt RS485 JKBMS & Bridge Forward & 50 & 25 & 0 & 5.01 & 5.29 & 53.48 \\
-Growatt RS485 SeplosBMS & Bridge Forward & 49 & 24 & 1 & 49.6 & 50.49 & 97.85 \\
-JKBMS Modbus RS485 & Bridge & 78 & 39 & 0 & 4.9 & 5.19 & 13.12 \\
-PACE Modbus RS485 & Bridge & 79 & 39 & 1 & 4.99 & 5.26 & 66.06 \\
-Pylon RS485 & Bridge & 49 & 18 & 5 & 4.82 & 5.54 & 148.67 \\
-Anenji Pylon RS485 JKBMS & Bridge & 20 & 8 & 4 & 9.71 & 9.91 & 153.03 \\
-Anenji Pylon RS485 JKBMS & Direct cable & 61 & 20 & 21 & 5.12 & 5.69 & 145.15 \\
-Anenji Pylon RS485 SeplosBMS & Direct cable & 50 & 20 & 10 & 9.89 & 12.04 & 151.5 \\
-Anenji Pylon RS485 JKBMS & Bridge Forward & 24 & 8 & 8 & 5.49 & 6.19 & 149.32 \\
-Anenji Pylon RS485 SeplosBMS & Bridge Forward & 20 & 8 & 4 & 9.47 & 9.88 & 153 \\
-Voltronic Modbus RS485 & Bridge & 78 & 39 & 0 & 99.8 & 101.84 & 119.96 \\
-WOW Modbus RS485 & Bridge & 78 & 39 & 0 & 4.8 & 5.09 & 65.81 \\
+China Tower Modbus RS485 & Bridge & 79 & 2.5\% & 5.02 & 5.34 & 53.53 \\
+Daly RS485 & Bridge & 88 & 0\% & 14.46 & 18.06 & 297.65 \\
+Growatt RS485 & Bridge & 50 & 0\% & 4.76 & 5.29 & 53.52 \\
+Growatt RS485 & Bridge & 49 & 4\% & 49.52 & 49.86 & 97.81 \\
+Growatt RS485 & Direct cable & 100 & 0\% & 5.13 & 5.44 & 75 \\
+Growatt RS485 & Bridge Forward & 50 & 0\% & 5.01 & 5.29 & 53.48 \\
+Growatt RS485 & Bridge Forward & 49 & 4\% & 49.6 & 50.49 & 97.85 \\
+JKBMS Modbus RS485 & Bridge & 78 & 0\% & 4.9 & 5.19 & 13.12 \\
+PACE Modbus RS485 & Bridge & 79 & 2.5\% & 4.99 & 5.26 & 66.06 \\
+Pylon RS485 & Bridge & 49 & 21.74\% & 4.82 & 5.54 & 148.67 \\
+Pylon RS485 & Bridge & 20 & 33.33\% & 9.71 & 9.91 & 153.03 \\
+Pylon RS485 & Direct cable & 61 & 51.22\% & 5.12 & 5.69 & 145.15 \\
+Pylon RS485 & Direct cable & 50 & 33.33\% & 9.89 & 12.04 & 151.5 \\
+Pylon RS485 & Bridge Forward & 24 & 50\% & 5.49 & 6.19 & 149.32 \\
+Pylon RS485 & Bridge Forward & 20 & 33.33\% & 9.47 & 9.88 & 153 \\
+Voltronic Modbus RS485 & Bridge & 78 & 0\% & 99.8 & 101.84 & 119.96 \\
+WOW Modbus RS485 & Bridge & 78 & 0\% & 4.8 & 5.09 & 65.81 \\
 \bottomrule
 \end{longtable}
 \endgroup
@@ -533,19 +1041,19 @@ WOW Modbus RS485 & Bridge & 78 & 39 & 0 & 4.8 & 5.09 & 65.81 \\
 \setlength{\tabcolsep}{3pt}
 \setlength{\LTpre}{0.35em}
 \setlength{\LTpost}{0.45em}
-\begin{longtable}{@{}>{\raggedright\arraybackslash}p{4.8cm}>{\raggedright\arraybackslash}p{2.35cm}rrrrrrrr@{}}
+\begin{longtable}{@{}L{4.8cm}L{2.35cm}L{1.2cm}L{1.0cm}L{1.2cm}L{1.9cm}L{1.9cm}L{1.9cm}L{1.9cm}L{1.1cm}@{}}
 \toprule
-Target & Topology & Frames & IDs & Cycles & Cycle min (ms) & Cycle avg (ms) & Cycle max (ms) & Cycle P95 (ms) & Errors \\
+Captured protocol & Topology & Frames & IDs & Cycles & Cycle min (ms) & Cycle avg (ms) & Cycle max (ms) & Cycle P95 (ms) & Errors \\
 \midrule
 \endhead
 Deye CAN & Bridge & 100 & 8 & 9 & 599.85 & 1011.01 & 1599.87 & 1599.87 & 0 \\
 GoodWe CAN & Bridge & 100 & 8 & 4 & 300.25 & 2399.97 & 7100.06 & 6275.02 & 0 \\
-Growatt CAN JKBMS & Bridge & 519 & 10 & 1 & 9980.7 & 9980.7 & 9980.7 & 9980.7 & 0 \\
-Growatt CAN SeplosBMS & Bridge & 130 & 12 & 10 & 251.23 & 851.37 & 1496.22 & 1221.32 & 0 \\
-Growatt CAN JKBMS & Direct cable & 260 & 10 & 1 & 4980.23 & 4980.23 & 4980.23 & 4980.23 & 0 \\
-Growatt CAN SeplosBMS & Direct cable & 65 & 12 & 6 & 129.93 & 687.13 & 831.77 & 831.77 & 0 \\
-Growatt CAN JKBMS & Bridge Forward & 520 & 10 & 1 & 9980.68 & 9980.68 & 9980.68 & 9980.68 & 0 \\
-Growatt CAN SeplosBMS & Bridge Forward & 129 & 12 & 11 & 85.69 & 755.94 & 871.81 & 861.95 & 0 \\
+Growatt CAN & Bridge & 519 & 10 & 1 & 9980.7 & 9980.7 & 9980.7 & 9980.7 & 0 \\
+Growatt CAN & Bridge & 130 & 12 & 10 & 251.23 & 851.37 & 1496.22 & 1221.32 & 0 \\
+Growatt CAN & Direct cable & 260 & 10 & 1 & 4980.23 & 4980.23 & 4980.23 & 4980.23 & 0 \\
+Growatt CAN & Direct cable & 65 & 12 & 6 & 129.93 & 687.13 & 831.77 & 831.77 & 0 \\
+Growatt CAN & Bridge Forward & 520 & 10 & 1 & 9980.68 & 9980.68 & 9980.68 & 9980.68 & 0 \\
+Growatt CAN & Bridge Forward & 129 & 12 & 11 & 85.69 & 755.94 & 871.81 & 861.95 & 0 \\
 JKBMS CAN & Bridge & 344 & 12 & 1 & 9907.99 & 9907.99 & 9907.99 & 9907.99 & 0 \\
 Pylon CAN & Bridge & 100 & 8 & 5 & 900.28 & 1900.01 & 2299.95 & 2299.95 & 0 \\
 SMA CAN & Bridge & 60 & 6 & 60 & 0.22 & 0.23 & 0.24 & 0.24 & 0 \\

@@ -51,6 +51,7 @@ python analysis/analyze_capture.py examples/direct/anenji-seplos-pylon-rs485-raw
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | `request_to_response_us` | 20 | 9,887.208 | 9,069.430 | 12,153.795 | 9,731.057 | 12,043.433 |
 | `full_exchange_us` | 20 | 107,676.065 | 65,191.905 | 151,609.075 | 107,414.997 | 151,498.699 |
+| `inter_cycle_gap_us` | 19 | 1,106,892.711 | 650,603.640 | 1,614,699.315 | 734,596.865 | 1,614,094.519 |
 
 Definitions:
 
@@ -62,6 +63,7 @@ request start ---- request end    response start ---- response end
 
 - `request_to_response_us`: response start minus request end.
 - `full_exchange_us`: response end minus request start.
+- `inter_cycle_gap_us`: time between the response end of one complete exchange and the request start of the next complete exchange.
 
 ## Generated Tables
 

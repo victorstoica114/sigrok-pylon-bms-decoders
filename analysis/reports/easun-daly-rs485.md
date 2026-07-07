@@ -51,6 +51,7 @@ python analysis/analyze_capture.py examples/bridge/easun-daly-rs485-raw-capture.
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | `request_to_response_us` | 44 | 14,458.976 | 11,987.095 | 18,095.990 | 14,048.380 | 18,060.297 |
 | `full_exchange_us` | 44 | 294,045.479 | 291,573.595 | 297,682.490 | 293,634.883 | 297,646.802 |
+| `inter_cycle_gap_us` | 43 | 271,066.451 | 269,414.240 | 272,681.260 | 270,570.460 | 272,393.405 |
 
 Definitions:
 
@@ -62,6 +63,7 @@ request start ---- request end    response start ---- response end
 
 - `request_to_response_us`: response start minus request end.
 - `full_exchange_us`: response end minus request start.
+- `inter_cycle_gap_us`: time between the response end of one complete exchange and the request start of the next complete exchange.
 
 ## Generated Tables
 

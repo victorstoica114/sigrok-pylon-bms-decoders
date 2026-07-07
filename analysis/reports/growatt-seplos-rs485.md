@@ -51,6 +51,7 @@ python analysis/analyze_capture.py examples/bridge/growatt-seplos-rs485-raw-capt
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | `request_to_response_us` | 24 | 49,517.093 | 49,022.880 | 51,760.200 | 49,430.690 | 49,863.536 |
 | `full_exchange_us` | 24 | 86,044.643 | 64,022.775 | 97,822.885 | 95,682.337 | 97,806.109 |
+| `inter_cycle_gap_us` | 23 | 319,014.850 | 309,189.420 | 339,691.905 | 310,305.875 | 339,619.852 |
 
 Definitions:
 
@@ -62,6 +63,7 @@ request start ---- request end    response start ---- response end
 
 - `request_to_response_us`: response start minus request end.
 - `full_exchange_us`: response end minus request start.
+- `inter_cycle_gap_us`: time between the response end of one complete exchange and the request start of the next complete exchange.
 
 ## Generated Tables
 

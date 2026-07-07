@@ -51,6 +51,7 @@ python analysis/analyze_capture.py examples/bridge/pace-modbus-rs485-raw-capture
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | `request_to_response_us` | 39 | 4,987.736 | 4,396.025 | 5,385.960 | 4,991.105 | 5,260.878 |
 | `full_exchange_us` | 39 | 56,207.464 | 46,480.715 | 66,221.520 | 47,356.220 | 66,064.784 |
+| `inter_cycle_gap_us` | 38 | 194,824.365 | 183,842.460 | 213,041.445 | 198,447.770 | 212,994.677 |
 
 Definitions:
 
@@ -62,6 +63,7 @@ request start ---- request end    response start ---- response end
 
 - `request_to_response_us`: response start minus request end.
 - `full_exchange_us`: response end minus request start.
+- `inter_cycle_gap_us`: time between the response end of one complete exchange and the request start of the next complete exchange.
 
 ## Generated Tables
 

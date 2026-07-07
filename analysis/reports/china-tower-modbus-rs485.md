@@ -51,6 +51,7 @@ python analysis/analyze_capture.py examples/bridge/china-tower-modbus-rs485-raw-
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | `request_to_response_us` | 39 | 5,015.035 | 4,286.525 | 5,549.810 | 5,038.930 | 5,337.927 |
 | `full_exchange_us` | 39 | 42,238.361 | 25,536.900 | 53,654.395 | 47,129.775 | 53,525.724 |
+| `inter_cycle_gap_us` | 38 | 210,161.634 | 196,255.520 | 233,716.280 | 206,433.860 | 225,931.406 |
 
 Definitions:
 
@@ -62,6 +63,7 @@ request start ---- request end    response start ---- response end
 
 - `request_to_response_us`: response start minus request end.
 - `full_exchange_us`: response end minus request start.
+- `inter_cycle_gap_us`: time between the response end of one complete exchange and the request start of the next complete exchange.
 
 ## Generated Tables
 

@@ -34,3 +34,4 @@
 
 - request_to_response_us: n=50, avg=5126.758 us, min=4878.360 us, max=5675.380 us, p50=5105.733 us, p95=5438.647 us
 - full_exchange_us: n=50, avg=59337.414 us, min=49671.905 us, max=75141.045 us, p50=54057.872 us, p95=75000.908 us
+- inter_cycle_gap_us: n=49, avg=440573.698 us, min=424874.015 us, max=450343.155 us, p50=445969.590 us, p95=450283.631 us

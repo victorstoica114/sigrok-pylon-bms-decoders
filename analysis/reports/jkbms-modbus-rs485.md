@@ -51,6 +51,7 @@ python analysis/analyze_capture.py examples/bridge/jkbms-modbus-rs485-raw-captur
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | `request_to_response_us` | 39 | 4,903.504 | 4,646.325 | 5,585.350 | 4,918.925 | 5,191.553 |
 | `full_exchange_us` | 39 | 9,281.989 | 6,283.480 | 13,269.185 | 8,922.580 | 13,115.590 |
+| `inter_cycle_gap_us` | 38 | 245,979.125 | 245,181.295 | 247,000.215 | 246,007.410 | 246,504.445 |
 
 Definitions:
 
@@ -62,6 +63,7 @@ request start ---- request end    response start ---- response end
 
 - `request_to_response_us`: response start minus request end.
 - `full_exchange_us`: response end minus request start.
+- `inter_cycle_gap_us`: time between the response end of one complete exchange and the request start of the next complete exchange.
 
 ## Generated Tables
 

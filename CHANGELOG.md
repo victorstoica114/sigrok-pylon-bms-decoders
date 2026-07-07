@@ -76,13 +76,39 @@
 - LaTeX top-delta table now displays microsecond metrics as milliseconds for easier reading.
 - LaTeX key observations now include explicit units for latency, duration, and frame-rate deltas.
 - LaTeX top-delta table is now centered with left-aligned percentage changes and tighter final-column spacing.
-- LaTeX top-delta table now includes every Direct-vs-Bridge change at or above 40% absolute difference instead of a fixed row count.
-- LaTeX top-delta table column widths now keep the threshold rows on single lines.
+- LaTeX Direct-vs-Bridge table now includes all comparison rows sorted by absolute percentage difference.
+- LaTeX Direct-vs-Bridge table column widths now keep the comparison rows on single lines.
 - LaTeX three-mode delta tables now display timing metrics in milliseconds with compact decimal formatting.
 - LaTeX three-mode delta tables now use wider group columns and tighter spacing to keep group names on single lines.
 - LaTeX three-mode delta tables now use wider metric columns to keep inter-cycle metric labels on single lines.
 - LaTeX three-mode delta tables now share one landscape page when they fit.
 - LaTeX capture overview tables now share one landscape page, use display protocol names, and show timing metrics in milliseconds.
+- LaTeX RS485/UART capture overview table now reports Loss rate instead of separate Complete and Incomplete sequence counts.
+- LaTeX analysis report now includes explicit capture context metadata for captured side, inverter protocol, BMS device, and BMS protocol evidence.
+- LaTeX capture context metadata now records fixed inverter protocol evidence for Easun/Pylon CAN and Anenji/Pylon RS485 tests.
+- LaTeX capture context metadata now marks Pylon, SMA, Sofar, and Victron CAN bridge captures as BMS-side evidence.
+- LaTeX capture context metadata now records Growatt CAN as the inverter-side protocol for BMS-side CAN bridge captures.
+- LaTeX capture context metadata now records Pylon CAN as the inverter-side protocol for the China Tower Modbus bridge capture.
+- LaTeX capture context metadata now records Pylon RS485 as the inverter-side protocol for Voltronic and WOW Modbus bridge captures.
+- LaTeX capture context metadata now includes the inverter device, and the Direct-vs-Bridge table uses abbreviated device/protocol columns instead of a comparison-group column.
+- LaTeX Direct-vs-Bridge table now uses landscape layout with wider abbreviated Direct, Bridge, and Diff columns.
+- LaTeX Direct-vs-Bridge table now left-aligns every column.
+- LaTeX report tables now use left-aligned column types consistently, including numeric columns.
+- LaTeX protocol overview now lists clear RS485/UART timing definitions before the first overview figure.
+- LaTeX RS485/UART overview charts now show numeric value labels on the bars.
+- LaTeX RS485/UART overview chart value labels now use one decimal place and wider bars.
+- LaTeX protocol overview charts now all use the same wider-bar, one-decimal value-label template.
+- LaTeX log-scale overview charts now reserve extra headroom so value labels stay inside the figure.
+- LaTeX protocol overview chart value labels now start at the bar tip and reserve more vertical headroom.
+- LaTeX CAN cycle min/avg/max charts now use taller axes with extra log-scale headroom for value labels.
+- Offline analysis now calculates RS485/UART inter-exchange gap timing and the LaTeX report includes matching RS485 gap and CAN cycle P95 overview charts.
+- LaTeX protocol overview now places the CAN Cycle avg/Cycle P95 figure immediately after the RS485/UART overview figure.
+- LaTeX protocol overview now places the CAN inter-cycle gap figure immediately after the RS485/UART inter-exchange gap figure.
+- LaTeX RS485/UART inter-exchange and CAN inter-cycle gap figures now include average gap charts alongside min and max.
+- LaTeX RS485/UART inter-exchange and CAN inter-cycle gap charts now keep the standard chart height used by the rest of the report.
+- LaTeX protocol overview now includes a Complete exchanges/s RS485/UART rate chart before the CAN Cycles/s chart.
+- LaTeX rate overview figures now keep the RS485/UART Complete exchanges/s chart and the CAN Cycles/s chart on the same page.
+- Offline analysis and the LaTeX report now include RS485/UART full-exchange min/max range charts.
 - Active decoder set is currently limited to validated decoders: `China Tower Modbus`, `Daly RS485`, `Deye CAN`, `GoodWe CAN`, `Growatt CAN`, `Growatt RS485`, `JKBMS CAN`, `JKBMS Modbus`, `PACE Modbus`, `Pylon CAN`, `Pylon RS485`, `SMA CAN`, `Sofar CAN`, `Victron CAN`, `Voltronic Modbus`, and `WOW Modbus`.
 - Updated bridge-mode example capture and PulseView session for Growatt CAN traffic with a JKBMS test topology.
 - Updated bridge-mode example capture and PulseView session for Growatt CAN traffic with a SeplosBMS test topology.

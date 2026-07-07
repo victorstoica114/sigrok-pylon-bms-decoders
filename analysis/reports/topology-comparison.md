@@ -79,33 +79,33 @@ These groups are still useful, but they do not have all three modes captured yet
 
 ### Growatt RS485 JKBMS
 
-| Topology | Report | Duration (s) | Frames | Frames/s | Complete | Complete/s | Incomplete | Bad/invalid | Req->Rsp avg (us) | Req->Rsp P95 (us) | Full avg (us) | Full P95 (us) |
-| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| Bridge | [details](growatt-rs485.md) | 10.000 | 50 | 5.000 | 25 | 2.500 | 0 | 0 | 4759.997 | 5294.317 | 49094.793 | 53520.070 |
-| Bridge Forward | [details](bridge-forward-growatt-rs485.md) | 10.000 | 50 | 5.000 | 25 | 2.500 | 0 | 0 | 5008.099 | 5293.782 | 48926.211 | 53484.774 |
-| Direct cable | [details](direct-growatt-rs485.md) | 25.000 | 100 | 4.000 | 50 | 2.000 | 0 | 0 | 5126.758 | 5438.647 | 59337.414 | 75000.908 |
+| Topology | Report | Duration (s) | Frames | Frames/s | Complete | Complete/s | Incomplete | Bad/invalid | Req->Rsp avg (us) | Req->Rsp P95 (us) | Full min (us) | Full avg (us) | Full max (us) | Full P95 (us) |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Bridge | [details](growatt-rs485.md) | 10.000 | 50 | 5.000 | 25 | 2.500 | 0 | 0 | 4759.997 | 5294.317 | 42255.805 | 49094.793 | 53555.285 | 53520.070 |
+| Bridge Forward | [details](bridge-forward-growatt-rs485.md) | 10.000 | 50 | 5.000 | 25 | 2.500 | 0 | 0 | 5008.099 | 5293.782 | 42171.180 | 48926.211 | 53590.030 | 53484.774 |
+| Direct cable | [details](direct-growatt-rs485.md) | 25.000 | 100 | 4.000 | 50 | 2.000 | 0 | 0 | 5126.758 | 5438.647 | 49671.905 | 59337.414 | 75141.045 | 75000.908 |
 
 ### Growatt RS485 SeplosBMS
 
-| Topology | Report | Duration (s) | Frames | Frames/s | Complete | Complete/s | Incomplete | Bad/invalid | Req->Rsp avg (us) | Req->Rsp P95 (us) | Full avg (us) | Full P95 (us) |
-| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| Bridge | [details](growatt-seplos-rs485.md) | 10.000 | 49 | 4.900 | 24 | 2.400 | 1 | 0 | 49517.093 | 49863.536 | 86044.643 | 97806.109 |
-| Bridge Forward | [details](bridge-forward-growatt-seplos-rs485.md) | 10.000 | 49 | 4.900 | 24 | 2.400 | 1 | 0 | 49604.182 | 50490.317 | 86131.735 | 97846.399 |
+| Topology | Report | Duration (s) | Frames | Frames/s | Complete | Complete/s | Incomplete | Bad/invalid | Req->Rsp avg (us) | Req->Rsp P95 (us) | Full min (us) | Full avg (us) | Full max (us) | Full P95 (us) |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Bridge | [details](growatt-seplos-rs485.md) | 10.000 | 49 | 4.900 | 24 | 2.400 | 1 | 0 | 49517.093 | 49863.536 | 64022.775 | 86044.643 | 97822.885 | 97806.109 |
+| Bridge Forward | [details](bridge-forward-growatt-seplos-rs485.md) | 10.000 | 49 | 4.900 | 24 | 2.400 | 1 | 0 | 49604.182 | 50490.317 | 64375.440 | 86131.735 | 98205.740 | 97846.399 |
 
 ### Anenji Pylon RS485 JKBMS
 
-| Topology | Report | Duration (s) | Frames | Frames/s | Complete | Complete/s | Incomplete | Bad/invalid | Req->Rsp avg (us) | Req->Rsp P95 (us) | Full avg (us) | Full P95 (us) |
-| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| Bridge | [details](anenji-pylon-rs485.md) | 10.000 | 20 | 2.000 | 8 | 0.800 | 4 | 0 | 9706.670 | 9912.793 | 111164.319 | 153034.215 |
-| Bridge Forward | [details](bridge-forward-anenji-pylon-rs485.md) | 10.000 | 24 | 2.400 | 8 | 0.800 | 8 | 0 | 5488.619 | 6190.079 | 106950.364 | 149320.428 |
-| Direct cable | [details](direct-anenji-jkbms-pylon-rs485.md) | 25.000 | 61 | 2.440 | 20 | 0.800 | 21 | 0 | 5124.941 | 5692.958 | 102917.894 | 145154.533 |
+| Topology | Report | Duration (s) | Frames | Frames/s | Complete | Complete/s | Incomplete | Bad/invalid | Req->Rsp avg (us) | Req->Rsp P95 (us) | Full min (us) | Full avg (us) | Full max (us) | Full P95 (us) |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Bridge | [details](anenji-pylon-rs485.md) | 10.000 | 20 | 2.000 | 8 | 0.800 | 4 | 0 | 9706.670 | 9912.793 | 69059.730 | 111164.319 | 153046.400 | 153034.215 |
+| Bridge Forward | [details](bridge-forward-anenji-pylon-rs485.md) | 10.000 | 24 | 2.400 | 8 | 0.800 | 8 | 0 | 5488.619 | 6190.079 | 64878.425 | 106950.364 | 149492.540 | 149320.428 |
+| Direct cable | [details](direct-anenji-jkbms-pylon-rs485.md) | 25.000 | 61 | 2.440 | 20 | 0.800 | 21 | 0 | 5124.941 | 5692.958 | 60414.530 | 102917.894 | 145354.945 | 145154.533 |
 
 ### Anenji Pylon RS485 SeplosBMS
 
-| Topology | Report | Duration (s) | Frames | Frames/s | Complete | Complete/s | Incomplete | Bad/invalid | Req->Rsp avg (us) | Req->Rsp P95 (us) | Full avg (us) | Full P95 (us) |
-| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| Bridge Forward | [details](bridge-forward-anenji-seplos-pylon-rs485.md) | 10.000 | 20 | 2.000 | 8 | 0.800 | 4 | 0 | 9469.731 | 9877.579 | 110927.388 | 153001.644 |
-| Direct cable | [details](direct-anenji-seplos-pylon-rs485.md) | 25.000 | 50 | 2.000 | 20 | 0.800 | 10 | 0 | 9887.208 | 12043.433 | 107676.065 | 151498.699 |
+| Topology | Report | Duration (s) | Frames | Frames/s | Complete | Complete/s | Incomplete | Bad/invalid | Req->Rsp avg (us) | Req->Rsp P95 (us) | Full min (us) | Full avg (us) | Full max (us) | Full P95 (us) |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Bridge Forward | [details](bridge-forward-anenji-seplos-pylon-rs485.md) | 10.000 | 20 | 2.000 | 8 | 0.800 | 4 | 0 | 9469.731 | 9877.579 | 68932.450 | 110927.388 | 153102.775 | 153001.644 |
+| Direct cable | [details](direct-anenji-seplos-pylon-rs485.md) | 25.000 | 50 | 2.000 | 20 | 0.800 | 10 | 0 | 9887.208 | 12043.433 | 65191.905 | 107676.065 | 151609.075 | 151498.699 |
 
 ## CAN Comparisons
 

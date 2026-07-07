@@ -51,6 +51,7 @@ python analysis/analyze_capture.py examples/bridge/anenji-pylon-rs485-raw-captur
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | `request_to_response_us` | 8 | 9,706.670 | 9,219.085 | 9,922.345 | 9,828.750 | 9,912.793 |
 | `full_exchange_us` | 8 | 111,164.319 | 69,059.730 | 153,046.400 | 111,014.717 | 153,034.215 |
+| `inter_cycle_gap_us` | 7 | 1,059,938.776 | 647,998.470 | 1,527,191.470 | 730,394.285 | 1,527,126.174 |
 
 Definitions:
 
@@ -62,6 +63,7 @@ request start ---- request end    response start ---- response end
 
 - `request_to_response_us`: response start minus request end.
 - `full_exchange_us`: response end minus request start.
+- `inter_cycle_gap_us`: time between the response end of one complete exchange and the request start of the next complete exchange.
 
 ## Generated Tables
 

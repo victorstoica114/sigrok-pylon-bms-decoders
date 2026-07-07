@@ -1468,6 +1468,23 @@ def serial_timing_values(result: AnalysisResult, key: str) -> list[float]:
     return values
 
 
+def serial_exchange_gap_values(result: AnalysisResult) -> list[float]:
+    complete_sequences = []
+    for sequence in result.sequences:
+        if not sequence.complete or sequence.request is None or sequence.response is None:
+            continue
+        complete_sequences.append((sequence.request.start_sample, sequence.response.end_sample))
+
+    complete_sequences.sort()
+    values = []
+    for previous, current in zip(complete_sequences, complete_sequences[1:]):
+        previous_end = previous[1]
+        current_start = current[0]
+        if current_start >= previous_end:
+            values.append(us_between(previous_end, current_start, result.metadata.samplerate))
+    return values
+
+
 def can_cycle_values(result: AnalysisResult, mode: str) -> list[float]:
     values = []
     for cycle in result.cycles:
@@ -1576,6 +1593,7 @@ def write_summary_md(path: Path, result: AnalysisResult) -> None:
             "",
             stats_line("request_to_response_us", serial_timing_values(result, "request_to_response_us")),
             stats_line("full_exchange_us", serial_timing_values(result, "full_exchange_us")),
+            stats_line("inter_cycle_gap_us", serial_exchange_gap_values(result)),
         ])
 
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
@@ -1710,6 +1728,7 @@ def write_report_md(path: Path, result: AnalysisResult) -> None:
             "| --- | ---: | ---: | ---: | ---: | ---: | ---: |",
             "| `request_to_response_us` | " + " | ".join(table_stats(serial_timing_values(result, "request_to_response_us"))) + " |",
             "| `full_exchange_us` | " + " | ".join(table_stats(serial_timing_values(result, "full_exchange_us"))) + " |",
+            "| `inter_cycle_gap_us` | " + " | ".join(table_stats(serial_exchange_gap_values(result))) + " |",
             "",
             "Definitions:",
             "",
@@ -1721,6 +1740,7 @@ def write_report_md(path: Path, result: AnalysisResult) -> None:
             "",
             "- `request_to_response_us`: response start minus request end.",
             "- `full_exchange_us`: response end minus request start.",
+            "- `inter_cycle_gap_us`: time between the response end of one complete exchange and the request start of the next complete exchange.",
         ])
 
     lines.extend([
@@ -1756,7 +1776,11 @@ def overview_csv_row(result: AnalysisResult) -> dict[str, str | int]:
     request_to_response = serial_timing_values(result, "request_to_response_us")
     full_exchange = serial_timing_values(result, "full_exchange_us")
     cycle_duration = can_cycle_values(result, "duration")
-    inter_cycle_gap = can_cycle_values(result, "gap")
+    inter_cycle_gap = (
+        can_cycle_values(result, "gap")
+        if result.config.kind == "can"
+        else serial_exchange_gap_values(result)
+    )
     complete_count = sum(1 for sequence in result.sequences if sequence.complete)
     can_ids = {frame_value(frame, "can_id") for frame in result.frames} if result.config.kind == "can" else set()
     decode_errors = (
@@ -1784,6 +1808,8 @@ def overview_csv_row(result: AnalysisResult) -> dict[str, str | int]:
         "request_to_response_avg_us": overview_stat(request_to_response, "avg"),
         "request_to_response_p95_us": overview_stat(request_to_response, "p95"),
         "full_exchange_avg_us": overview_stat(full_exchange, "avg"),
+        "full_exchange_min_us": overview_stat(full_exchange, "min"),
+        "full_exchange_max_us": overview_stat(full_exchange, "max"),
         "full_exchange_p95_us": overview_stat(full_exchange, "p95"),
         "cycle_duration_avg_us": overview_stat(cycle_duration, "avg"),
         "cycle_duration_min_us": overview_stat(cycle_duration, "min"),
@@ -1816,6 +1842,8 @@ def write_overview_csv(path: Path, results: list[AnalysisResult]) -> None:
         "request_to_response_avg_us",
         "request_to_response_p95_us",
         "full_exchange_avg_us",
+        "full_exchange_min_us",
+        "full_exchange_max_us",
         "full_exchange_p95_us",
         "cycle_duration_avg_us",
         "cycle_duration_min_us",
@@ -1847,8 +1875,8 @@ def write_overview_md(path: Path, results: list[AnalysisResult]) -> None:
         "",
         "## RS485/UART Captures",
         "",
-        "| Target | Frames | Complete | Incomplete | Req->Rsp avg (us) | Req->Rsp P95 (us) | Full avg (us) | Full P95 (us) |",
-        "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
+        "| Target | Frames | Complete | Incomplete | Req->Rsp avg (us) | Req->Rsp P95 (us) | Full min (us) | Full avg (us) | Full max (us) | Full P95 (us) |",
+        "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
     ]
     for result in serial_results:
         request_to_response = serial_timing_values(result, "request_to_response_us")
@@ -1862,7 +1890,9 @@ def write_overview_md(path: Path, results: list[AnalysisResult]) -> None:
             f"| {len(result.sequences) - complete_count} "
             f"| {overview_stat(request_to_response, 'avg')} "
             f"| {overview_stat(request_to_response, 'p95')} "
+            f"| {overview_stat(full_exchange, 'min')} "
             f"| {overview_stat(full_exchange, 'avg')} "
+            f"| {overview_stat(full_exchange, 'max')} "
             f"| {overview_stat(full_exchange, 'p95')} |"
         )
 
@@ -2095,6 +2125,8 @@ def comparison_csv_row(group: TopologyComparisonGroup, record: OverviewRecord) -
         "request_to_response_avg_us": metric_text(record, "request_to_response_avg_us"),
         "request_to_response_p95_us": metric_text(record, "request_to_response_p95_us"),
         "full_exchange_avg_us": metric_text(record, "full_exchange_avg_us"),
+        "full_exchange_min_us": metric_text(record, "full_exchange_min_us"),
+        "full_exchange_max_us": metric_text(record, "full_exchange_max_us"),
         "full_exchange_p95_us": metric_text(record, "full_exchange_p95_us"),
         "cycle_duration_avg_us": metric_text(record, "cycle_duration_avg_us"),
         "cycle_duration_min_us": metric_text(record, "cycle_duration_min_us"),
@@ -2128,6 +2160,8 @@ def write_comparison_csv(path: Path, records: list[OverviewRecord]) -> None:
         "request_to_response_avg_us",
         "request_to_response_p95_us",
         "full_exchange_avg_us",
+        "full_exchange_min_us",
+        "full_exchange_max_us",
         "full_exchange_p95_us",
         "cycle_duration_avg_us",
         "cycle_duration_min_us",
@@ -2208,8 +2242,8 @@ def write_serial_comparison_group(lines: list[str], group: TopologyComparisonGro
         "",
         f"### {group.name}",
         "",
-        "| Topology | Report | Duration (s) | Frames | Frames/s | Complete | Complete/s | Incomplete | Bad/invalid | Req->Rsp avg (us) | Req->Rsp P95 (us) | Full avg (us) | Full P95 (us) |",
-        "| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
+        "| Topology | Report | Duration (s) | Frames | Frames/s | Complete | Complete/s | Incomplete | Bad/invalid | Req->Rsp avg (us) | Req->Rsp P95 (us) | Full min (us) | Full avg (us) | Full max (us) | Full P95 (us) |",
+        "| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
     ])
     for record in records:
         lines.append(
@@ -2224,7 +2258,9 @@ def write_serial_comparison_group(lines: list[str], group: TopologyComparisonGro
             f"| {metric_text(record, 'bad_or_invalid_frames')} "
             f"| {metric_text(record, 'request_to_response_avg_us')} "
             f"| {metric_text(record, 'request_to_response_p95_us')} "
+            f"| {metric_text(record, 'full_exchange_min_us')} "
             f"| {metric_text(record, 'full_exchange_avg_us')} "
+            f"| {metric_text(record, 'full_exchange_max_us')} "
             f"| {metric_text(record, 'full_exchange_p95_us')} |"
         )
 

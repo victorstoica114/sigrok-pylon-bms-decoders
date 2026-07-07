@@ -51,6 +51,7 @@ python analysis/analyze_capture.py examples/bridge_forward/anenji-seplos-pylon-r
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | `request_to_response_us` | 8 | 9,469.731 | 9,141.200 | 9,978.710 | 9,427.405 | 9,877.579 |
 | `full_exchange_us` | 8 | 110,927.388 | 68,932.450 | 153,102.775 | 110,919.262 | 153,001.644 |
+| `inter_cycle_gap_us` | 7 | 1,072,162.129 | 646,655.530 | 1,611,293.610 | 731,028.125 | 1,586,190.683 |
 
 Definitions:
 
@@ -62,6 +63,7 @@ request start ---- request end    response start ---- response end
 
 - `request_to_response_us`: response start minus request end.
 - `full_exchange_us`: response end minus request start.
+- `inter_cycle_gap_us`: time between the response end of one complete exchange and the request start of the next complete exchange.
 
 ## Generated Tables
 
