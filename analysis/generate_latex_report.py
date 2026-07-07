@@ -109,11 +109,12 @@ def parse_delta(text: str) -> tuple[float, float] | None:
     return float(match.group(1)), float(match.group(2))
 
 
-def format_delta_text(text: str) -> str:
+def format_delta_text(text: str, value_scale: float = 1.0) -> str:
     parsed = parse_delta(text)
     if parsed is None:
         return text
     delta, percent = parsed
+    delta *= value_scale
     return (
         f"{format_number(delta, signed=True)} "
         f"({format_number(percent, signed=True)}%)"
@@ -150,10 +151,10 @@ def tex_int(text: str) -> str:
         return tex_escape(text)
 
 
-def tex_delta(text: str) -> str:
+def tex_delta(text: str, value_scale: float = 1.0) -> str:
     if not text:
         return "--"
-    formatted = format_delta_text(text)
+    formatted = format_delta_text(text, value_scale)
     escaped = tex_escape(formatted)
     direction = delta_direction(text)
     if direction > 0:
@@ -161,6 +162,12 @@ def tex_delta(text: str) -> str:
     if direction < 0:
         return rf"\decrease{{{escaped}}}"
     return escaped
+
+
+def display_metric_and_scale(metric: str) -> tuple[str, float]:
+    if metric.endswith("(us)"):
+        return metric[:-4].rstrip() + " (ms)", 0.001
+    return metric, 1.0
 
 
 def topology_for_capture(capture: str) -> str:
@@ -602,11 +609,12 @@ def overview_table(
 def direct_delta_table(rows: list[dict[str, str]]) -> str:
     body = []
     for row in top_direct_deltas(rows):
+        metric, value_scale = display_metric_and_scale(row["metric"])
         body.append(
             " & ".join([
                 tex_escape(row["group"]),
-                tex_escape(row["metric"]),
-                tex_delta(row["direct_vs_bridge"]),
+                tex_escape(metric),
+                tex_delta(row["direct_vs_bridge"], value_scale),
                 tex_escape(row["abs_pct"]) + r"\%",
             ])
             + r" \\"
@@ -615,7 +623,7 @@ def direct_delta_table(rows: list[dict[str, str]]) -> str:
 \begin{{table}}[htbp]
 \centering
 \caption{{Largest Direct cable versus Bridge changes by absolute percentage.}}
-\begin{{tabularx}}{{\textwidth}}{{p{{3.8cm}}p{{3.2cm}}>{{\raggedright\arraybackslash}}Xr}}
+\begin{{tabularx}}{{\textwidth}}{{p{{5.0cm}}p{{2.7cm}}>{{\raggedright\arraybackslash}}Xr}}
 \toprule
 Group & Metric & Direct vs Bridge & Abs. change \\
 \midrule
