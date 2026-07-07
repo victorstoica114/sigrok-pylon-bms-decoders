@@ -488,65 +488,73 @@ Growatt CAN SeplosBMS & Inter-cycle gap P95 (ms) & 165.78 & 165.78 & 168.23 & 0 
 
 
 \begin{landscape}
+
 \section{Capture Overview}
 
 \subsection{RS485/UART Capture Overview}
+\begingroup
 \scriptsize
-\begin{longtable}{p{4.1cm}p{2.0cm}rrrrrr}
+\setlength{\tabcolsep}{3pt}
+\setlength{\LTpre}{0.35em}
+\setlength{\LTpost}{0.45em}
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{4.8cm}>{\raggedright\arraybackslash}p{2.35cm}rrrrrr@{}}
 \toprule
-Target & Topology & Frames & Complete & Incomplete & Req->Rsp avg (us) & Req->Rsp P95 (us) & Full P95 (us) \\
+Target & Topology & Frames & Complete & Incomplete & Req->Rsp avg (ms) & Req->Rsp P95 (ms) & Full P95 (ms) \\
 \midrule
 \endhead
-china tower modbus & Bridge & 79 & 39 & 1 & 5015.03 & 5337.93 & 53525.72 \\
-daly rs485 & Bridge & 88 & 44 & 0 & 14458.98 & 18060.3 & 297646.8 \\
-growatt rs485 & Bridge & 50 & 25 & 0 & 4760 & 5294.32 & 53520.07 \\
-growatt seplos rs485 & Bridge & 49 & 24 & 1 & 49517.09 & 49863.54 & 97806.11 \\
-direct growatt rs485 & Direct cable & 100 & 50 & 0 & 5126.76 & 5438.65 & 75000.91 \\
-forward growatt rs485 & Bridge Forward & 50 & 25 & 0 & 5008.1 & 5293.78 & 53484.77 \\
-forward growatt seplos rs485 & Bridge Forward & 49 & 24 & 1 & 49604.18 & 50490.32 & 97846.4 \\
-jkbms modbus & Bridge & 78 & 39 & 0 & 4903.5 & 5191.55 & 13115.59 \\
-pace modbus & Bridge & 79 & 39 & 1 & 4987.74 & 5260.88 & 66064.78 \\
-pylon rs485 & Bridge & 49 & 18 & 5 & 4817.5 & 5537.46 & 148667.74 \\
-anenji pylon rs485 & Bridge & 20 & 8 & 4 & 9706.67 & 9912.79 & 153034.21 \\
-direct anenji jkbms pylon rs485 & Direct cable & 61 & 20 & 21 & 5124.94 & 5692.96 & 145154.53 \\
-direct anenji seplos pylon rs485 & Direct cable & 50 & 20 & 10 & 9887.21 & 12043.43 & 151498.7 \\
-forward anenji pylon rs485 & Bridge Forward & 24 & 8 & 8 & 5488.62 & 6190.08 & 149320.43 \\
-forward anenji seplos pylon rs485 & Bridge Forward & 20 & 8 & 4 & 9469.73 & 9877.58 & 153001.64 \\
-voltronic modbus & Bridge & 78 & 39 & 0 & 99796.75 & 101837.19 & 119962.1 \\
-wow modbus & Bridge & 78 & 39 & 0 & 4799.13 & 5093.6 & 65808.75 \\
+China Tower Modbus RS485 & Bridge & 79 & 39 & 1 & 5.02 & 5.34 & 53.53 \\
+Daly RS485 & Bridge & 88 & 44 & 0 & 14.46 & 18.06 & 297.65 \\
+Growatt RS485 JKBMS & Bridge & 50 & 25 & 0 & 4.76 & 5.29 & 53.52 \\
+Growatt RS485 SeplosBMS & Bridge & 49 & 24 & 1 & 49.52 & 49.86 & 97.81 \\
+Growatt RS485 JKBMS & Direct cable & 100 & 50 & 0 & 5.13 & 5.44 & 75 \\
+Growatt RS485 JKBMS & Bridge Forward & 50 & 25 & 0 & 5.01 & 5.29 & 53.48 \\
+Growatt RS485 SeplosBMS & Bridge Forward & 49 & 24 & 1 & 49.6 & 50.49 & 97.85 \\
+JKBMS Modbus RS485 & Bridge & 78 & 39 & 0 & 4.9 & 5.19 & 13.12 \\
+PACE Modbus RS485 & Bridge & 79 & 39 & 1 & 4.99 & 5.26 & 66.06 \\
+Pylon RS485 & Bridge & 49 & 18 & 5 & 4.82 & 5.54 & 148.67 \\
+Anenji Pylon RS485 JKBMS & Bridge & 20 & 8 & 4 & 9.71 & 9.91 & 153.03 \\
+Anenji Pylon RS485 JKBMS & Direct cable & 61 & 20 & 21 & 5.12 & 5.69 & 145.15 \\
+Anenji Pylon RS485 SeplosBMS & Direct cable & 50 & 20 & 10 & 9.89 & 12.04 & 151.5 \\
+Anenji Pylon RS485 JKBMS & Bridge Forward & 24 & 8 & 8 & 5.49 & 6.19 & 149.32 \\
+Anenji Pylon RS485 SeplosBMS & Bridge Forward & 20 & 8 & 4 & 9.47 & 9.88 & 153 \\
+Voltronic Modbus RS485 & Bridge & 78 & 39 & 0 & 99.8 & 101.84 & 119.96 \\
+WOW Modbus RS485 & Bridge & 78 & 39 & 0 & 4.8 & 5.09 & 65.81 \\
 \bottomrule
 \end{longtable}
-\normalsize
-\end{landscape}
+\endgroup
 
 
 
-\begin{landscape}
 
 
 \subsection{CAN Capture Overview}
+\begingroup
 \scriptsize
-\begin{longtable}{p{3.6cm}p{1.8cm}rrrrrrrr}
+\setlength{\tabcolsep}{3pt}
+\setlength{\LTpre}{0.35em}
+\setlength{\LTpost}{0.45em}
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{4.8cm}>{\raggedright\arraybackslash}p{2.35cm}rrrrrrrr@{}}
 \toprule
-Target & Topology & Frames & IDs & Cycles & Cycle min (us) & Cycle avg (us) & Cycle max (us) & Cycle P95 (us) & Errors \\
+Target & Topology & Frames & IDs & Cycles & Cycle min (ms) & Cycle avg (ms) & Cycle max (ms) & Cycle P95 (ms) & Errors \\
 \midrule
 \endhead
-deye can & Bridge & 100 & 8 & 9 & 599848.77 & 1011013.33 & 1599872.42 & 1599871.23 & 0 \\
-goodwe can & Bridge & 100 & 8 & 4 & 300245.9 & 2399973.05 & 7100062.15 & 6275024.24 & 0 \\
-growatt can & Bridge & 519 & 10 & 1 & 9980699.27 & 9980699.27 & 9980699.27 & 9980699.27 & 0 \\
-growatt seplos can & Bridge & 130 & 12 & 10 & 251234.86 & 851373.72 & 1496223.99 & 1221318.48 & 0 \\
-direct growatt can & Direct cable & 260 & 10 & 1 & 4980232.08 & 4980232.08 & 4980232.08 & 4980232.08 & 0 \\
-direct growatt seplos can & Direct cable & 65 & 12 & 6 & 129932.96 & 687125.94 & 831769.22 & 831768.79 & 0 \\
-forward growatt can & Bridge Forward & 520 & 10 & 1 & 9980680.5 & 9980680.5 & 9980680.5 & 9980680.5 & 0 \\
-forward growatt seplos can & Bridge Forward & 129 & 12 & 11 & 85691.12 & 755942 & 871814.91 & 861952.16 & 0 \\
-jkbms can & Bridge & 344 & 12 & 1 & 9907992.71 & 9907992.71 & 9907992.71 & 9907992.71 & 0 \\
-pylon can & Bridge & 100 & 8 & 5 & 900275.94 & 1900011.26 & 2299947.27 & 2299945.2 & 0 \\
-sma can & Bridge & 60 & 6 & 60 & 219.4 & 230.73 & 237.4 & 237.4 & 0 \\
-sofar can & Bridge & 148 & 6 & 148 & 219.4 & 228.76 & 237.4 & 237.4 & 0 \\
-victron can & Bridge & 250 & 19 & 1 & 9960725.84 & 9960725.84 & 9960725.84 & 9960725.84 & 0 \\
+Deye CAN & Bridge & 100 & 8 & 9 & 599.85 & 1011.01 & 1599.87 & 1599.87 & 0 \\
+GoodWe CAN & Bridge & 100 & 8 & 4 & 300.25 & 2399.97 & 7100.06 & 6275.02 & 0 \\
+Growatt CAN JKBMS & Bridge & 519 & 10 & 1 & 9980.7 & 9980.7 & 9980.7 & 9980.7 & 0 \\
+Growatt CAN SeplosBMS & Bridge & 130 & 12 & 10 & 251.23 & 851.37 & 1496.22 & 1221.32 & 0 \\
+Growatt CAN JKBMS & Direct cable & 260 & 10 & 1 & 4980.23 & 4980.23 & 4980.23 & 4980.23 & 0 \\
+Growatt CAN SeplosBMS & Direct cable & 65 & 12 & 6 & 129.93 & 687.13 & 831.77 & 831.77 & 0 \\
+Growatt CAN JKBMS & Bridge Forward & 520 & 10 & 1 & 9980.68 & 9980.68 & 9980.68 & 9980.68 & 0 \\
+Growatt CAN SeplosBMS & Bridge Forward & 129 & 12 & 11 & 85.69 & 755.94 & 871.81 & 861.95 & 0 \\
+JKBMS CAN & Bridge & 344 & 12 & 1 & 9907.99 & 9907.99 & 9907.99 & 9907.99 & 0 \\
+Pylon CAN & Bridge & 100 & 8 & 5 & 900.28 & 1900.01 & 2299.95 & 2299.95 & 0 \\
+SMA CAN & Bridge & 60 & 6 & 60 & 0.22 & 0.23 & 0.24 & 0.24 & 0 \\
+Sofar CAN & Bridge & 148 & 6 & 148 & 0.22 & 0.23 & 0.24 & 0.24 & 0 \\
+Victron CAN & Bridge & 250 & 19 & 1 & 9960.73 & 9960.73 & 9960.73 & 9960.73 & 0 \\
 \bottomrule
 \end{longtable}
-\normalsize
+\endgroup
+
 \end{landscape}
 
 

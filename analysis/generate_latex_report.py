@@ -632,19 +632,32 @@ def overview_table(
     title: str,
     section_title: str | None = None,
 ) -> str:
+    return rf"""
+\begin{{landscape}}
+{overview_table_block(rows, kind_label, title, section_title=section_title)}
+\end{{landscape}}
+"""
+
+
+def overview_table_block(
+    rows: list[dict[str, str]],
+    kind_label: str,
+    title: str,
+    section_title: str | None = None,
+) -> str:
     body = []
     for row in rows:
-        target = tex_escape(row["target"].replace("_", " "))
+        target = tex_escape(GROUP_LABELS.get(row["target"], row["target"].replace("_", " ")))
         topology = tex_escape(topology_for_capture(row["capture"]))
         if kind_label == "CAN":
             metrics = [
                 tex_int(row.get("frames", "")),
                 tex_int(row.get("unique_can_ids", "")),
                 tex_int(row.get("can_cycles", "")),
-                tex_num(row.get("cycle_duration_min_us", "")),
-                tex_num(row.get("cycle_duration_avg_us", "")),
-                tex_num(row.get("cycle_duration_max_us", "")),
-                tex_num(row.get("cycle_duration_p95_us", "")),
+                tex_scaled_num(row.get("cycle_duration_min_us", ""), 0.001),
+                tex_scaled_num(row.get("cycle_duration_avg_us", ""), 0.001),
+                tex_scaled_num(row.get("cycle_duration_max_us", ""), 0.001),
+                tex_scaled_num(row.get("cycle_duration_p95_us", ""), 0.001),
                 tex_int(row.get("decode_errors", "")),
             ]
         else:
@@ -652,32 +665,41 @@ def overview_table(
                 tex_int(row.get("frames", "")),
                 tex_int(row.get("complete_sequences", "")),
                 tex_int(row.get("incomplete_orphan_rows", "")),
-                tex_num(row.get("request_to_response_avg_us", "")),
-                tex_num(row.get("request_to_response_p95_us", "")),
-                tex_num(row.get("full_exchange_p95_us", "")),
+                tex_scaled_num(row.get("request_to_response_avg_us", ""), 0.001),
+                tex_scaled_num(row.get("request_to_response_p95_us", ""), 0.001),
+                tex_scaled_num(row.get("full_exchange_p95_us", ""), 0.001),
             ]
         body.append(" & ".join([target, topology, *metrics]) + r" \\")
 
     if kind_label == "CAN":
         header = (
-            r"Target & Topology & Frames & IDs & Cycles & Cycle min (us) "
-            r"& Cycle avg (us) & Cycle max (us) & Cycle P95 (us) & Errors \\"
+            r"Target & Topology & Frames & IDs & Cycles & Cycle min (ms) "
+            r"& Cycle avg (ms) & Cycle max (ms) & Cycle P95 (ms) & Errors \\"
         )
-        columns = r"p{3.6cm}p{1.8cm}rrrrrrrr"
+        columns = (
+            r"@{}>{\raggedright\arraybackslash}p{4.8cm}"
+            r">{\raggedright\arraybackslash}p{2.35cm}rrrrrrrr@{}"
+        )
     else:
         header = (
-            r"Target & Topology & Frames & Complete & Incomplete & Req->Rsp avg (us) "
-            r"& Req->Rsp P95 (us) & Full P95 (us) \\"
+            r"Target & Topology & Frames & Complete & Incomplete & Req->Rsp avg (ms) "
+            r"& Req->Rsp P95 (ms) & Full P95 (ms) \\"
         )
-        columns = r"p{4.1cm}p{2.0cm}rrrrrr"
+        columns = (
+            r"@{}>{\raggedright\arraybackslash}p{4.8cm}"
+            r">{\raggedright\arraybackslash}p{2.35cm}rrrrrr@{}"
+        )
 
     section_block = rf"\section{{{tex_escape(section_title)}}}" if section_title else ""
     return rf"""
-\begin{{landscape}}
 {section_block}
 
 \subsection{{{tex_escape(title)}}}
+\begingroup
 \scriptsize
+\setlength{{\tabcolsep}}{{3pt}}
+\setlength{{\LTpre}}{{0.35em}}
+\setlength{{\LTpost}}{{0.45em}}
 \begin{{longtable}}{{{columns}}}
 \toprule
 {header}
@@ -686,7 +708,24 @@ def overview_table(
 {chr(10).join(body)}
 \bottomrule
 \end{{longtable}}
-\normalsize
+\endgroup
+"""
+
+
+def overview_section(
+    serial_rows: list[dict[str, str]],
+    can_rows: list[dict[str, str]],
+) -> str:
+    return rf"""
+\begin{{landscape}}
+{overview_table_block(
+        serial_rows,
+        "RS485/UART",
+        "RS485/UART Capture Overview",
+        section_title="Capture Overview",
+    )}
+
+{overview_table_block(can_rows, "CAN", "CAN Capture Overview")}
 \end{{landscape}}
 """
 
@@ -946,14 +985,7 @@ capture-length cycles.
 
 \clearpage
 
-{overview_table(
-        serial_rows,
-        "RS485/UART",
-        "RS485/UART Capture Overview",
-        section_title="Capture Overview",
-    )}
-
-{overview_table(can_rows, "CAN", "CAN Capture Overview")}
+{overview_section(serial_rows, can_rows)}
 
 \section*{{Notes}}
 
