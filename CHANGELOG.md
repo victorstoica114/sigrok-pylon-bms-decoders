@@ -80,6 +80,7 @@
 - LaTeX top-delta table column widths now keep the threshold rows on single lines.
 - LaTeX three-mode delta tables now display timing metrics in milliseconds with compact decimal formatting.
 - LaTeX three-mode delta tables now use wider group columns and tighter spacing to keep group names on single lines.
+- LaTeX three-mode delta tables now use wider metric columns to keep inter-cycle metric labels on single lines.
 - Active decoder set is currently limited to validated decoders: `China Tower Modbus`, `Daly RS485`, `Deye CAN`, `GoodWe CAN`, `Growatt CAN`, `Growatt RS485`, `JKBMS CAN`, `JKBMS Modbus`, `PACE Modbus`, `Pylon CAN`, `Pylon RS485`, `SMA CAN`, `Sofar CAN`, `Victron CAN`, `Voltronic Modbus`, and `WOW Modbus`.
 - Updated bridge-mode example capture and PulseView session for Growatt CAN traffic with a JKBMS test topology.
 - Updated bridge-mode example capture and PulseView session for Growatt CAN traffic with a SeplosBMS test topology.

@@ -576,7 +576,7 @@ def three_mode_table(
 \scriptsize
 \begingroup
 \setlength{{\tabcolsep}}{{3pt}}
-\begin{{longtable}}{{@{{}}>{{\raggedright\arraybackslash}}p{{5.0cm}}>{{\raggedright\arraybackslash}}p{{3.2cm}}rrr>{{\raggedright\arraybackslash}}p{{2.8cm}}>{{\raggedright\arraybackslash}}p{{2.8cm}}>{{\raggedright\arraybackslash}}p{{2.8cm}}@{{}}}}
+\begin{{longtable}}{{@{{}}>{{\raggedright\arraybackslash}}p{{5.0cm}}>{{\raggedright\arraybackslash}}p{{4.0cm}}rrr>{{\raggedright\arraybackslash}}p{{2.8cm}}>{{\raggedright\arraybackslash}}p{{2.8cm}}>{{\raggedright\arraybackslash}}p{{2.8cm}}@{{}}}}
 \toprule
 Group & Metric & Bridge & Forward & Direct & Forward vs Bridge & Direct vs Bridge & Direct vs Forward \\
 \midrule
