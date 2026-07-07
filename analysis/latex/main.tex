@@ -418,7 +418,7 @@ capture-length cycles.
 \begin{landscape}
 \section{Three-mode Delta Tables}
 
-The following tables focus only on groups where all three modes are available: Bridge, Bridge Forward, and Direct cable. Deltas are directional: orange means an increase, green means a decrease. Whether an increase is good depends on the metric.
+The following tables focus only on groups where all three modes are available: Bridge, Bridge Forward, and Direct cable. Deltas are directional: orange means an increase, green means a decrease. Timing rows are displayed in milliseconds. Whether an increase is good depends on the metric.
 
 \subsection{RS485/UART Three-mode Deltas}
 \scriptsize
@@ -428,15 +428,15 @@ Group & Metric & Bridge & Forward & Direct & Forward vs Bridge & Direct vs Bridg
 \midrule
 \endhead
 Growatt RS485 JKBMS & Complete exchanges/s & 2.5 & 2.5 & 2 & 0 (0\%) & \decrease{-0.5 (-20\%)} & \decrease{-0.5 (-20\%)} \\
-Growatt RS485 JKBMS & Req->Rsp avg (us) & 4760 & 5008.1 & 5126.76 & \increase{+248.1 (+5.2\%)} & \increase{+366.76 (+7.7\%)} & \increase{+118.66 (+2.4\%)} \\
-Growatt RS485 JKBMS & Req->Rsp P95 (us) & 5294.32 & 5293.78 & 5438.65 & \decrease{-0.54 (0\%)} & \increase{+144.33 (+2.7\%)} & \increase{+144.87 (+2.7\%)} \\
-Growatt RS485 JKBMS & Full exchange avg (us) & 49094.79 & 48926.21 & 59337.41 & \decrease{-168.58 (-0.3\%)} & \increase{+10242.62 (+20.9\%)} & \increase{+10411.2 (+21.3\%)} \\
-Growatt RS485 JKBMS & Full exchange P95 (us) & 53520.07 & 53484.77 & 75000.91 & \decrease{-35.3 (-0.1\%)} & \increase{+21480.84 (+40.1\%)} & \increase{+21516.13 (+40.2\%)} \\
+Growatt RS485 JKBMS & Req->Rsp avg (ms) & 4.76 & 5.01 & 5.13 & \increase{+0.25 (+5.2\%)} & \increase{+0.37 (+7.7\%)} & \increase{+0.12 (+2.4\%)} \\
+Growatt RS485 JKBMS & Req->Rsp P95 (ms) & 5.29 & 5.29 & 5.44 & 0 (0\%) & \increase{+0.14 (+2.7\%)} & \increase{+0.14 (+2.7\%)} \\
+Growatt RS485 JKBMS & Full exchange avg (ms) & 49.09 & 48.93 & 59.34 & \decrease{-0.17 (-0.3\%)} & \increase{+10.24 (+20.9\%)} & \increase{+10.41 (+21.3\%)} \\
+Growatt RS485 JKBMS & Full exchange P95 (ms) & 53.52 & 53.48 & 75 & \decrease{-0.04 (-0.1\%)} & \increase{+21.48 (+40.1\%)} & \increase{+21.52 (+40.2\%)} \\
 Anenji Pylon RS485 JKBMS & Complete exchanges/s & 0.8 & 0.8 & 0.8 & 0 (0\%) & 0 (0\%) & 0 (0\%) \\
-Anenji Pylon RS485 JKBMS & Req->Rsp avg (us) & 9706.67 & 5488.62 & 5124.94 & \decrease{-4218.05 (-43.5\%)} & \decrease{-4581.73 (-47.2\%)} & \decrease{-363.68 (-6.6\%)} \\
-Anenji Pylon RS485 JKBMS & Req->Rsp P95 (us) & 9912.79 & 6190.08 & 5692.96 & \decrease{-3722.71 (-37.6\%)} & \decrease{-4219.84 (-42.6\%)} & \decrease{-497.12 (-8\%)} \\
-Anenji Pylon RS485 JKBMS & Full exchange avg (us) & 111164.32 & 106950.36 & 102917.89 & \decrease{-4213.95 (-3.8\%)} & \decrease{-8246.42 (-7.4\%)} & \decrease{-4032.47 (-3.8\%)} \\
-Anenji Pylon RS485 JKBMS & Full exchange P95 (us) & 153034.21 & 149320.43 & 145154.53 & \decrease{-3713.79 (-2.4\%)} & \decrease{-7879.68 (-5.1\%)} & \decrease{-4165.9 (-2.8\%)} \\
+Anenji Pylon RS485 JKBMS & Req->Rsp avg (ms) & 9.71 & 5.49 & 5.12 & \decrease{-4.22 (-43.5\%)} & \decrease{-4.58 (-47.2\%)} & \decrease{-0.36 (-6.6\%)} \\
+Anenji Pylon RS485 JKBMS & Req->Rsp P95 (ms) & 9.91 & 6.19 & 5.69 & \decrease{-3.72 (-37.6\%)} & \decrease{-4.22 (-42.6\%)} & \decrease{-0.5 (-8\%)} \\
+Anenji Pylon RS485 JKBMS & Full exchange avg (ms) & 111.16 & 106.95 & 102.92 & \decrease{-4.21 (-3.8\%)} & \decrease{-8.25 (-7.4\%)} & \decrease{-4.03 (-3.8\%)} \\
+Anenji Pylon RS485 JKBMS & Full exchange P95 (ms) & 153.03 & 149.32 & 145.15 & \decrease{-3.71 (-2.4\%)} & \decrease{-7.88 (-5.1\%)} & \decrease{-4.17 (-2.8\%)} \\
 \bottomrule
 \end{longtable}
 \end{landscape}
@@ -455,20 +455,20 @@ Group & Metric & Bridge & Forward & Direct & Forward vs Bridge & Direct vs Bridg
 \endhead
 Growatt CAN JKBMS & Frames/s & 51.9 & 52 & 52 & \increase{+0.1 (+0.2\%)} & \increase{+0.1 (+0.2\%)} & 0 (0\%) \\
 Growatt CAN JKBMS & Cycles/s & 0.1 & 0.1 & 0.2 & 0 (0\%) & \increase{+0.1 (+100\%)} & \increase{+0.1 (+100\%)} \\
-Growatt CAN JKBMS & Cycle min (us) & 9980699.27 & 9980680.5 & 4980232.08 & \decrease{-18.77 (0\%)} & \decrease{-5000467.18 (-50.1\%)} & \decrease{-5000448.42 (-50.1\%)} \\
-Growatt CAN JKBMS & Cycle avg (us) & 9980699.27 & 9980680.5 & 4980232.08 & \decrease{-18.77 (0\%)} & \decrease{-5000467.18 (-50.1\%)} & \decrease{-5000448.42 (-50.1\%)} \\
-Growatt CAN JKBMS & Cycle max (us) & 9980699.27 & 9980680.5 & 4980232.08 & \decrease{-18.77 (0\%)} & \decrease{-5000467.18 (-50.1\%)} & \decrease{-5000448.42 (-50.1\%)} \\
-Growatt CAN JKBMS & Cycle P95 (us) & 9980699.27 & 9980680.5 & 4980232.08 & \decrease{-18.77 (0\%)} & \decrease{-5000467.18 (-50.1\%)} & \decrease{-5000448.42 (-50.1\%)} \\
+Growatt CAN JKBMS & Cycle min (ms) & 9980.7 & 9980.68 & 4980.23 & \decrease{-0.02 (0\%)} & \decrease{-5000.47 (-50.1\%)} & \decrease{-5000.45 (-50.1\%)} \\
+Growatt CAN JKBMS & Cycle avg (ms) & 9980.7 & 9980.68 & 4980.23 & \decrease{-0.02 (0\%)} & \decrease{-5000.47 (-50.1\%)} & \decrease{-5000.45 (-50.1\%)} \\
+Growatt CAN JKBMS & Cycle max (ms) & 9980.7 & 9980.68 & 4980.23 & \decrease{-0.02 (0\%)} & \decrease{-5000.47 (-50.1\%)} & \decrease{-5000.45 (-50.1\%)} \\
+Growatt CAN JKBMS & Cycle P95 (ms) & 9980.7 & 9980.68 & 4980.23 & \decrease{-0.02 (0\%)} & \decrease{-5000.47 (-50.1\%)} & \decrease{-5000.45 (-50.1\%)} \\
 Growatt CAN SeplosBMS & Frames/s & 13 & 12.9 & 13 & \decrease{-0.1 (-0.8\%)} & 0 (0\%) & \increase{+0.1 (+0.8\%)} \\
 Growatt CAN SeplosBMS & Cycles/s & 1 & 1.1 & 1.2 & \increase{+0.1 (+10\%)} & \increase{+0.2 (+20\%)} & \increase{+0.1 (+9.1\%)} \\
-Growatt CAN SeplosBMS & Cycle min (us) & 251234.86 & 85691.12 & 129932.96 & \decrease{-165543.74 (-65.9\%)} & \decrease{-121301.9 (-48.3\%)} & \increase{+44241.84 (+51.6\%)} \\
-Growatt CAN SeplosBMS & Cycle avg (us) & 851373.72 & 755942 & 687125.94 & \decrease{-95431.72 (-11.2\%)} & \decrease{-164247.78 (-19.3\%)} & \decrease{-68816.06 (-9.1\%)} \\
-Growatt CAN SeplosBMS & Cycle max (us) & 1496223.99 & 871814.91 & 831769.22 & \decrease{-624409.08 (-41.7\%)} & \decrease{-664454.76 (-44.4\%)} & \decrease{-40045.68 (-4.6\%)} \\
-Growatt CAN SeplosBMS & Cycle P95 (us) & 1221318.48 & 861952.16 & 831768.79 & \decrease{-359366.32 (-29.4\%)} & \decrease{-389549.69 (-31.9\%)} & \decrease{-30183.37 (-3.5\%)} \\
-Growatt CAN SeplosBMS & Inter-cycle gap min (us) & 114668.76 & 128174.72 & 168225.68 & \increase{+13505.97 (+11.8\%)} & \increase{+53556.93 (+46.7\%)} & \increase{+40050.96 (+31.2\%)} \\
-Growatt CAN SeplosBMS & Inter-cycle gap avg (us) & 155493.47 & 160226.81 & 168228.48 & \increase{+4733.34 (+3\%)} & \increase{+12735.01 (+8.2\%)} & \increase{+8001.67 (+5\%)} \\
-Growatt CAN SeplosBMS & Inter-cycle gap max (us) & 165777.83 & 165777.83 & 168229.68 & 0 (0\%) & \increase{+2451.84 (+1.5\%)} & \increase{+2451.84 (+1.5\%)} \\
-Growatt CAN SeplosBMS & Inter-cycle gap P95 (us) & 165776.23 & 165777.83 & 168229.68 & \increase{+1.6 (0\%)} & \increase{+2453.45 (+1.5\%)} & \increase{+2451.84 (+1.5\%)} \\
+Growatt CAN SeplosBMS & Cycle min (ms) & 251.23 & 85.69 & 129.93 & \decrease{-165.54 (-65.9\%)} & \decrease{-121.3 (-48.3\%)} & \increase{+44.24 (+51.6\%)} \\
+Growatt CAN SeplosBMS & Cycle avg (ms) & 851.37 & 755.94 & 687.13 & \decrease{-95.43 (-11.2\%)} & \decrease{-164.25 (-19.3\%)} & \decrease{-68.82 (-9.1\%)} \\
+Growatt CAN SeplosBMS & Cycle max (ms) & 1496.22 & 871.81 & 831.77 & \decrease{-624.41 (-41.7\%)} & \decrease{-664.45 (-44.4\%)} & \decrease{-40.05 (-4.6\%)} \\
+Growatt CAN SeplosBMS & Cycle P95 (ms) & 1221.32 & 861.95 & 831.77 & \decrease{-359.37 (-29.4\%)} & \decrease{-389.55 (-31.9\%)} & \decrease{-30.18 (-3.5\%)} \\
+Growatt CAN SeplosBMS & Inter-cycle gap min (ms) & 114.67 & 128.17 & 168.23 & \increase{+13.51 (+11.8\%)} & \increase{+53.56 (+46.7\%)} & \increase{+40.05 (+31.2\%)} \\
+Growatt CAN SeplosBMS & Inter-cycle gap avg (ms) & 155.49 & 160.23 & 168.23 & \increase{+4.73 (+3\%)} & \increase{+12.74 (+8.2\%)} & \increase{+8 (+5\%)} \\
+Growatt CAN SeplosBMS & Inter-cycle gap max (ms) & 165.78 & 165.78 & 168.23 & 0 (0\%) & \increase{+2.45 (+1.5\%)} & \increase{+2.45 (+1.5\%)} \\
+Growatt CAN SeplosBMS & Inter-cycle gap P95 (ms) & 165.78 & 165.78 & 168.23 & 0 (0\%) & \increase{+2.45 (+1.5\%)} & \increase{+2.45 (+1.5\%)} \\
 \bottomrule
 \end{longtable}
 \end{landscape}

@@ -122,11 +122,11 @@ def format_delta_text(text: str, value_scale: float = 1.0) -> str:
     )
 
 
-def delta_direction(text: str) -> int:
+def delta_direction(text: str, value_scale: float = 1.0) -> int:
     parsed = parse_delta(text)
     if parsed is None:
         return 0
-    rounded_delta = round(parsed[0], 2)
+    rounded_delta = round(parsed[0] * value_scale, 2)
     if rounded_delta > 0:
         return 1
     if rounded_delta < 0:
@@ -139,6 +139,15 @@ def tex_num(text: str, decimals: int = 2) -> str:
         return "--"
     try:
         return format_number(float(text), decimals)
+    except ValueError:
+        return tex_escape(text)
+
+
+def tex_scaled_num(text: str, value_scale: float, decimals: int = 2) -> str:
+    if text == "":
+        return "--"
+    try:
+        return format_number(float(text) * value_scale, decimals)
     except ValueError:
         return tex_escape(text)
 
@@ -157,7 +166,7 @@ def tex_delta(text: str, value_scale: float = 1.0) -> str:
         return "--"
     formatted = format_delta_text(text, value_scale)
     escaped = tex_escape(formatted)
-    direction = delta_direction(text)
+    direction = delta_direction(text, value_scale)
     if direction > 0:
         return rf"\increase{{{escaped}}}"
     if direction < 0:
@@ -539,16 +548,17 @@ def three_mode_table(
 ) -> str:
     body = []
     for row in rows:
+        metric, value_scale = display_metric_and_scale(row["metric"])
         body.append(
             " & ".join([
                 tex_escape(row["group"]),
-                tex_escape(row["metric"]),
-                tex_num(row["bridge"]),
-                tex_num(row["bridge_forward"]),
-                tex_num(row["direct_cable"]),
-                tex_delta(row["forward_vs_bridge"]),
-                tex_delta(row["direct_vs_bridge"]),
-                tex_delta(row["direct_vs_forward"]),
+                tex_escape(metric),
+                tex_scaled_num(row["bridge"], value_scale),
+                tex_scaled_num(row["bridge_forward"], value_scale),
+                tex_scaled_num(row["direct_cable"], value_scale),
+                tex_delta(row["forward_vs_bridge"], value_scale),
+                tex_delta(row["direct_vs_bridge"], value_scale),
+                tex_delta(row["direct_vs_forward"], value_scale),
             ])
             + r" \\"
         )
@@ -899,7 +909,8 @@ capture-length cycles.
         intro=(
             "The following tables focus only on groups where all three modes are available: "
             "Bridge, Bridge Forward, and Direct cable. Deltas are directional: orange means an "
-            "increase, green means a decrease. Whether an increase is good depends on the metric."
+            "increase, green means a decrease. Timing rows are displayed in milliseconds. "
+            "Whether an increase is good depends on the metric."
         ),
     )}
 
