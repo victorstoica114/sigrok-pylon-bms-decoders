@@ -416,14 +416,17 @@ capture-length cycles.
 
 
 \begin{landscape}
+
 \section{Three-mode Delta Tables}
 
 The following tables focus only on groups where all three modes are available: Bridge, Bridge Forward, and Direct cable. Deltas are directional: orange means an increase, green means a decrease. Timing rows are displayed in milliseconds. Whether an increase is good depends on the metric.
 
 \subsection{RS485/UART Three-mode Deltas}
-\scriptsize
 \begingroup
+\scriptsize
 \setlength{\tabcolsep}{3pt}
+\setlength{\LTpre}{0.35em}
+\setlength{\LTpost}{0.45em}
 \begin{longtable}{@{}>{\raggedright\arraybackslash}p{5.0cm}>{\raggedright\arraybackslash}p{4.0cm}rrr>{\raggedright\arraybackslash}p{2.8cm}>{\raggedright\arraybackslash}p{2.8cm}>{\raggedright\arraybackslash}p{2.8cm}@{}}
 \toprule
 Group & Metric & Bridge & Forward & Direct & Forward vs Bridge & Direct vs Bridge & Direct vs Forward \\
@@ -442,17 +445,17 @@ Anenji Pylon RS485 JKBMS & Full exchange P95 (ms) & 153.03 & 149.32 & 145.15 & \
 \bottomrule
 \end{longtable}
 \endgroup
-\end{landscape}
 
 
 
-\begin{landscape}
 
 
 \subsection{CAN Three-mode Deltas}
-\scriptsize
 \begingroup
+\scriptsize
 \setlength{\tabcolsep}{3pt}
+\setlength{\LTpre}{0.35em}
+\setlength{\LTpost}{0.45em}
 \begin{longtable}{@{}>{\raggedright\arraybackslash}p{5.0cm}>{\raggedright\arraybackslash}p{4.0cm}rrr>{\raggedright\arraybackslash}p{2.8cm}>{\raggedright\arraybackslash}p{2.8cm}>{\raggedright\arraybackslash}p{2.8cm}@{}}
 \toprule
 Group & Metric & Bridge & Forward & Direct & Forward vs Bridge & Direct vs Bridge & Direct vs Forward \\
@@ -477,6 +480,7 @@ Growatt CAN SeplosBMS & Inter-cycle gap P95 (ms) & 165.78 & 165.78 & 168.23 & 0 
 \bottomrule
 \end{longtable}
 \endgroup
+
 \end{landscape}
 
 

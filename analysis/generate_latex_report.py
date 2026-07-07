@@ -546,6 +546,19 @@ def three_mode_table(
     section_title: str | None = None,
     intro: str | None = None,
 ) -> str:
+    return rf"""
+\begin{{landscape}}
+{three_mode_table_block(rows, title, section_title=section_title, intro=intro)}
+\end{{landscape}}
+"""
+
+
+def three_mode_table_block(
+    rows: list[dict[str, str]],
+    title: str,
+    section_title: str | None = None,
+    intro: str | None = None,
+) -> str:
     body = []
     for row in rows:
         metric, value_scale = display_metric_and_scale(row["metric"])
@@ -569,13 +582,14 @@ def three_mode_table(
         section_lines.append(tex_escape(intro))
     section_block = "\n\n".join(section_lines)
     return rf"""
-\begin{{landscape}}
 {section_block}
 
 \subsection{{{tex_escape(title)}}}
-\scriptsize
 \begingroup
+\scriptsize
 \setlength{{\tabcolsep}}{{3pt}}
+\setlength{{\LTpre}}{{0.35em}}
+\setlength{{\LTpost}}{{0.45em}}
 \begin{{longtable}}{{@{{}}>{{\raggedright\arraybackslash}}p{{5.0cm}}>{{\raggedright\arraybackslash}}p{{4.0cm}}rrr>{{\raggedright\arraybackslash}}p{{2.8cm}}>{{\raggedright\arraybackslash}}p{{2.8cm}}>{{\raggedright\arraybackslash}}p{{2.8cm}}@{{}}}}
 \toprule
 Group & Metric & Bridge & Forward & Direct & Forward vs Bridge & Direct vs Bridge & Direct vs Forward \\
@@ -585,6 +599,29 @@ Group & Metric & Bridge & Forward & Direct & Forward vs Bridge & Direct vs Bridg
 \bottomrule
 \end{{longtable}}
 \endgroup
+"""
+
+
+def three_mode_section(
+    serial_rows: list[dict[str, str]],
+    can_rows: list[dict[str, str]],
+) -> str:
+    intro = (
+        "The following tables focus only on groups where all three modes are available: "
+        "Bridge, Bridge Forward, and Direct cable. Deltas are directional: orange means an "
+        "increase, green means a decrease. Timing rows are displayed in milliseconds. "
+        "Whether an increase is good depends on the metric."
+    )
+    return rf"""
+\begin{{landscape}}
+{three_mode_table_block(
+        serial_rows,
+        "RS485/UART Three-mode Deltas",
+        section_title="Three-mode Delta Tables",
+        intro=intro,
+    )}
+
+{three_mode_table_block(can_rows, "CAN Three-mode Deltas")}
 \end{{landscape}}
 """
 
@@ -905,19 +942,7 @@ capture-length cycles.
 
 \clearpage
 
-{three_mode_table(
-        serial_three,
-        "RS485/UART Three-mode Deltas",
-        section_title="Three-mode Delta Tables",
-        intro=(
-            "The following tables focus only on groups where all three modes are available: "
-            "Bridge, Bridge Forward, and Direct cable. Deltas are directional: orange means an "
-            "increase, green means a decrease. Timing rows are displayed in milliseconds. "
-            "Whether an increase is good depends on the metric."
-        ),
-    )}
-
-{three_mode_table(can_three, "CAN Three-mode Deltas")}
+{three_mode_section(serial_three, can_three)}
 
 \clearpage
 
